@@ -1,0 +1,4 @@
+cmake-build-debug
+*.o
+*.d
+a.out
