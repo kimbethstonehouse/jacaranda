@@ -2,3 +2,7 @@ cmake-build-debug
 *.o
 *.d
 a.out
+.idea
+.stignore
+.vscode
+build

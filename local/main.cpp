@@ -3,10 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <iostream>
-
-#define SV_SOCK_PATH "/tmp/us_xfr"
-#define BUF_SIZE 100
-#define BACKLOG 5
+#include <jitaas.h>
 
 int connect() {
     int cfd;
@@ -33,41 +30,60 @@ int connect() {
     return cfd;
 }
 
+/** Read file into buffer. */
+inline int read(const char *path, char *buffer) {
+    std::ifstream file(path);
+    int i = -1;
+    if (file.is_open()) {
+        i = 0;
+        while(!file.eof() && i < MAX_FILE_SIZE) {
+            file.get(buffer[i]);
+            i++;
+        }
+    }
+    file.close();
+    return i;
+}
+
 int main(int argc, char **argv)
 {
+    if (argc < 2) {
+        std::cerr << "usage: " << argv[0] << " file.wasm [args]" << std::endl;
+        return 1;
+    }
+
+    char src_code[MAX_FILE_SIZE];
+    int src_len = read(argv[1], src_code);
+
     int cfd;
     // Create a new client socket with domain: AF_UNIX, type: SOCK_STREAM, protocol: 0
     if ((cfd = connect()) == -1) {
         return -1;
     }
-//    if (argc < 2) {
-//        std::cerr << "usage: " << argv[0] << " file.wasm [args]" << std::endl;
-//        return 1;
-//    }
-//
-//    const char* wasm_file = argv[1];
 
-    char *cbuf = "Hello from client socket!\n";
-    int num_read;
-    char sbuf[BUF_SIZE];
-    ssize_t buf_len = strlen(cbuf);
-
-    if (write(cfd, cbuf, buf_len) != buf_len) {
+    // Protocol: first four bytes specify length of data
+    write(cfd, &src_len, 4);
+    if (write(cfd, src_code, src_len) != src_len) {
         std::cerr << "client socket write failed" << std::endl;
         return 1;
     }
 
+    char bin_code[MAX_FILE_SIZE];
+    int bin_len, num_read;
+
     // Read at most BUF_SIZE bytes from the socket into buf.
-    while ((num_read = read(cfd, sbuf, BUF_SIZE)) > 0) {
-        // Then, write those bytes from buf into STDOUT.
-        write(STDOUT_FILENO, sbuf, num_read);
+    read(cfd, &bin_len, 4);
+    if ((num_read = read(cfd, bin_code, bin_len)) != bin_len) {
+        std::cerr << "client socket read failed" << std::endl;
     }
 
-    if (num_read == -1) {
-        std::cerr << "client socket read failed" << std::endl;
+    // Then, write those bytes from buf into STDOUT.
+    write(STDOUT_FILENO, bin_code, bin_len);
+
+    // TODO: execute a.out
+
+    if (close(cfd) == -1) {
+        std::cerr << "client socket close failed" << std::endl;
         return 1;
     }
-
-    // Closes our socket; server sees EOF.
-    exit(EXIT_SUCCESS);
 }

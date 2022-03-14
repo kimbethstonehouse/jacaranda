@@ -1,6 +1,10 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.16)
 project(jitaas)
 
 set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_BINARY_DIR build)
 
-add_executable(jitaas main.cpp)
+include_directories(include)
+
+add_subdirectory(remote)
+add_subdirectory(local)
