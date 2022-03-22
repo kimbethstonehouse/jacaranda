@@ -1,4 +1,4 @@
-#include "runtime.h"
+#include <runtime.h>
 
 // TODO: communicate with compiler
 //void Runtime::ask_compiler() {
@@ -54,9 +54,9 @@
 //    }
 //}
 
-void Runtime::load_module(const std::string &path) {
-    char src_code[MAX_FILE_SIZE];
-    int src_len = read(argv[1], src_code);
+void Runtime::load_module(const std::string &filename) {
+    Module module(filename);
+    modules_.push_back(module);
 }
 
 void Runtime::run() {

@@ -1,8 +1,7 @@
-#include "compiler.h"
+#include <compiler.h>
 
-int main(int argc, char **argv) {
+int main() {
     Compiler compiler;
-
     compiler.open_socket();
     compiler.handle_connections();
 }

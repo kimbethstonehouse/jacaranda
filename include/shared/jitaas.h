@@ -1,9 +1,13 @@
+#pragma once
 #include <fstream>
 
 #define SOCKET_FILE "/tmp/jitaas"
 #define BACKLOG 5
 #define MAX_FILE_SIZE 102400 // 100KB max
 #define BIN_FILE_NAME "a.out"
+
+static const char wasm_magic_reference[4] = {0x00, 0x61, 0x73, 0x6d};   // {NULL} asm
+static const char wasm_version_reference[4] = {0x01, 0x00, 0x00, 0x00}; // Version 1
 
 ///** Read file into buffer. */
 inline int read(const char *path, char *buffer) {
