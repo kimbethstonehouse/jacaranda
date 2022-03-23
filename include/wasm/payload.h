@@ -43,6 +43,8 @@ public:
 
     unsigned char read_u8() { return consume(); }
 
+    // Read one number encoded in unsigned little endian base
+    // TODO: enforce the maximum of 4 bytes?
     template <typename T = unsigned int> T read_uleb128() {
         T result = 0;
         T shift = 0;
@@ -50,7 +52,9 @@ public:
         while (true) {
             char c = consume();
 
+            // Ignore the msb using & 0x7f
             result |= (c & 0x7f) << shift;
+            // If the msb is clear, we have read the last byte
             if (!(c & 0x80)) {
                 break;
             }
