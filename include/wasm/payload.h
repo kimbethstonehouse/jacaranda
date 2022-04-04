@@ -44,29 +44,33 @@ public:
     unsigned char read_u8() { return consume(); }
 
     // Read one number encoded in unsigned little endian base
-    // TODO: enforce the maximum of 4 bytes?
-    template <typename T = unsigned int> T read_uleb128() {
+    template <typename T = unsigned int> T read_uleb128(enum VaruintN limit) {
         T result = 0;
         T shift = 0;
+        T length = 0;
 
         while (true) {
             char c = consume();
 
             // Ignore the msb using & 0x7f
             result |= (c & 0x7f) << shift;
+            shift += 7;
+            length += 7;
+
             // If the msb is clear, we have read the last byte
-            if (!(c & 0x80)) {
+            if (!(c & 0x80) || length >= limit) { // The limit is at most ceil(limit / 7) bytes
                 break;
             }
-
-            shift += 7;
         }
 
         return result;
     }
 
-    std::string read_name() {
-        unsigned int size = read_uleb128();
+    // The parameter "limit" refers to the maximum length of the
+    // LEB128 variable-length integer "size" (e.g. 1, 7 or 32 bits),
+    // which in turn, defines the length of the name string itself
+    std::string read_name(enum VaruintN limit) {
+        unsigned int size = read_uleb128(limit);
 
         char buffer[size + 1];
         for (unsigned int i = 0; i < size; i++) {

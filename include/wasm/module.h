@@ -5,6 +5,8 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <wasm.h>
+#include<payload.h>
 
 class Module {
 public:
@@ -24,29 +26,24 @@ private:
 
     void parse_sections();
 
-    template <typename T = unsigned int> T read_uleb128(const char *&p)
-    {
+    template <typename T = unsigned int> T read_uleb128(const char *&p, VaruintN limit) {
         T result = 0;
         T shift = 0;
+        T length = 0;
 
         while (true) {
             char c = *p++;
 
             result |= (c & 0x7f) << shift;
-            if (!(c & 0x80)) {
+            shift += 7;
+            length += 7;
+
+            if (!(c & 0x80) || length >= limit) { // The limit is at most ceil(limit / 7) bytes
                 break;
             }
-
-            shift += 7;
         }
 
         return result;
     }
-};
-
-class load_exception : public std::runtime_error
-{
-public:
-    load_exception(const std::string &message) : runtime_error(message) {}
 };
 

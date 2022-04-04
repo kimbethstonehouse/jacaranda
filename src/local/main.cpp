@@ -7,8 +7,12 @@ int main(int argc, char **argv) {
         return -1;
     }
 
+    // TODO: ideally we wouldn't create a new runtime everytime,
+    // but have the runtime persist between executions...
     // Assumes the remote compiler is up and running
     Runtime runtime;
+
+    // TODO: check if module already loaded based on hash, if not, load it
     runtime.load_module(argv[1]);
-    runtime.run();
+    runtime.run(); // TODO: return and pass hash here
 }

@@ -8,7 +8,7 @@ public:
     Runtime() {}
     ~Runtime() {}
 
-    void load_module(const std::string &filename);
+    Module load_module(const std::string &filename);
     void run();
 private:
     std::vector<Module> modules_;

@@ -54,9 +54,10 @@
 //    }
 //}
 
-void Runtime::load_module(const std::string &filename) {
+Module Runtime::load_module(const std::string &filename) {
     Module module(filename);
     modules_.push_back(module);
+    return module;
 }
 
 void Runtime::run() {

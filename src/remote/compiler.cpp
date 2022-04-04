@@ -6,14 +6,9 @@ void Compiler::open_socket() {
         throw socket_exception("remote: socket creation failed");
     }
 
-    // Make sure the socket filepath isn't too long
-    if (strlen(SOCKET_FILE) > sizeof(addr_.sun_path) - 1) {
-        throw socket_exception("remote: socket path too long");
-    }
-
     // Delete any socket file that already exists
     if (remove(SOCKET_FILE) == -1 && errno != ENOENT) {
-        throw socket_exception("remote: could not remove previous socket");
+        throw socket_exception("remote: previous socket file removal failed");
     }
 
     // Zero out the address and set family and path
@@ -32,7 +27,7 @@ void Compiler::open_socket() {
     }
 }
 
-// Handles client connections iteratively, passing each accepted connection to be serviced
+// Handle client connections iteratively, passing each accepted connection to be serviced
 [[ noreturn ]] void Compiler::handle_connections() {
     for (;;) {
         // Connection is returned on a new socket
