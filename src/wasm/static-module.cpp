@@ -3,12 +3,11 @@
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <module.h>
+#include <static-module.h>
 #include <payload.h>
 #include <section.h>
-#include <jitaas.h>
 
-Module::Module(const std::string &filename) {
+StaticModule::StaticModule(const std::string &filename) {
     // Open the file for reading
     int fd = open(filename.c_str(), O_RDONLY);
     if (fd < 0) {
@@ -42,10 +41,11 @@ Module::Module(const std::string &filename) {
     // Store the buffer end pointer, which is the byte AFTER the last byte of the mapped file
     buffer_end_ = (const char *)((uintptr_t)buffer_ + buffer_size_);
 
+    // Decode the module...
     parse_sections();
 }
 
-void Module::parse_sections() {
+void StaticModule::parse_sections() {
     // Check magic number
     const char *magic = &buffer_[0];
     if (memcmp(magic, wasm_magic_reference, sizeof(wasm_magic_reference)) != 0) {
@@ -108,9 +108,6 @@ void Module::parse_sections() {
                 break;
             case 11:
                 add_section(new DataSection(payload));
-                break;
-            case 12:
-                add_section(new DataCountSection(payload));
                 break;
 
             default:

@@ -6,3 +6,4 @@ a.out
 .stignore
 .vscode
 build
+exe

@@ -6,14 +6,14 @@
 #include <string>
 #include <vector>
 #include <wasm.h>
-#include<payload.h>
+#include <payload.h>
 
-class Module {
+class StaticModule {
 public:
-    Module(const std::string &filename);
-    ~Module() {}
+    StaticModule(const std::string &filename);
+    ~StaticModule() { munmap((void *)buffer_, buffer_size_); }
 
-    template <class T> T *get_section() { return (T *)section_map_[T::ID]; }
+    template <class T> T *get_section() { return (T *)section_map_[T::id]; }
 
 private:
     const char *buffer_, *buffer_end_;

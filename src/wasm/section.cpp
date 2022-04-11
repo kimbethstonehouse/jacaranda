@@ -30,7 +30,7 @@ void TypeSection::parse_section() {
             return_type = ValueType(payload.read_uleb128(VARUINT7));
         }
 
-        types_[i] = FuncType(param_count, param_types, return_count, return_type);
+        types_.insert({i, FuncType(param_count, param_types, return_count, return_type)});
     }
 }
 
@@ -50,7 +50,7 @@ void ImportSection::parse_section() {
 
         unsigned int type_index = payload.read_uleb128(VARUINT32);
 
-        imports_[i] = ImportEntry(module_name, import_name, type, type_index);
+        imports_.insert({i, ImportEntry(module_name, import_name, type, type_index)});
     }
 }
 
@@ -60,7 +60,24 @@ void FunctionSection::parse_section() {
 
     for (int i = 0; i < count_; i++) {
         unsigned int type_index = payload.read_uleb128(VARUINT32);
-        functions_[i] = FunctionEntry(type_index);
+        functions_.insert({i, FunctionEntry(type_index)});
+    }
+}
+
+void GlobalSection::parse_section() {
+    Payload payload = get_data();
+    count_ = payload.read_uleb128(VARUINT32);
+    // TODO: Parse global entries.
+}
+
+void CodeSection::parse_section() {
+    Payload payload = get_data();
+    count_ = payload.read_uleb128(VARUINT32);
+
+    for (int i = 0; i < count_; i++) {
+        unsigned int body_size = payload.read_uleb128(VARUINT32);
+        bodies_.insert({i, Payload(payload.at(), body_size)});
+        payload.skip(body_size);
     }
 }
 
@@ -73,24 +90,7 @@ void ExportSection::parse_section() {
         unsigned char type = payload.read_uleb128(VARUINT7);
         unsigned int index = payload.read_uleb128(VARUINT32);
 
-        exports_[i] = ExportEntry(name, type, index);
+        exports_.insert({i, ExportEntry(name, type, index)});
     }
-}
-
-
-
-void CodeSection::load_code()
-{
-//    Payload payload = get_data();
-//
-//    unsigned int nr_blocks = payload.read_uleb128();
-//    std::cerr << "nr code blocks=" << nr_blocks << std::endl;
-//
-//    int index = 0;
-//    while (!payload.eob()) {
-//        unsigned int size = payload.read_uleb128();
-//        code_[index++] = Payload{payload.at(), size};
-//        payload.skip(size);
-//    }
 }
 

@@ -1,3 +1,5 @@
+#pragma once
+
 #define CUSTOM_SECTION_ID 0
 #define TYPE_SECTION_ID 1
 #define IMPORT_SECTION_ID 2
@@ -10,7 +12,6 @@
 #define ELEMENT_SECTION_ID 9
 #define CODE_SECTION_ID 10
 #define DATA_SECTION_ID 11
-#define DATA_COUNT_SECTION_ID 12
 
 namespace LanguageTypes {
     // Technically negative, but we use the
@@ -44,4 +45,10 @@ class load_exception : public std::runtime_error
 {
 public:
     load_exception(const std::string &message) : runtime_error(message) {}
+};
+
+class run_exception : public std::runtime_error
+{
+public:
+    run_exception(const std::string &message) : runtime_error(message) {}
 };

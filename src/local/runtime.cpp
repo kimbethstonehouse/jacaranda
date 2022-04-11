@@ -1,4 +1,5 @@
 #include <runtime.h>
+#include <section.h>
 
 // TODO: communicate with compiler
 //void Runtime::ask_compiler() {
@@ -54,12 +55,33 @@
 //    }
 //}
 
-Module Runtime::load_module(const std::string &filename) {
-    Module module(filename);
-    modules_.push_back(module);
-    return module;
+void Runtime::load_module(const std::string &filename) {
+    static_module_ = new StaticModule(filename);
+    runtime_module_ = new RuntimeModule(static_module_);
 }
 
 void Runtime::run() {
-    // TODO
+    if (!runtime_module_) {
+        throw run_exception("local: run: module was not loaded correctly");
+    }
+
+    auto startSection = runtime_module_->static_module()->get_section<StartSection>();
+    if (startSection != nullptr) {
+        runtime_module_->invoke_function(startSection->get_idx(), true);
+    }
+
+    // StaticModule must export a start function
+    auto exports = runtime_module_->static_module()->get_section<ExportSection>()->exports();
+    bool foundMain = false;
+    for (const auto &exp : exports) {
+        if (exp.second.export_name() == "_start" && exp.second.export_type() == ExternalKind::FUNCTION) {
+            foundMain = true;
+            runtime_module_->invoke_function(exp.second.index());
+            break;
+        }
+    }
+
+    if (!foundMain) {
+        throw run_exception("local: run: module did not export _start function");
+    }
 }

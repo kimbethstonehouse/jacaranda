@@ -14,10 +14,19 @@ public:
 private:
     unsigned char type_;
     void validate() {
-        if (type_ != I32 && type_ != I64 && type_ != F32 && type_ != F64) {
+        if (type_ != LanguageTypes::I32 && type_ != LanguageTypes::I64 &&
+                type_ != LanguageTypes::F32 && type_ != LanguageTypes::F64) {
             throw load_exception("local: parse: invalid value type form");
         }
     }
+};
+
+class GlobalType {
+public:
+    GlobalType(ValueType content_type, unsigned char mutability) : content_type_(content_type), mutability_(mutability) {}
+private:
+    ValueType content_type_;
+    unsigned char mutability_; // 0 if immutable, 1 if mutable
 };
 
 /* The func_type is the description of a function signature.
@@ -43,6 +52,8 @@ class ImportEntry {
 public:
     ImportEntry(std::string module_name, std::string import_name, unsigned char import_type, unsigned int type_index) :
         module_name_(module_name), import_name_(import_name), import_type_(import_type), type_index_(type_index) {}
+    unsigned char import_type() const { return import_type_; }
+    unsigned int type_index() const { return type_index_; }
 private:
     std::string module_name_; // aka module_str
     std::string import_name_; // aka field_str
@@ -55,8 +66,60 @@ private:
 class FunctionEntry {
 public:
     FunctionEntry(unsigned int type_index) : type_index_(type_index) {}
+    int type_index() const { return type_index_; }
 private:
     unsigned int type_index_;
+};
+
+class GlobalEntry {
+public:
+    GlobalEntry(ValueType content_type, unsigned char mutability) : type_(content_type, mutability) {}
+
+private:
+    GlobalType type_;
+    // Initialiser expression to define the initial value of the variable.
+    // Encoded with the same binary encoding as Wasm expressions, followed by the end opcode as a delimiter.
+    // TODO: how are expressions encoded?
+    unsigned int init_expr_;
+};
+
+class ExportEntry {
+public:
+    ExportEntry(std::string export_name, unsigned char export_type, unsigned int index) :
+            export_name_(export_name), export_type_(export_type), index_(index) {}
+    std::string export_name() const { return export_name_; }
+    unsigned char export_type() const { return export_type_; }
+    unsigned int index() const { return index_; }
+private:
+    std::string export_name_; // aka field_str
+    unsigned char export_type_; // aka kind
+    /* Index into the index space corresponding to the export type
+     * We only support exporting functions, so this is a function index. */
+    unsigned int index_;
+};
+
+// Each local entry declares a number of local variables of a given type.
+// It is legal to have several entries with the same type.
+class LocalEntry {
+public:
+    LocalEntry(unsigned int count, ValueType type) : count_(count), type_(type) {}
+private:
+    unsigned int count_;
+    ValueType type_;
+};
+
+// TODO: Not currently parsed.
+/* A sequence of local variable declarations followed by bytecode
+ * instructions. Instructions are encoded as an opcode followed by
+ * zero or mode immediates. Each function body must end with the end opcode. */
+class FunctionBody {
+public:
+    FunctionBody() {}
+private:
+    unsigned int body_size_;
+    unsigned int local_count_;
+    std::map<int, LocalEntry> local_variables_;
+    Payload code_;
 };
 
 class Section {
@@ -90,7 +153,7 @@ private:
     // Map from function index to signature
     std::map<int, FuncType> types_;
     void parse_section() override;
-    FuncType get_type(const int &idx) { return types_[idx]; }
+    FuncType get_type(const int &idx) { return types_.at(idx); }
 };
 
 /* Declares all imports that will be used in the module.
@@ -100,6 +163,7 @@ class ImportSection : public Section {
 public:
     static constexpr int id = IMPORT_SECTION_ID;
     ImportSection(Payload payload) : Section(payload) { parse_section(); }
+    const std::map<int, ImportEntry> &imports() const { return imports_; }
 private:
     unsigned int count_;
     std::map<int, ImportEntry> imports_;
@@ -123,7 +187,7 @@ private:
     void parse_section() override;
 };
 
-/* The encoding of a table section. TODO: Not currently parsed.
+/* The encoding of a table section. TODO: Not currently parsed. Used mainly to emulate function pointers. Will be useful in future, but I'm lazy.
  * count varuint32: indicating the number of tables defined by the module
  * types table_type*: repeated table_type entries */
 class TableSection : public Section {
@@ -141,25 +205,17 @@ public:
     MemorySection(Payload payload) : Section(payload) {}
 };
 
-/* Declares all global variables that will be used in the module. TODO: Not currently parsed.
+/* Declares all global variables that will be used in the module.
  * count varuint32: indicating the number of global variable entries defined by the module
  * types global_variable*: repeated global_variable entries */
 class GlobalSection : public Section {
 public:
     static constexpr int id = GLOBAL_SECTION_ID;
-    GlobalSection(Payload payload) : Section(payload) {}
-};
-
-class ExportEntry {
-public:
-    ExportEntry(std::string export_name, unsigned char export_type, unsigned int index) :
-            export_name_(export_name), export_type_(export_type), index_(index) {}
+    GlobalSection(Payload payload) : Section(payload) { parse_section(); }
 private:
-    std::string export_name_; // aka field_str
-    unsigned char export_type_; // aka kind
-    /* Index into the index space corresponding to the export type
-     * We only support exporting functions, so this is a function index. */
-    unsigned int index_;
+    unsigned int count_;
+    std::map<int, GlobalEntry> globals_;
+    void parse_section() override;
 };
 
 /* Declares all exports for the module.
@@ -188,35 +244,38 @@ private:
     unsigned int idx_;
 };
 
-// TODO onwards
+
+// TODO: Not currently parsed.
 class ElementSection : public Section {
 public:
     static constexpr int id = ELEMENT_SECTION_ID;
     ElementSection(Payload payload) : Section(payload) {}
 };
 
+/* Contains a body for every function in the module.
+ * The count declared in the function section must match the count here.
+ * count varuint32: count of function bodies to follow
+ * bodies function_body*: sequence of Function Bodies */
 class CodeSection : public Section {
 public:
-    using code_map = std::map<int, Payload>;
-
     static constexpr int id = CODE_SECTION_ID;
-    CodeSection(Payload payload) : Section(payload) { load_code(); }
+    CodeSection(Payload payload) : Section(payload) { parse_section(); }
 
-    Payload get_buffer_for_code(int index) const { return code_.at(index); }
-
+    Payload get_body(int index) const { return bodies_.at(index); }
+    std::map<int, Payload> bodies() const { return bodies_; }
 private:
-    code_map code_;
-    void load_code();
+    unsigned int count_;
+    std::map<int, Payload> bodies_;
+    // We parse the bodies themselves lazily. Leave as buffers in the meantime.
+    std::map<int, FunctionBody> parsed_bodies_;
+    void parse_section() override;
 };
 
+/* Declares the initialised data that is loaded into the linear memory. // TODO: not currently parsed
+ * count varuint32: count of data segments to follow
+ * data data_segment*: repeated DataSegments */
 class DataSection : public Section {
 public:
     static constexpr int id = DATA_SECTION_ID;
     DataSection(Payload payload) : Section(payload) {}
-};
-
-class DataCountSection : public Section {
-public:
-    static constexpr int id = DATA_COUNT_SECTION_ID;
-    DataCountSection(Payload payload) : Section(payload) {}
 };

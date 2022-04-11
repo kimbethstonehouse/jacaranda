@@ -1,16 +1,21 @@
 #pragma once
 
 #include <string>
-#include <module.h>
+#include <static-module.h>
+#include <runtime-module.h>
 
 class Runtime {
 public:
     Runtime() {}
-    ~Runtime() {}
+    ~Runtime() { delete static_module_; delete runtime_module_; }
 
-    Module load_module(const std::string &filename);
+    void load_module(const std::string &filename);
     void run();
 private:
-    std::vector<Module> modules_;
+    // TODO: ideally, we want to be able to load multiple modules, then choose one to run.
+//    std::vector<StaticModule> modules_;
+    StaticModule *static_module_;
+    RuntimeModule *runtime_module_;
+
     // todo: list of instantiated modules too, with start function
 };

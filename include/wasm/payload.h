@@ -4,6 +4,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <wasm.h>
 
 class Payload{
 public:
