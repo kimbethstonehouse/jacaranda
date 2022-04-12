@@ -7,15 +7,14 @@
 class Runtime {
 public:
     Runtime() {}
-    ~Runtime() { delete static_module_; delete runtime_module_; }
+    ~Runtime() {}
 
     void load_module(const std::string &filename);
-    void run();
+    void run(const std::string &filename);
+    void invoke_function(RuntimeModule &runtime_module, const int &function_index, bool startFunction = false);
+    void remote_compile(Function &func);
 private:
-    // TODO: ideally, we want to be able to load multiple modules, then choose one to run.
-//    std::vector<StaticModule> modules_;
-    StaticModule *static_module_;
-    RuntimeModule *runtime_module_;
-
-    // todo: list of instantiated modules too, with start function
+    std::map<std::string, StaticModule> static_modules_;
+    // TODO: what is the key here, what if we instantiate the same static module twice?
+    std::map<std::string, RuntimeModule> runtime_modules_;
 };

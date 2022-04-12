@@ -8,6 +8,7 @@
 #include <wasm.h>
 #include <payload.h>
 
+// A stateless static module.
 class StaticModule {
 public:
     StaticModule(const std::string &filename);

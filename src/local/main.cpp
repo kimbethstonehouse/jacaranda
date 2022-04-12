@@ -12,7 +12,6 @@ int main(int argc, char **argv) {
     // Assumes the remote compiler is up and running
     Runtime runtime;
 
-    // TODO: support multiple modules, check if module already loaded based on hash, if not, load it
     runtime.load_module(argv[1]);
-    runtime.run(); // TODO: return and pass hash here
+    runtime.run(argv[1]);
 }

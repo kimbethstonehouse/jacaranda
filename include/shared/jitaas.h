@@ -4,7 +4,7 @@
 #define SOCKET_FILE "/tmp/jitaas"
 #define BACKLOG 5
 #define MAX_FILE_SIZE 102400 // 100KB max
-#define BIN_FILE_NAME "a.out"
+#define BIN_FILE_NAME "file.wasm"
 
 ///** Read file into buffer. */
 inline int read(const char *path, char *buffer) {
