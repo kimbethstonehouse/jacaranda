@@ -5,8 +5,14 @@
 #include <jitaas.h>
 #include <unistd.h>
 
-// TODO: communicate with compiler
-// TODO: open connection, write into socket, read from socket
+Runtime::Runtime() {
+    code_section_ = (char *) mmap(nullptr, pow(2, 30),
+                                  PROT_EXEC | PROT_READ | PROT_WRITE,MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+    next_function_ = code_section_;
+}
+
+Runtime::~Runtime() { munmap(code_section_, pow(2, 30)); }
+
 void Runtime::remote_compile(Function &func) {
     int cfd;
     struct sockaddr_un addr;
@@ -29,34 +35,31 @@ void Runtime::remote_compile(Function &func) {
 
     // Protocol: first four bytes specify length of data
     write(cfd, &body_size, 4);
+    // TODO: write signature too
     if (write(cfd, func_body.data_start(), body_size) != body_size) {
         throw run_exception("local: run: client socket write failed");
     }
 
-    // TODO: read compiled code into function ptr
-//    char bin_code[MAX_FILE_SIZE];
-//    int bin_len, num_read;
-//
-//    // Read the size of the compiled code
-//    read(cfd, &body_size, 4);
-//    if ((num_read = read(cfd, bin_code, bin_len)) != bin_len) {
-//        std::cerr << "client socket read failed" << std::endl;
-//    }
-//
-//    // Then, write those bytes from buf into STDOUT.
-//    write(STDOUT_FILENO, bin_code, bin_len);
-//
-//    // TODO: execute a.out
-//
-//    if (close(cfd) == -1) {
-//        std::cerr << "client socket close failed" << std::endl;
-//        return 1;
-//    }
+    // Read the size of the compiled code
+    read(cfd, &body_size, 4);
+    if (read(cfd, (void *) next_function_, body_size) != body_size) {
+        throw run_exception("local: run: client socket read failed");
+    }
+
+    func.update_pointer(next_function_);
+
+    // Pad to 16 bytes
+    next_function_ += align(body_size, 16);
+
+    if (close(cfd) == -1) {
+        throw run_exception("local: run: client socket close failed");
+    }
 }
 
 void Runtime::load_module(const std::string &filename) {
+    // Only load if not already loaded
     if (static_modules_.find(filename) == static_modules_.end()) {
-        static_modules_.insert({filename, StaticModule(filename)});
+        static_modules_.insert({filename, std::make_shared<StaticModule>(filename)});
     }
 }
 
@@ -68,23 +71,24 @@ void Runtime::run(const std::string &filename) {
         throw run_exception("local: run: static module was not loaded correctly");
     }
 
-    // Only load if not previously been loaded
+    // Only instantiate if not already instantiated (todo: for this specific architecture)
     if (runtime_module_it == runtime_modules_.end()) {
-        runtime_modules_.insert({filename, RuntimeModule(static_module_it->second)});
+        runtime_modules_.insert({filename, std::make_shared<RuntimeModule>(static_module_it->second)});
         runtime_module_it = runtime_modules_.find(filename);
     }
 
-    auto start_section = runtime_module_it->second.static_module().get_section<StartSection>();
+    auto start_section = runtime_module_it->second->static_module()->get_section<StartSection>();
     if (start_section != nullptr) { // TODO: will this return nullptr if not present?
         invoke_function(runtime_module_it->second, start_section->get_idx(), true);
     }
 
     // StaticModule must export a start function
-    auto exports = runtime_module_it->second.static_module().get_section<ExportSection>()->exports();
+    auto exports = runtime_module_it->second->static_module()->get_section<ExportSection>()->exports();
     bool found_main = false;
     for (const auto &exp : exports) {
         if (exp.second.export_name() == "_start" && exp.second.export_type() == ExternalKind::FUNCTION) {
             found_main = true;
+            auto runtime = runtime_module_it->second;
             invoke_function(runtime_module_it->second, exp.second.index());
             break;
         }
@@ -95,8 +99,8 @@ void Runtime::run(const std::string &filename) {
     }
 }
 
-void Runtime::invoke_function(RuntimeModule &runtime_module, const int& function_index, bool startFunction) {
-    auto functions = runtime_module.functions();
+void Runtime::invoke_function(std::shared_ptr<RuntimeModule> runtime_module, int function_index, bool startFunction) {
+    auto &functions = runtime_module->functions();
     auto func = functions.find(function_index);
 
     if (func == functions.end()) {

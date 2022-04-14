@@ -3,10 +3,10 @@
 #include <cstdlib>
 #include <iostream>
 #include <map>
-#include <payload.h>
 #include <vector>
 #include <optional>
 #include <wasm.h>
+#include <payload.h>
 
 class ValueType {
 public:
@@ -134,6 +134,7 @@ class TypeSection : public Section {
 public:
     static constexpr int id = TYPE_SECTION_ID;
     TypeSection(Payload payload) : Section(payload) { parse_section(); }
+    std::map<int, FuncType> types() const { return types_; }
 private:
     unsigned int count_;
     // Map from function index to signature

@@ -45,6 +45,8 @@ StaticModule::StaticModule(const std::string &filename) {
     parse_sections();
 }
 
+StaticModule::~StaticModule() { munmap((void *)buffer_, buffer_size_); }
+
 void StaticModule::parse_sections() {
     // Check magic number
     const char *magic = &buffer_[0];

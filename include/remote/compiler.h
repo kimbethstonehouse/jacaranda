@@ -5,13 +5,14 @@
 #include <string.h>
 #include <unistd.h>
 #include <jitaas.h>
-#include "../wasm/section.h"
+#include <section.h>
 
 class Compiler {
 public:
     Compiler() {}
     ~Compiler() { close_socket(); }
 
+    int compile(char *src_code, char *bin_code);
     void open_socket();
     [[ noreturn ]] void handle_connections();
 private:

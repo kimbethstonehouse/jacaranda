@@ -6,7 +6,7 @@
 #include <vector>
 #include <wasm.h>
 
-class Payload{
+class Payload {
 public:
     Payload() : start_(nullptr), end_(nullptr), ptr_(nullptr), size_(0) {}
 
