@@ -14,7 +14,7 @@ public:
 
     int compile(char *src_code, char *bin_code);
     void open_socket();
-    [[ noreturn ]] void handle_connections();
+    [[ noreturn ]] void handlze_connections();
 private:
     void close_socket() { close(sfd_); }
 

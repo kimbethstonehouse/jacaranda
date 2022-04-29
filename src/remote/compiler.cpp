@@ -2,9 +2,38 @@
 #include <compiler.h>
 
 int Compiler::compile(char *src_code, char *bin_code) {
-    int bin_len = read(BIN_FILE_NAME, bin_code);
-//    *bin_code = 0xC3;
-    return bin_len;
+    // int bin_len = read(BIN_FILE_NAME, bin_code);
+    *(bin_code) = 0x48;
+    *(bin_code+1) = 0x8d;
+    *(bin_code+2) = 0x3e;
+
+    *(bin_code+3) = 0xe8;
+    *(bin_code+4) = 0x00;
+    *(bin_code+5) = 0x00;
+    *(bin_code+6) = 0x00;
+    *(bin_code+7) = 0x00;
+
+    *(bin_code+8) = 0x48;
+    *(bin_code+9) = 0x89;
+    *(bin_code+10) = 0xc1;
+
+    *(bin_code+11) = 0x48;
+    *(bin_code+12) = 0x8d;
+    *(bin_code+13) = 0x7e;
+    *(bin_code+14) = 0x08;
+
+    *(bin_code+15) = 0xe8;
+    *(bin_code+16) = 0x00;
+    *(bin_code+17) = 0x00;
+    *(bin_code+18) = 0x00;
+    *(bin_code+19) = 0x00;
+
+    *(bin_code+20) = 0x48;
+    *(bin_code+21) = 0x01;
+    *(bin_code+22) = 0xc8;
+
+    *(bin_code+23) = 0xc3;
+    return 24;
 }
 
 void Compiler::open_socket() {
@@ -41,6 +70,18 @@ void Compiler::open_socket() {
 // Handle client connections iteratively, passing each accepted connection to be serviced
 [[ noreturn ]] void Compiler::handle_connections() {
     std::cout << "Waiting to accept a connection..." << std::endl;
+
+//    char *bin_code = "lea (%rsi), %rdi\n"
+//                     "call atoi\n"
+//                     "mov %rax, %rcx\n"
+//                     "\n"
+//                     "lea 8(%rsi), %rdi\n"
+//                     "call atoi\n"
+//                     "\n"
+//                     "add %rcx, %rax\n"
+//                     "ret";
+//    int bin_len = read(BIN_FILE_NAME, bin_code);
+
     for (;;) {
         // Connection is returned on a new socket
         // The listening socket remains open for further connections
@@ -54,12 +95,9 @@ void Compiler::open_socket() {
         read(cfd, &src_size, 4);
         char src_code[src_size];
         num_read = read(cfd, src_code, src_size);
-        // Then, write those bytes from buf into STDOUT.
-//        write(STDOUT_FILENO, src_code, num_read);
 
-        char bin_code[MAX_FILE_SIZE];
-        int bin_len = read(BIN_FILE_NAME, bin_code);
-//        int bin_len = compile(src_code, bin_code);
+        char bin_code[24];
+        int bin_len = compile(src_code, bin_code);
 
         // Protocol: first four bytes specify length of data
         write(cfd, &bin_len, 4);

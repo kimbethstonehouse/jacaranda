@@ -13,12 +13,12 @@ public:
     ~Runtime();
     void load_module(const std::string &filename);
     void run(const std::string &filename);
-    void invoke_function(std::shared_ptr<RuntimeModule>, int function_index, bool startFunction = false);
+    void invoke_function(int function_index, bool start_function = false);
     void remote_compile(Function &func);
 private:
     std::map<std::string, std::shared_ptr<StaticModule>> static_modules_;
     // TODO: what is the key here, what if we instantiate the same static module twice?
-    std::map<std::string, std::shared_ptr<RuntimeModule>> runtime_modules_;
+    RuntimeModule &runtime_module_;
     char *code_section_;
     char *next_function_;
 };

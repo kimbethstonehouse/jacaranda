@@ -2,6 +2,8 @@
 
 #include <section.h>
 
+extern "C" int do_invoke_function(void*, void*);
+
 class Function {
 public:
     typedef void (*FunctionPointer)(void);
@@ -9,7 +11,11 @@ public:
             internal_function_(internal_function), function_index_(function_index), type_(type),
             function_body_(function_body), compiled_code_(nullptr) {}
 
-    void invoke() { compiled_code_(); }
+    /*void invoke() {
+        compiled_code_();
+//        do_invoke_function(nullptr, (void *) compiled_code_);
+    }*/
+    
     void update_pointer(char *pointer) { compiled_code_ = (FunctionPointer) pointer; }
     bool is_compiled() const { return compiled_code_ != nullptr; }
     bool internal_function() const { return internal_function_; }
