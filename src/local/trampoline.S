@@ -1,13 +1,39 @@
 .align 16
-.globl do_invoke_function
+.globl trampoline_to_execute
+.globl trampoline_to_compile
 
-// variable here called jtableptr
+.type trampoline_to_execute,%function
+trampoline_to_execute: // rdi contains argc, rsi contains argv, rdx contains function_ptr
+        // Save the callee saved registers
+        push %rbx
+        push %rsp
+        push %rbp
+        push %r12
+        push %r13
+        push %r14
+        push %r15
 
-.type do_invoke_function,%function
-do_invoke_function:
-        // RDI contains exec state
-        // RSI contains fn ptr
-        
+        // TODO: put arguments where expected
+        call %rdx
+
+        // Restore the callee saved registers
+        pop %r15
+        pop %r14
+        pop %r13
+        pop %r12
+        pop %rbp
+        pop %rsp
+        pop %rbx
+
+        ret
+.size trampoline_to_execute,.-trampoline_to_execute
+
+.type trampoline_to_compile,%function
+trampoline_to_compile:
+        // TODO: this
+        // args are where the compiler put them
+        // fn idx is on the stack
+
         // Save the callee saved registers
         push %rbp
         push %rbx
@@ -16,10 +42,10 @@ do_invoke_function:
         push %r14
         push %r15
 
-        // RDI still has exec state
-        // RSI still has fn ptr
+        // TODO: retrieve idx from stack, call compile(idx), ret val is funcptr
         call *(%rsi)
 
+        // Restore runtime state
         pop %r15
         pop %r14
         pop %r13
@@ -28,19 +54,5 @@ do_invoke_function:
         pop %rbp
 
         ret
-.size do_invoke_function,.-do_invoke_function
+.size trampoline_to_compile,.-trampoline_to_compile
 
-.align 16
-.globl do_compilation
-.type do_compilation,%function
-do_compilation_and_invoke:
-        // RDI contains exec state
-
-        push %rdi
-
-        // TODO: compile
-        call COMPILE_IT
-
-        pop %rdi
-
-        jmp *(%rax)

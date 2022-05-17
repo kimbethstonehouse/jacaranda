@@ -13,5 +13,5 @@ int main(int argc, char **argv) {
     Runtime runtime;
 
     runtime.load_module(argv[1]);
-    runtime.run(argv[1]);
+    runtime.run(argv[1], argc-2, argv+2);
 }
