@@ -11,6 +11,8 @@ set(SOURCES
         ${SOURCE_DIR}/shared/static-module.cpp
         ${SOURCE_DIR}/shared/runtime-module.cpp)
 add_executable(local ${SOURCES})
+set_property(TARGET local PROPERTY LINK_OPTIONS "-pthread")
+target_link_libraries(local PRIVATE rpclib)
 target_include_directories(local PRIVATE
         ${INCLUDE_DIR}/local
         ${INCLUDE_DIR}/wasm

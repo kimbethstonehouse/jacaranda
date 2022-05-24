@@ -10,22 +10,10 @@
 class Compiler {
 public:
     Compiler() {}
-    ~Compiler() { close_socket(); }
+    ~Compiler() {}
 
-    int compile(char *src_code, char *bin_code);
-    void open_socket();
-    [[ noreturn ]] void handle_connections();
+    std::vector<unsigned char> compile(Payload source);
 private:
-    void close_socket() { close(sfd_); }
-
-    int sfd_;
-    struct sockaddr_un addr_;
-};
-
-class socket_exception : public std::runtime_error
-{
-public:
-    socket_exception(const std::string &message) : runtime_error(message) {}
 };
 
 // TODO: Not currently parsed.

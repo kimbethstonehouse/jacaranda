@@ -1,11 +1,17 @@
 #include <runtime.h>
 #include <section.h>
 #include <sys/un.h>
-#include <sys/socket.h>
 #include <jitaas.h>
-#include <unistd.h>
 
-Runtime::Runtime() {
+char *main_str = "main";
+char *atoi_str = "atoi";
+
+Payload main_payload(main_str, 4);
+Payload atoi_payload(atoi_str, 4);
+
+// Opens a connection to the compiler
+Runtime::Runtime() : client_("127.0.0.1", 8080) {
+    // Map regions of memory to execute native code
     code_section_ = (char *) mmap(nullptr, pow(2, 30),
                                   PROT_EXEC | PROT_READ | PROT_WRITE,MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     next_function_ = code_section_;
@@ -16,7 +22,7 @@ Runtime::~Runtime() {
     munmap(jump_table_, runtime_module_->function_count() * PTR_SIZE);
 }
 
-void Runtime::request_compilation(int function_index) {
+extern "C" void *Runtime::request_compilation(int function_index) {
     // Check if the specified function exists in this module
     auto &functions = runtime_module_->functions();
     auto func = functions.find(function_index);
@@ -26,53 +32,18 @@ void Runtime::request_compilation(int function_index) {
     }
 
     // Imported functions are ignored for now
-    if (!func->second.internal_function()) return;
+    if (!func->second.internal_function()) return nullptr;
 
+    // TODO: send the actual src payload rather than function name
     // Write to the remote compiler asking for the compiled code
-    int cfd;
-    struct sockaddr_un addr;
-    if ((cfd = socket(AF_UNIX, SOCK_STREAM, 0)) == -1) {
-        throw run_exception("local: run: creating new client socket failed");
-    }
-
-    // Construct server address, and make the connection
-    memset(&addr, 0, sizeof(struct sockaddr_un));
-    addr.sun_family = AF_UNIX;
-    strncpy(addr.sun_path, SOCKET_FILE, sizeof(addr.sun_path) - 1);
-
-    // Connects the active socket referred to by cfd to the listening socket specified by addr
-    if (connect(cfd, (struct sockaddr *) &addr, sizeof(struct sockaddr_un)) == -1) {
-        throw run_exception("local: run: creating new client socket failed");
-    }
-
-    Payload &func_body = func->second.function_body();
-    int body_size = (int) func_body.size();
-
-    // Protocol: first four bytes specify length of data
-    write(cfd, &body_size, 4);
-    // TODO: write signature too
-    if (write(cfd, func_body.data_start(), body_size) != body_size) {
-        throw run_exception("local: run: client socket write failed");
-    }
-
-    // Read the size of the compiled code
-    read(cfd, &body_size, 4);
-    // TODO: patch any function calls in the binary with the function's jump table entry
-    // TODO: also push the function index onto the stack if it has not yet been compiled
-    if (read(cfd, (void *) next_function_, body_size) != body_size) {
-        throw run_exception("local: run: client socket read failed");
-    }
+    std::vector<char> binary = client_.call("compile", function_index == 0 ? main_payload : atoi_payload).as<std::vector<char>>();
+    std::memcpy(next_function_, binary.data(), binary.size());
 
     jump_table_[function_index] = next_function_;
 
     // Pad to 16 bytes
-    next_function_ += align(body_size, 16);
-
-    if (close(cfd) == -1) {
-        throw run_exception("local: run: client socket close failed");
-    }
-
-    // TODO: return function pointer
+    next_function_ += align(binary.size(), 16);
+    return jump_table_[function_index];
 }
 
 void Runtime::load_module(const std::string &filename) {
@@ -96,7 +67,7 @@ void Runtime::run(const std::string &filename, int argc, char **argv) {
     auto start_section = runtime_module_->static_module()->get_section<StartSection>();
     if (start_section != nullptr) {
         if (jump_table_[start_section->get_idx()] == &trampoline_to_compile) request_compilation(start_section->get_idx());
-        trampoline_to_execute(argc, argv, jump_table_[start_section->get_idx()]);
+        trampoline_to_execute(argc, argv, start_section->get_idx(), jump_table_);
     }
 
     // StaticModule must export a start function
@@ -107,7 +78,8 @@ void Runtime::run(const std::string &filename, int argc, char **argv) {
         if (exp.second.export_name() == "__main_argc_argv" && exp.second.export_type() == ExternalKind::FUNCTION) {
             found_main = true;
             if (jump_table_[exp.second.index()] == &trampoline_to_compile) request_compilation(exp.second.index());
-            trampoline_to_execute(argc, argv, jump_table_[exp.second.index()]);
+            int res = trampoline_to_execute(argc, argv, exp.second.index(), jump_table_);
+//            std::cout << "Result: " << res << std::endl;
             break;
         }
     }

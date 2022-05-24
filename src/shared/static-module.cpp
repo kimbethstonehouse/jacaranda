@@ -6,6 +6,7 @@
 #include <static-module.h>
 #include <payload.h>
 #include <section.h>
+#include <fstream>
 
 StaticModule::StaticModule(const std::string &filename) {
     // Open the file for reading

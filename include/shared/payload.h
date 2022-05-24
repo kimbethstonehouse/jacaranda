@@ -5,12 +5,12 @@
 #include <utility>
 #include <vector>
 #include <wasm.h>
+#include <rpc/msgpack.hpp>
 
 class Payload {
 public:
     Payload() : start_(nullptr), end_(nullptr), ptr_(nullptr), size_(0) {}
-
-    Payload(const char *start, size_t size) : start_(start), end_(start + size), ptr_(start), size_(size) {}
+    Payload(const char *start, size_t size) : start_((char *)start), end_((char *)start + size), ptr_(start), size_(size) {}
 
     // Copy
     Payload(const Payload &payload) : start_(payload.start_), end_(payload.end_), ptr_(payload.ptr_), size_(payload.size_) {}
@@ -28,6 +28,21 @@ public:
         std::swap(size_, payload.size_);
 
         return *this;
+    }
+
+    // Overloaded (de)serialisation functions
+    template <typename Packer>
+    void msgpack_pack(Packer& pk) const {
+        pk.pack_bin(size_);
+        pk.pack_bin_body(start_, size_);
+    }
+
+    void msgpack_unpack(clmdep_msgpack::object const& o) {
+        start_ = o.via.bin.ptr;
+        ptr_ = start_;
+
+        size_ = o.via.bin.size;
+        end_ = start_ + size_;
     }
 
     void reset() { ptr_ = start_; }
