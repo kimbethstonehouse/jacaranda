@@ -19,7 +19,7 @@ Runtime::Runtime() : client_("127.0.0.1", 8080) {
 
 Runtime::~Runtime() {
     munmap(code_section_, pow(2, 30));
-    munmap(jump_table_, runtime_module_->function_count() * PTR_SIZE);
+    munmap(execution_state_.jump_table_, runtime_module_->function_count() * PTR_SIZE);
 }
 
 extern "C" void *Runtime::request_compilation(int function_index) {
@@ -39,11 +39,11 @@ extern "C" void *Runtime::request_compilation(int function_index) {
     std::vector<char> binary = client_.call("compile", function_index == 0 ? main_payload : atoi_payload).as<std::vector<char>>();
     std::memcpy(next_function_, binary.data(), binary.size());
 
-    jump_table_[function_index] = next_function_;
+    execution_state_.jump_table_[function_index] = next_function_;
 
     // Pad to 16 bytes
     next_function_ += align(binary.size(), 16);
-    return jump_table_[function_index];
+    return execution_state_.jump_table_[function_index];
 }
 
 void Runtime::load_module(const std::string &filename) {
@@ -62,12 +62,12 @@ void Runtime::run(const std::string &filename, int argc, char **argv) {
 
     // Instantiate the runtime module and runtime environment
     runtime_module_ = new RuntimeModule(static_module_it->second);
-    init_jump_table(runtime_module_->function_count());
+    init_execution_state(runtime_module_->function_count());
 
     auto start_section = runtime_module_->static_module()->get_section<StartSection>();
     if (start_section != nullptr) {
-        if (jump_table_[start_section->get_idx()] == &trampoline_to_compile) request_compilation(start_section->get_idx());
-        trampoline_to_execute(argc, argv, start_section->get_idx(), jump_table_);
+        if (execution_state_.jump_table_[start_section->get_idx()] == &trampoline_to_compile) request_compilation(start_section->get_idx());
+        trampoline_to_execute(argc, argv, start_section->get_idx(), execution_state_.jump_table_);
     }
 
     // StaticModule must export a start function
@@ -77,9 +77,9 @@ void Runtime::run(const std::string &filename, int argc, char **argv) {
         // The main function may be called something else, but let's ignore that for now
         if (exp.second.export_name() == "__main_argc_argv" && exp.second.export_type() == ExternalKind::FUNCTION) {
             found_main = true;
-            if (jump_table_[exp.second.index()] == &trampoline_to_compile) request_compilation(exp.second.index());
-            int res = trampoline_to_execute(argc, argv, exp.second.index(), jump_table_);
-//            std::cout << "Result: " << res << std::endl;
+            if (execution_state_.jump_table_[exp.second.index()] == &trampoline_to_compile) request_compilation(exp.second.index());
+            int res = trampoline_to_execute(argc, argv, exp.second.index(), execution_state_.jump_table_);
+            std::cout << "Result: " << res << std::endl;
             break;
         }
     }
@@ -89,10 +89,11 @@ void Runtime::run(const std::string &filename, int argc, char **argv) {
     }
 }
 
-void Runtime::init_jump_table(int function_count) {
-    jump_table_ = (void **) mmap(nullptr, function_count * PTR_SIZE,
+void Runtime::init_execution_state(int function_count) {
+    execution_state_.runtime_ = this;
+    execution_state_.jump_table_ = (void **) mmap(nullptr, function_count * PTR_SIZE,
                                 PROT_EXEC | PROT_READ | PROT_WRITE,MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     for (int i = 0; i < function_count; i++) {
-        jump_table_[i] = (void *) &trampoline_to_compile;
+        execution_state_.jump_table_[i] = (void *) &trampoline_to_compile;
     }
 }

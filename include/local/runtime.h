@@ -12,6 +12,13 @@
 extern "C" int trampoline_to_execute(int, void *, int, void **);
 extern "C" void trampoline_to_compile(int, void *, void *);
 
+class Runtime;
+
+struct ExecutionState {
+    Runtime *runtime_;
+    void **jump_table_;
+};
+
 class Runtime {
 public:
     Runtime();
@@ -20,12 +27,12 @@ public:
     void run(const std::string &filename, int argc, char **argv);
     void *request_compilation(int function_index);
 private:
-    void init_jump_table(int function_count);
+    void init_execution_state(int function_count);
 
     std::map<std::string, std::shared_ptr<StaticModule>> static_modules_;
+    ExecutionState execution_state_;
     RuntimeModule *runtime_module_;
     rpc::client client_;
     char *code_section_;
     char *next_function_;
-    void **jump_table_;
 };

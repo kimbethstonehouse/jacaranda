@@ -5,7 +5,7 @@
 .type request_compilation,%function
 
 .type trampoline_to_execute,%function
-trampoline_to_execute: // rdi contains argc, rsi contains argv, rdx contains func idx, rcx contains jump table base
+trampoline_to_execute: // rdi contains argc, rsi contains argv, rdx contains func idx, rcx contains execution state (jump table base, runtime)
         // Save the callee saved registers
         push %rbx
         push %rsp
@@ -31,12 +31,12 @@ trampoline_to_execute: // rdi contains argc, rsi contains argv, rdx contains fun
 .size trampoline_to_execute,.-trampoline_to_execute
 
 .type trampoline_to_compile,%function
-trampoline_to_compile: // rdi contains argc, rsi contains argv, rdx contains func idx, rcx contains jump table base
+trampoline_to_compile: // rdi contains argc, rsi contains argv, rdx contains func idx, rcx contains execution state (jump table base, runtime)
         // Make the function index the first argument
         push %rdi
-        mov %rcx, %rdi
+        mov %rdx, %rdi
 
-        //jmp request_compilation
+        // TODO: rcx + 8 contains runtime ptr, so just need to call runtime.request_compilation somehow
 
         // Restore argc
         pop %rdi
