@@ -5,7 +5,12 @@
 .type request_compilation,%function
 
 .type trampoline_to_execute,%function
-trampoline_to_execute: // rdi contains argc, rsi contains argv, rdx contains func idx, rcx contains execution state (jump table base, runtime)
+// rdi contains function index
+// rsi contains ptr to jump table base
+// r8 contains ptr to runtime
+// rdx contains argc
+// rcx contains ptr to argv
+trampoline_to_execute:
         // Save the callee saved registers
         push %rbx
         push %rsp
@@ -15,8 +20,31 @@ trampoline_to_execute: // rdi contains argc, rsi contains argv, rdx contains fun
         push %r14
         push %r15
 
+        // Push the arguments onto the stack
+        imul $8, %rdx
+push_args:
+        sub $8, %rdx
+
+        cmp $0, %rdx
+        jl call_func
+
+        // Double dereference argv[argc]
+        mov (%rcx), %rax
+        movzxb (%rdx,%rax), %rax
+        push %rax
+        jmp push_args
+
+
+
+call_func:
         // Add the function index and the jump table base and call
-        call *(%rcx, %rdx, 8)
+        //sub 0x10, %rsp
+        add $8, %rsi
+        call *(%rsi)
+        //call *(%rsi, %rdi, 8)
+
+
+// todo: who clears up the stack?
 
         // Restore the callee saved registers
         pop %r15
@@ -31,14 +59,22 @@ trampoline_to_execute: // rdi contains argc, rsi contains argv, rdx contains fun
 .size trampoline_to_execute,.-trampoline_to_execute
 
 .type trampoline_to_compile,%function
-trampoline_to_compile: // rdi contains argc, rsi contains argv, rdx contains func idx, rcx contains execution state (jump table base, runtime)
-        // Make the function index the first argument
+// arguments on the stack
+// rdi contains function index
+// rsi contains ptr to jump table base
+// r8 contains ptr to runtime
+trampoline_to_compile:
         push %rdi
-        mov %rdx, %rdi
+        push %rsi
 
-        // TODO: rcx + 8 contains runtime ptr, so just need to call runtime.request_compilation somehow
+        mov %r8, %rsi
+        // TODO: rsi + 8 contains runtime ptr, so just need to call runtime.request_compilation somehow
 
-        // Restore argc
+// todo: stack alignment something?
+
+        call do_request_compilation
+
+        pop %rsi
         pop %rdi
 
         // Return value is the function pointer

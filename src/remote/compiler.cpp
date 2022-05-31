@@ -1,16 +1,14 @@
 #include <compiler.h>
-#include <cstring>
 
-extern "C" char __stub_main;
-extern "C" char __stub_atoi;
+extern "C" char *__stub_main;
+extern "C" char *__stub_atoi;
 
-std::vector<unsigned char> Compiler::compile(Payload source) {
-    std::vector<unsigned char> binary;
-    if (strcmp(source.data_start(), "main")) {
-        binary.insert(binary.end(), __stub_main, __stub_main+sizeof(__stub_main));
+void Compiler::compile(const Binary *wasm, Binary *native) {
+    if (wasm->data_bytes() == "main") {
+        native->set_data_bytes(__stub_main);
+        native->set_data_length(60);
     } else {
-        binary.insert(binary.end(), __stub_atoi, __stub_atoi+sizeof(__stub_atoi));
+        native->set_data_bytes(__stub_atoi);
+        native->set_data_length(6);
     }
-    binary.push_back(0xC3);
-    return binary;
 }

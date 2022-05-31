@@ -1,27 +1,18 @@
-#include <compiler.h>
-#include <rpc/server.h>
-#include <rpc/this_session.h>
-#include <rpc/this_server.h>
-#include <functional>
+#include <grpcpp/server_builder.h>
+#include "server.cpp"
+#include "compiler.h"
+#include <string>
 
 int main() {
-    Compiler compiler;
-    rpc::server server(8080);
+    std::string server_address("0.0.0.0:50051");
+    JacarandaServer jacaranda_server;
 
+    grpc::ServerBuilder builder;
+    // No authentication credentials
+    builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
+    builder.RegisterService(&jacaranda_server);
+    std::unique_ptr<grpc::Server> server(builder.BuildAndStart());
 
-    server.bind("compile", [&compiler](Payload payload){ return compiler.compile(payload);});
-
-    // A session represents a client connection
-    // Exiting completes all ongoing reads and writes first
-//    server.bind("exit", []() {
-//        rpc::this_session().post_exit(); // post exit to the queue
-//    });
-
-    // Gracefully stops all sessions on the server
-//    server.bind("stop_server", []() {
-//        rpc::this_server().stop();
-//    });
-
-    server.run();
-    return 0;
+    // This call will not return unless some other thread shuts the server down
+    server->Wait();
 }
