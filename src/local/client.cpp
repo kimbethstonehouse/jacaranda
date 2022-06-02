@@ -1,12 +1,11 @@
 #include <client.h>
 
-Binary JacarandaClient::compile(Payload payload) {
-    Binary wasm;
+Binary JacarandaClient::compile(int function_index) {
+    RequestCompilationMessage wasm;
     Binary native;
     grpc::ClientContext context;
 
-    wasm.set_data_bytes(payload.data_start(), payload.size());
-    wasm.set_data_length(payload.size());
+    wasm.set_function_index(function_index);
 
     stub_->compile(&context, wasm, &native);
     return native;

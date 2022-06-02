@@ -3,32 +3,53 @@
 .align 16
 .globl __stub_atoi
 .type __stub_atoi,%function
-__stub_atoi: // rax contains int value
+__stub_atoi:
+    push %rbp
+    mov %rsp, %rbp
+
+    mov 16(%rbp), %rax
+    mov (%rax), %al
+
     // Subtract 0x48 to convert ASCII to number
-    sub $0x48, %eax
+    sub $0x30, %al
+    movzx %al, %eax
+
+    leave
     ret
 .size __stub_atoi,.-__stub_atoi
 
+.globl __stub_atoi_size
+__stub_atoi_size: .quad .-__stub_atoi
 
-// todo: no argc or argv needed, function knows what itr's expecting and that's on teh stack
 .align 16
 .globl __stub_main
 .type __stub_main,%function
-__stub_main: // rdi contains argc, rsi contains argv, rdx contains func idx, rcx contains execution state (jump table base, runtime)
-    // Double dereference argv
-    mov (%rsi), %rax
-    mov (%rax), %rax
+// rdi contains function index
+// rsi contains ptr to jump table base
+__stub_main:
+    push %rbp
+    mov %rsp, %rbp
 
     // atoi has index 0
-    call *0(%rcx)
-    mov %rax, %r8
+    xor %edi, %edi
 
-    // Double dereference argv+1
-    add $8, %rsi
-    mov (%rsi), %rax
-    mov (%rax), %rax
+    push 24(%rbp)
+    call *0(%rsi)
+    add $8, %rsp
 
-    call *0(%rcx)
-    add %r8, %rax
+    mov %rax, %rdx
+
+    xor %edi, %edi
+
+    push 16(%rbp)
+    call *0(%rsi)
+    add $8, %rsp
+
+    add %rdx, %rax
+
+    leave
     ret
 .size __stub_main,.-__stub_main
+
+.globl __stub_main_size
+__stub_main_size: .quad .-__stub_main

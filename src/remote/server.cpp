@@ -3,7 +3,7 @@
 
 class JacarandaServer final : public Jacaranda::Service {
 public:
-    grpc::Status compile(grpc::ServerContext *context, const Binary *wasm, Binary *native) override {
+    grpc::Status compile(grpc::ServerContext *context, const RequestCompilationMessage *wasm, Binary *native) override {
         compiler_.compile(wasm, native);
         return grpc::Status::OK;
     }

@@ -33,41 +33,41 @@ class Jacaranda final {
   class StubInterface {
    public:
     virtual ~StubInterface() {}
-    virtual ::grpc::Status compile(::grpc::ClientContext* context, const ::Binary& request, ::Binary* response) = 0;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::Binary>> Asynccompile(::grpc::ClientContext* context, const ::Binary& request, ::grpc::CompletionQueue* cq) {
+    virtual ::grpc::Status compile(::grpc::ClientContext* context, const ::RequestCompilationMessage& request, ::Binary* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::Binary>> Asynccompile(::grpc::ClientContext* context, const ::RequestCompilationMessage& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::Binary>>(AsynccompileRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::Binary>> PrepareAsynccompile(::grpc::ClientContext* context, const ::Binary& request, ::grpc::CompletionQueue* cq) {
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::Binary>> PrepareAsynccompile(::grpc::ClientContext* context, const ::RequestCompilationMessage& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::Binary>>(PrepareAsynccompileRaw(context, request, cq));
     }
     class async_interface {
      public:
       virtual ~async_interface() {}
-      virtual void compile(::grpc::ClientContext* context, const ::Binary* request, ::Binary* response, std::function<void(::grpc::Status)>) = 0;
-      virtual void compile(::grpc::ClientContext* context, const ::Binary* request, ::Binary* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      virtual void compile(::grpc::ClientContext* context, const ::RequestCompilationMessage* request, ::Binary* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void compile(::grpc::ClientContext* context, const ::RequestCompilationMessage* request, ::Binary* response, ::grpc::ClientUnaryReactor* reactor) = 0;
     };
     typedef class async_interface experimental_async_interface;
     virtual class async_interface* async() { return nullptr; }
     class async_interface* experimental_async() { return async(); }
    private:
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::Binary>* AsynccompileRaw(::grpc::ClientContext* context, const ::Binary& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::Binary>* PrepareAsynccompileRaw(::grpc::ClientContext* context, const ::Binary& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::Binary>* AsynccompileRaw(::grpc::ClientContext* context, const ::RequestCompilationMessage& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::Binary>* PrepareAsynccompileRaw(::grpc::ClientContext* context, const ::RequestCompilationMessage& request, ::grpc::CompletionQueue* cq) = 0;
   };
   class Stub final : public StubInterface {
    public:
     Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options = ::grpc::StubOptions());
-    ::grpc::Status compile(::grpc::ClientContext* context, const ::Binary& request, ::Binary* response) override;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::Binary>> Asynccompile(::grpc::ClientContext* context, const ::Binary& request, ::grpc::CompletionQueue* cq) {
+    ::grpc::Status compile(::grpc::ClientContext* context, const ::RequestCompilationMessage& request, ::Binary* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::Binary>> Asynccompile(::grpc::ClientContext* context, const ::RequestCompilationMessage& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::Binary>>(AsynccompileRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::Binary>> PrepareAsynccompile(::grpc::ClientContext* context, const ::Binary& request, ::grpc::CompletionQueue* cq) {
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::Binary>> PrepareAsynccompile(::grpc::ClientContext* context, const ::RequestCompilationMessage& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::Binary>>(PrepareAsynccompileRaw(context, request, cq));
     }
     class async final :
       public StubInterface::async_interface {
      public:
-      void compile(::grpc::ClientContext* context, const ::Binary* request, ::Binary* response, std::function<void(::grpc::Status)>) override;
-      void compile(::grpc::ClientContext* context, const ::Binary* request, ::Binary* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void compile(::grpc::ClientContext* context, const ::RequestCompilationMessage* request, ::Binary* response, std::function<void(::grpc::Status)>) override;
+      void compile(::grpc::ClientContext* context, const ::RequestCompilationMessage* request, ::Binary* response, ::grpc::ClientUnaryReactor* reactor) override;
      private:
       friend class Stub;
       explicit async(Stub* stub): stub_(stub) { }
@@ -79,8 +79,8 @@ class Jacaranda final {
    private:
     std::shared_ptr< ::grpc::ChannelInterface> channel_;
     class async async_stub_{this};
-    ::grpc::ClientAsyncResponseReader< ::Binary>* AsynccompileRaw(::grpc::ClientContext* context, const ::Binary& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::Binary>* PrepareAsynccompileRaw(::grpc::ClientContext* context, const ::Binary& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::Binary>* AsynccompileRaw(::grpc::ClientContext* context, const ::RequestCompilationMessage& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::Binary>* PrepareAsynccompileRaw(::grpc::ClientContext* context, const ::RequestCompilationMessage& request, ::grpc::CompletionQueue* cq) override;
     const ::grpc::internal::RpcMethod rpcmethod_compile_;
   };
   static std::unique_ptr<Stub> NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options = ::grpc::StubOptions());
@@ -89,7 +89,7 @@ class Jacaranda final {
    public:
     Service();
     virtual ~Service();
-    virtual ::grpc::Status compile(::grpc::ServerContext* context, const ::Binary* request, ::Binary* response);
+    virtual ::grpc::Status compile(::grpc::ServerContext* context, const ::RequestCompilationMessage* request, ::Binary* response);
   };
   template <class BaseClass>
   class WithAsyncMethod_compile : public BaseClass {
@@ -103,11 +103,11 @@ class Jacaranda final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status compile(::grpc::ServerContext* /*context*/, const ::Binary* /*request*/, ::Binary* /*response*/) override {
+    ::grpc::Status compile(::grpc::ServerContext* /*context*/, const ::RequestCompilationMessage* /*request*/, ::Binary* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void Requestcompile(::grpc::ServerContext* context, ::Binary* request, ::grpc::ServerAsyncResponseWriter< ::Binary>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+    void Requestcompile(::grpc::ServerContext* context, ::RequestCompilationMessage* request, ::grpc::ServerAsyncResponseWriter< ::Binary>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(0, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
@@ -119,25 +119,25 @@ class Jacaranda final {
    public:
     WithCallbackMethod_compile() {
       ::grpc::Service::MarkMethodCallback(0,
-          new ::grpc::internal::CallbackUnaryHandler< ::Binary, ::Binary>(
+          new ::grpc::internal::CallbackUnaryHandler< ::RequestCompilationMessage, ::Binary>(
             [this](
-                   ::grpc::CallbackServerContext* context, const ::Binary* request, ::Binary* response) { return this->compile(context, request, response); }));}
+                   ::grpc::CallbackServerContext* context, const ::RequestCompilationMessage* request, ::Binary* response) { return this->compile(context, request, response); }));}
     void SetMessageAllocatorFor_compile(
-        ::grpc::MessageAllocator< ::Binary, ::Binary>* allocator) {
+        ::grpc::MessageAllocator< ::RequestCompilationMessage, ::Binary>* allocator) {
       ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(0);
-      static_cast<::grpc::internal::CallbackUnaryHandler< ::Binary, ::Binary>*>(handler)
+      static_cast<::grpc::internal::CallbackUnaryHandler< ::RequestCompilationMessage, ::Binary>*>(handler)
               ->SetMessageAllocator(allocator);
     }
     ~WithCallbackMethod_compile() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status compile(::grpc::ServerContext* /*context*/, const ::Binary* /*request*/, ::Binary* /*response*/) override {
+    ::grpc::Status compile(::grpc::ServerContext* /*context*/, const ::RequestCompilationMessage* /*request*/, ::Binary* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     virtual ::grpc::ServerUnaryReactor* compile(
-      ::grpc::CallbackServerContext* /*context*/, const ::Binary* /*request*/, ::Binary* /*response*/)  { return nullptr; }
+      ::grpc::CallbackServerContext* /*context*/, const ::RequestCompilationMessage* /*request*/, ::Binary* /*response*/)  { return nullptr; }
   };
   typedef WithCallbackMethod_compile<Service > CallbackService;
   typedef CallbackService ExperimentalCallbackService;
@@ -153,7 +153,7 @@ class Jacaranda final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status compile(::grpc::ServerContext* /*context*/, const ::Binary* /*request*/, ::Binary* /*response*/) override {
+    ::grpc::Status compile(::grpc::ServerContext* /*context*/, const ::RequestCompilationMessage* /*request*/, ::Binary* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -170,7 +170,7 @@ class Jacaranda final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status compile(::grpc::ServerContext* /*context*/, const ::Binary* /*request*/, ::Binary* /*response*/) override {
+    ::grpc::Status compile(::grpc::ServerContext* /*context*/, const ::RequestCompilationMessage* /*request*/, ::Binary* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -193,7 +193,7 @@ class Jacaranda final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status compile(::grpc::ServerContext* /*context*/, const ::Binary* /*request*/, ::Binary* /*response*/) override {
+    ::grpc::Status compile(::grpc::ServerContext* /*context*/, const ::RequestCompilationMessage* /*request*/, ::Binary* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -208,10 +208,10 @@ class Jacaranda final {
     WithStreamedUnaryMethod_compile() {
       ::grpc::Service::MarkMethodStreamed(0,
         new ::grpc::internal::StreamedUnaryHandler<
-          ::Binary, ::Binary>(
+          ::RequestCompilationMessage, ::Binary>(
             [this](::grpc::ServerContext* context,
                    ::grpc::ServerUnaryStreamer<
-                     ::Binary, ::Binary>* streamer) {
+                     ::RequestCompilationMessage, ::Binary>* streamer) {
                        return this->Streamedcompile(context,
                          streamer);
                   }));
@@ -220,12 +220,12 @@ class Jacaranda final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable regular version of this method
-    ::grpc::Status compile(::grpc::ServerContext* /*context*/, const ::Binary* /*request*/, ::Binary* /*response*/) override {
+    ::grpc::Status compile(::grpc::ServerContext* /*context*/, const ::RequestCompilationMessage* /*request*/, ::Binary* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     // replace default version of method with streamed unary
-    virtual ::grpc::Status Streamedcompile(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::Binary,::Binary>* server_unary_streamer) = 0;
+    virtual ::grpc::Status Streamedcompile(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::RequestCompilationMessage,::Binary>* server_unary_streamer) = 0;
   };
   typedef WithStreamedUnaryMethod_compile<Service > StreamedUnaryService;
   typedef Service SplitStreamedService;

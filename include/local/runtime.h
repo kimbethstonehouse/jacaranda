@@ -6,7 +6,6 @@
 #include <runtime-module.h>
 #include <function.h>
 #include <memory>
-#include <rpc/client.h>
 #include <jitaas.h>
 #include <jitaas.grpc.pb.h>
 #include <client.h>

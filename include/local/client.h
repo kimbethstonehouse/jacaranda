@@ -7,7 +7,7 @@
 class JacarandaClient {
 public:
     JacarandaClient(std::shared_ptr<grpc::Channel> channel) : stub_(Jacaranda::NewStub(channel)) {}
-    Binary compile(Payload payload);
+    Binary compile(int function_index);
 private:
     std::unique_ptr<Jacaranda::Stub> stub_;
 };

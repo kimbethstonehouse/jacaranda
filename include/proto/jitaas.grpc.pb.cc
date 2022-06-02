@@ -34,23 +34,23 @@ Jacaranda::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel,
   : channel_(channel), rpcmethod_compile_(Jacaranda_method_names[0], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   {}
 
-::grpc::Status Jacaranda::Stub::compile(::grpc::ClientContext* context, const ::Binary& request, ::Binary* response) {
-  return ::grpc::internal::BlockingUnaryCall< ::Binary, ::Binary, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_compile_, context, request, response);
+::grpc::Status Jacaranda::Stub::compile(::grpc::ClientContext* context, const ::RequestCompilationMessage& request, ::Binary* response) {
+  return ::grpc::internal::BlockingUnaryCall< ::RequestCompilationMessage, ::Binary, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_compile_, context, request, response);
 }
 
-void Jacaranda::Stub::async::compile(::grpc::ClientContext* context, const ::Binary* request, ::Binary* response, std::function<void(::grpc::Status)> f) {
-  ::grpc::internal::CallbackUnaryCall< ::Binary, ::Binary, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_compile_, context, request, response, std::move(f));
+void Jacaranda::Stub::async::compile(::grpc::ClientContext* context, const ::RequestCompilationMessage* request, ::Binary* response, std::function<void(::grpc::Status)> f) {
+  ::grpc::internal::CallbackUnaryCall< ::RequestCompilationMessage, ::Binary, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_compile_, context, request, response, std::move(f));
 }
 
-void Jacaranda::Stub::async::compile(::grpc::ClientContext* context, const ::Binary* request, ::Binary* response, ::grpc::ClientUnaryReactor* reactor) {
+void Jacaranda::Stub::async::compile(::grpc::ClientContext* context, const ::RequestCompilationMessage* request, ::Binary* response, ::grpc::ClientUnaryReactor* reactor) {
   ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_compile_, context, request, response, reactor);
 }
 
-::grpc::ClientAsyncResponseReader< ::Binary>* Jacaranda::Stub::PrepareAsynccompileRaw(::grpc::ClientContext* context, const ::Binary& request, ::grpc::CompletionQueue* cq) {
-  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::Binary, ::Binary, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_compile_, context, request);
+::grpc::ClientAsyncResponseReader< ::Binary>* Jacaranda::Stub::PrepareAsynccompileRaw(::grpc::ClientContext* context, const ::RequestCompilationMessage& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::Binary, ::RequestCompilationMessage, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_compile_, context, request);
 }
 
-::grpc::ClientAsyncResponseReader< ::Binary>* Jacaranda::Stub::AsynccompileRaw(::grpc::ClientContext* context, const ::Binary& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::Binary>* Jacaranda::Stub::AsynccompileRaw(::grpc::ClientContext* context, const ::RequestCompilationMessage& request, ::grpc::CompletionQueue* cq) {
   auto* result =
     this->PrepareAsynccompileRaw(context, request, cq);
   result->StartCall();
@@ -61,10 +61,10 @@ Jacaranda::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       Jacaranda_method_names[0],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< Jacaranda::Service, ::Binary, ::Binary, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
+      new ::grpc::internal::RpcMethodHandler< Jacaranda::Service, ::RequestCompilationMessage, ::Binary, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
           [](Jacaranda::Service* service,
              ::grpc::ServerContext* ctx,
-             const ::Binary* req,
+             const ::RequestCompilationMessage* req,
              ::Binary* resp) {
                return service->compile(ctx, req, resp);
              }, this)));
@@ -73,7 +73,7 @@ Jacaranda::Service::Service() {
 Jacaranda::Service::~Service() {
 }
 
-::grpc::Status Jacaranda::Service::compile(::grpc::ServerContext* context, const ::Binary* request, ::Binary* response) {
+::grpc::Status Jacaranda::Service::compile(::grpc::ServerContext* context, const ::RequestCompilationMessage* request, ::Binary* response) {
   (void) context;
   (void) request;
   (void) response;

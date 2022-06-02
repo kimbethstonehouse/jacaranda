@@ -15,6 +15,9 @@ Runtime::Runtime(JacarandaClient *client) : client_(client) {
     // Map regions of memory to execute native code
     code_section_ = (char *) mmap(nullptr, pow(2, 30),
                                   PROT_EXEC | PROT_READ | PROT_WRITE,MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+    if (code_section_ == MAP_FAILED) {
+        throw std::runtime_error("mmap failed");
+    }
     next_function_ = code_section_;
 }
 
@@ -38,15 +41,19 @@ void *Runtime::request_compilation(int function_index) {
     }
 
     // Imported functions are ignored for now
-    if (!func->second.internal_function()) return nullptr;
+//    if (!func->second.internal_function()) return nullptr;
 
     // TODO: send the actual src payload rather than function name
     // Write to the remote compiler asking for the compiled code
-    Binary native = client_->compile(function_index == 1 ? main_payload : atoi_payload);
+    Binary native = client_->compile(function_index);
 
     // TODO: problem with this memcpy here
-    *(next_function_) = 0xc3;
-    //memcpy(native.data_bytes(), next_function, native.data_length());
+    memcpy(next_function_, native.data_bytes().data(), native.data_length());
+
+//    for (int i = 0; i < native.data_length(); i++) {
+//        *(next_function_+i) = native.data_bytes().data()[i];
+//    }
+
     jump_table_[function_index] = next_function_;
 
     // Pad to 16 bytes

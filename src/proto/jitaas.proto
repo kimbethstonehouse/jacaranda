@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+service Jacaranda {
+  rpc compile(RequestCompilationMessage) returns (Binary) {}
+}
+
+message RequestCompilationMessage {
+  int32 function_index = 1;
+}
+
+message Binary {
+  bytes data_bytes = 1;
+  int32 data_length = 2;
+}

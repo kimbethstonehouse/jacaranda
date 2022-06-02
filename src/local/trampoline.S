@@ -7,54 +7,45 @@
 .type trampoline_to_execute,%function
 // rdi contains function index
 // rsi contains ptr to jump table base
-// r8 contains ptr to runtime
 // rdx contains argc
 // rcx contains ptr to argv
+// r8 contains ptr to runtime
 trampoline_to_execute:
+        // Frame pointer
+        push %rbp
+
         // Save the callee saved registers
         push %rbx
-        push %rsp
-        push %rbp
         push %r12
         push %r13
         push %r14
         push %r15
 
-        // Push the arguments onto the stack
-        imul $8, %rdx
+        // RDX: argc
+        // RCX: argv
+
+        mov %rsp, %rbp
+
 push_args:
-        sub $8, %rdx
+        push (%rcx)
+        add $8, %rcx
+        dec %rdx
+        jnz push_args
 
-        cmp $0, %rdx
-        jl call_func
-
-        // Double dereference argv[argc]
-        mov (%rcx), %rax
-        movzxb (%rdx,%rax), %rax
-        push %rax
-        jmp push_args
-
-
-
-call_func:
         // Add the function index and the jump table base and call
-        //sub 0x10, %rsp
-        add $8, %rsi
-        call *(%rsi)
-        //call *(%rsi, %rdi, 8)
+        call *(%rsi, %rdi, 8)
 
-
-// todo: who clears up the stack?
+        mov %rbp, %rsp
 
         // Restore the callee saved registers
         pop %r15
         pop %r14
         pop %r13
         pop %r12
-        pop %rbp
-        pop %rsp
         pop %rbx
 
+        // Frame pointer
+        pop %rbp
         ret
 .size trampoline_to_execute,.-trampoline_to_execute
 
@@ -64,22 +55,25 @@ call_func:
 // rsi contains ptr to jump table base
 // r8 contains ptr to runtime
 trampoline_to_compile:
-        push %rdi
+        push %rbp
         push %rsi
+        push %r8
+
+        mov %rsp, %rbp
 
         mov %r8, %rsi
-        // TODO: rsi + 8 contains runtime ptr, so just need to call runtime.request_compilation somehow
 
-// todo: stack alignment something?
-
+        //push %r9
+        and $0xfffffffffffffff0, %rsp
         call do_request_compilation
+        //pop %r9
 
+        mov %rbp, %rsp
+
+        pop %r8
         pop %rsi
-        pop %rdi
+        pop %rbp
 
         // Return value is the function pointer
-        call *(%rax)
-
-        ret
+        jmp *%rax
 .size trampoline_to_compile,.-trampoline_to_compile
-

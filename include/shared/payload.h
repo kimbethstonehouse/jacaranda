@@ -5,7 +5,6 @@
 #include <utility>
 #include <vector>
 #include <wasm.h>
-#include <rpc/msgpack.hpp>
 
 class Payload {
 public:
@@ -31,19 +30,19 @@ public:
     }
 
     // Overloaded (de)serialisation functions
-    template <typename Packer>
-    void msgpack_pack(Packer& pk) const {
-        pk.pack_bin(size_);
-        pk.pack_bin_body(start_, size_);
-    }
-
-    void msgpack_unpack(clmdep_msgpack::object const& o) {
-        start_ = o.via.bin.ptr;
-        ptr_ = start_;
-
-        size_ = o.via.bin.size;
-        end_ = start_ + size_;
-    }
+//    template <typename Packer>
+//    void msgpack_pack(Packer& pk) const {
+//        pk.pack_bin(size_);
+//        pk.pack_bin_body(start_, size_);
+//    }
+//
+//    void msgpack_unpack(clmdep_msgpack::object const& o) {
+//        start_ = o.via.bin.ptr;
+//        ptr_ = start_;
+//
+//        size_ = o.via.bin.size;
+//        end_ = start_ + size_;
+//    }
 
     void reset() { ptr_ = start_; }
     bool eob() const { return ptr_ >= end_; }
