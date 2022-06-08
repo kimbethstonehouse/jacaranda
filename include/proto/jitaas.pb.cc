@@ -18,7 +18,8 @@
 PROTOBUF_PRAGMA_INIT_SEG
 constexpr RequestCompilationMessage::RequestCompilationMessage(
   ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
-  : function_index_(0){}
+  : target_data_layout_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , function_index_(0){}
 struct RequestCompilationMessageDefaultTypeInternal {
   constexpr RequestCompilationMessageDefaultTypeInternal()
     : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
@@ -53,6 +54,7 @@ const uint32_t TableStruct_jitaas_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(p
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::RequestCompilationMessage, function_index_),
+  PROTOBUF_FIELD_OFFSET(::RequestCompilationMessage, target_data_layout_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Binary, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -64,7 +66,7 @@ const uint32_t TableStruct_jitaas_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(p
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::RequestCompilationMessage)},
-  { 7, -1, -1, sizeof(::Binary)},
+  { 8, -1, -1, sizeof(::Binary)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -73,15 +75,16 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
 };
 
 const char descriptor_table_protodef_jitaas_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\014jitaas.proto\"3\n\031RequestCompilationMess"
-  "age\022\026\n\016function_index\030\001 \001(\005\"1\n\006Binary\022\022\n"
-  "\ndata_bytes\030\001 \001(\014\022\023\n\013data_length\030\002 \001(\0052="
-  "\n\tJacaranda\0220\n\007compile\022\032.RequestCompilat"
-  "ionMessage\032\007.Binary\"\000b\006proto3"
+  "\n\014jitaas.proto\"O\n\031RequestCompilationMess"
+  "age\022\026\n\016function_index\030\001 \001(\005\022\032\n\022target_da"
+  "ta_layout\030\002 \001(\t\"1\n\006Binary\022\022\n\ndata_bytes\030"
+  "\001 \001(\014\022\023\n\013data_length\030\002 \001(\0052=\n\tJacaranda\022"
+  "0\n\007compile\022\032.RequestCompilationMessage\032\007"
+  ".Binary\"\000b\006proto3"
   ;
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_jitaas_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_jitaas_2eproto = {
-  false, false, 189, descriptor_table_protodef_jitaas_2eproto, "jitaas.proto", 
+  false, false, 217, descriptor_table_protodef_jitaas_2eproto, "jitaas.proto", 
   &descriptor_table_jitaas_2eproto_once, nullptr, 0, 2,
   schemas, file_default_instances, TableStruct_jitaas_2eproto::offsets,
   file_level_metadata_jitaas_2eproto, file_level_enum_descriptors_jitaas_2eproto, file_level_service_descriptors_jitaas_2eproto,
@@ -111,11 +114,23 @@ RequestCompilationMessage::RequestCompilationMessage(::PROTOBUF_NAMESPACE_ID::Ar
 RequestCompilationMessage::RequestCompilationMessage(const RequestCompilationMessage& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  target_data_layout_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    target_data_layout_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_target_data_layout().empty()) {
+    target_data_layout_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_target_data_layout(), 
+      GetArenaForAllocation());
+  }
   function_index_ = from.function_index_;
   // @@protoc_insertion_point(copy_constructor:RequestCompilationMessage)
 }
 
 inline void RequestCompilationMessage::SharedCtor() {
+target_data_layout_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  target_data_layout_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 function_index_ = 0;
 }
 
@@ -128,6 +143,7 @@ RequestCompilationMessage::~RequestCompilationMessage() {
 
 inline void RequestCompilationMessage::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  target_data_layout_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
 void RequestCompilationMessage::ArenaDtor(void* object) {
@@ -146,6 +162,7 @@ void RequestCompilationMessage::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
+  target_data_layout_.ClearToEmpty();
   function_index_ = 0;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
@@ -160,6 +177,16 @@ const char* RequestCompilationMessage::_InternalParse(const char* ptr, ::PROTOBU
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
           function_index_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // string target_data_layout = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          auto str = _internal_mutable_target_data_layout();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "RequestCompilationMessage.target_data_layout"));
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -199,6 +226,16 @@ uint8_t* RequestCompilationMessage::_InternalSerialize(
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(1, this->_internal_function_index(), target);
   }
 
+  // string target_data_layout = 2;
+  if (!this->_internal_target_data_layout().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_target_data_layout().data(), static_cast<int>(this->_internal_target_data_layout().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "RequestCompilationMessage.target_data_layout");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_target_data_layout(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -214,6 +251,13 @@ size_t RequestCompilationMessage::ByteSizeLong() const {
   uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
+
+  // string target_data_layout = 2;
+  if (!this->_internal_target_data_layout().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_target_data_layout());
+  }
 
   // int32 function_index = 1;
   if (this->_internal_function_index() != 0) {
@@ -242,6 +286,9 @@ void RequestCompilationMessage::MergeFrom(const RequestCompilationMessage& from)
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
+  if (!from._internal_target_data_layout().empty()) {
+    _internal_set_target_data_layout(from._internal_target_data_layout());
+  }
   if (from._internal_function_index() != 0) {
     _internal_set_function_index(from._internal_function_index());
   }
@@ -261,7 +308,14 @@ bool RequestCompilationMessage::IsInitialized() const {
 
 void RequestCompilationMessage::InternalSwap(RequestCompilationMessage* other) {
   using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &target_data_layout_, lhs_arena,
+      &other->target_data_layout_, rhs_arena
+  );
   swap(function_index_, other->function_index_);
 }
 

@@ -15,4 +15,4 @@ target_include_directories(remote PRIVATE
         ${INCLUDE_DIR}/proto
         ${INCLUDE_DIR}/shared)
 
-target_link_libraries(remote jitaas_grpc_proto grpc++)
+target_link_libraries(remote jitaas_grpc_proto ${llvm_libs})

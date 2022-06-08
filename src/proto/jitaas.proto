@@ -6,6 +6,7 @@ service Jacaranda {
 
 message RequestCompilationMessage {
   int32 function_index = 1;
+  string target_data_layout = 2;
 }
 
 message Binary {

@@ -19,4 +19,4 @@ target_include_directories(local PRIVATE
         ${INCLUDE_DIR}/proto
         ${INCLUDE_DIR}/shared)
 
-target_link_libraries(local jitaas_grpc_proto grpc++)
+target_link_libraries(local jitaas_grpc_proto ${llvm_libs})

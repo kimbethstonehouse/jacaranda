@@ -188,8 +188,23 @@ class RequestCompilationMessage final :
   // accessors -------------------------------------------------------
 
   enum : int {
+    kTargetDataLayoutFieldNumber = 2,
     kFunctionIndexFieldNumber = 1,
   };
+  // string target_data_layout = 2;
+  void clear_target_data_layout();
+  const std::string& target_data_layout() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_target_data_layout(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_target_data_layout();
+  PROTOBUF_NODISCARD std::string* release_target_data_layout();
+  void set_allocated_target_data_layout(std::string* target_data_layout);
+  private:
+  const std::string& _internal_target_data_layout() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_target_data_layout(const std::string& value);
+  std::string* _internal_mutable_target_data_layout();
+  public:
+
   // int32 function_index = 1;
   void clear_function_index();
   int32_t function_index() const;
@@ -206,6 +221,7 @@ class RequestCompilationMessage final :
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr target_data_layout_;
   int32_t function_index_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_jitaas_2eproto;
@@ -401,6 +417,57 @@ inline void RequestCompilationMessage::_internal_set_function_index(int32_t valu
 inline void RequestCompilationMessage::set_function_index(int32_t value) {
   _internal_set_function_index(value);
   // @@protoc_insertion_point(field_set:RequestCompilationMessage.function_index)
+}
+
+// string target_data_layout = 2;
+inline void RequestCompilationMessage::clear_target_data_layout() {
+  target_data_layout_.ClearToEmpty();
+}
+inline const std::string& RequestCompilationMessage::target_data_layout() const {
+  // @@protoc_insertion_point(field_get:RequestCompilationMessage.target_data_layout)
+  return _internal_target_data_layout();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void RequestCompilationMessage::set_target_data_layout(ArgT0&& arg0, ArgT... args) {
+ 
+ target_data_layout_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:RequestCompilationMessage.target_data_layout)
+}
+inline std::string* RequestCompilationMessage::mutable_target_data_layout() {
+  std::string* _s = _internal_mutable_target_data_layout();
+  // @@protoc_insertion_point(field_mutable:RequestCompilationMessage.target_data_layout)
+  return _s;
+}
+inline const std::string& RequestCompilationMessage::_internal_target_data_layout() const {
+  return target_data_layout_.Get();
+}
+inline void RequestCompilationMessage::_internal_set_target_data_layout(const std::string& value) {
+  
+  target_data_layout_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+}
+inline std::string* RequestCompilationMessage::_internal_mutable_target_data_layout() {
+  
+  return target_data_layout_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+}
+inline std::string* RequestCompilationMessage::release_target_data_layout() {
+  // @@protoc_insertion_point(field_release:RequestCompilationMessage.target_data_layout)
+  return target_data_layout_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+}
+inline void RequestCompilationMessage::set_allocated_target_data_layout(std::string* target_data_layout) {
+  if (target_data_layout != nullptr) {
+    
+  } else {
+    
+  }
+  target_data_layout_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), target_data_layout,
+      GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (target_data_layout_.IsDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited())) {
+    target_data_layout_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:RequestCompilationMessage.target_data_layout)
 }
 
 // -------------------------------------------------------------------

@@ -3,6 +3,10 @@
 #include <sys/un.h>
 
 #include <grpcpp/create_channel.h>
+#include <llvm/Support/Host.h>
+#include <llvm/Support/TargetSelect.h>
+#include <llvm/Support/DynamicLibrary.h>
+#include <llvm/ExecutionEngine/ExecutionEngine.h>
 
 const char *main_str = "main";
 const char *atoi_str = "atoi";
@@ -19,11 +23,37 @@ Runtime::Runtime(JacarandaClient *client) : client_(client) {
         throw std::runtime_error("mmap failed");
     }
     next_function_ = code_section_;
+    create_target_machine();
 }
 
 Runtime::~Runtime() {
     munmap(code_section_, pow(2, 30));
     munmap(jump_table_, runtime_module_->function_count() * PTR_SIZE);
+}
+
+void Runtime::create_target_machine() {
+    // Init LLVM
+    llvm::InitializeAllTargetInfos();
+    llvm::InitializeAllTargets();
+    llvm::InitializeAllTargetMCs();
+    llvm::InitializeAllAsmPrinters();
+    llvm::InitializeAllAsmParsers();
+    llvm::InitializeAllDisassemblers();
+    llvm::sys::DynamicLibrary::LoadLibraryPermanently(nullptr);
+
+    llvm::Triple triple(llvm::sys::getProcessTriple());
+    llvm::SmallVector<std::string, 1> targetAttributes;
+
+#if LLVM_VERSION_MAJOR < 10
+    if(triple.getArch() == llvm::Triple::x86 || triple.getArch() == llvm::Triple::x86_64)
+	{
+		// Disable AVX-512 on X86 targets to workaround a LLVM backend bug:
+		// https://bugs.llvm.org/show_bug.cgi?id=43750
+		targetAttributes.push_back("-avx512f");
+	}
+#endif
+
+    target_machine_ = llvm::EngineBuilder().selectTarget(triple, "", llvm::sys::getHostCPUName(), targetAttributes);
 }
 
 extern "C" void *do_request_compilation(int function_index, Runtime *runtime) {
@@ -45,7 +75,7 @@ void *Runtime::request_compilation(int function_index) {
 
     // TODO: send the actual src payload rather than function name
     // Write to the remote compiler asking for the compiled code
-    Binary native = client_->compile(function_index);
+    Binary native = client_->compile(function_index, target_machine_->createDataLayout().getStringRepresentation());
 
     // TODO: problem with this memcpy here
     memcpy(next_function_, native.data_bytes().data(), native.data_length());
