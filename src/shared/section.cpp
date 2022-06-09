@@ -1,10 +1,10 @@
 #include <section.h>
 
-void CustomSection::parse_section() {
+void Wasm::CustomSection::parse_section() {
     name_ = get_data().read_name(VARUINT32);
 }
 
-void TypeSection::parse_section() {
+void Wasm::TypeSection::parse_section() {
     Payload payload = get_data();
     count_ = payload.read_uleb128(VARUINT32);
 
@@ -30,11 +30,11 @@ void TypeSection::parse_section() {
             return_type = ValueType(payload.read_uleb128(VARUINT7));
         }
 
-        types_.insert({i, FuncType(param_count, param_types, return_count, return_type)});
+        types_.insert({i, std::unique_ptr<FunctionType>(new FunctionType(param_count, param_types, return_count, return_type))});
     }
 }
 
-void ImportSection::parse_section() {
+void Wasm::ImportSection::parse_section() {
     Payload payload = get_data();
     count_ = payload.read_uleb128(VARUINT32);
 
@@ -54,7 +54,7 @@ void ImportSection::parse_section() {
     }
 }
 
-void FunctionSection::parse_section() {
+void Wasm::FunctionSection::parse_section() {
     Payload payload = get_data();
     count_ = payload.read_uleb128(VARUINT32);
 
@@ -64,13 +64,13 @@ void FunctionSection::parse_section() {
     }
 }
 
-void GlobalSection::parse_section() {
+void Wasm::GlobalSection::parse_section() {
     Payload payload = get_data();
     count_ = payload.read_uleb128(VARUINT32);
     // TODO: Parse global entries.
 }
 
-void CodeSection::parse_section() {
+void Wasm::CodeSection::parse_section() {
     Payload payload = get_data();
     count_ = payload.read_uleb128(VARUINT32);
 
@@ -81,7 +81,7 @@ void CodeSection::parse_section() {
     }
 }
 
-void ExportSection::parse_section() {
+void Wasm::ExportSection::parse_section() {
     Payload payload = get_data();
     count_ = payload.read_uleb128(VARUINT32);
 

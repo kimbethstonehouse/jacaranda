@@ -6,7 +6,7 @@ class Compiler {
 public:
     Compiler() {}
     ~Compiler() {}
-    void compile(const RequestCompilationMessage *wasm, Binary *native);
+    void compile(const WasmFunction *wasm, NativeBinary *native);
 };
 
 // TODO: Not currently parsed.

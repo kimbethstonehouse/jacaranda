@@ -77,40 +77,40 @@ void StaticModule::parse_sections() {
         Payload payload(offset, section_length);
         switch (section_id) {
             case 0:
-                custom_sections_.push_back(new CustomSection(payload));
+                custom_sections_.push_back(new Wasm::CustomSection(payload));
                 break;
             case 1:
-                add_section(new TypeSection(payload));
+                add_section(new Wasm::TypeSection(payload));
                 break;
             case 2:
-                add_section(new ImportSection(payload));
+                add_section(new Wasm::ImportSection(payload));
                 break;
             case 3:
-                add_section(new FunctionSection(payload));
+                add_section(new Wasm::FunctionSection(payload));
                 break;
             case 4:
-                add_section(new TableSection(payload));
+                add_section(new Wasm::TableSection(payload));
                 break;
             case 5:
-                add_section(new MemorySection(payload));
+                add_section(new Wasm::MemorySection(payload));
                 break;
             case 6:
-                add_section(new GlobalSection(payload));
+                add_section(new Wasm::GlobalSection(payload));
                 break;
             case 7:
-                add_section(new ExportSection(payload));
+                add_section(new Wasm::ExportSection(payload));
                 break;
             case 8:
-                add_section(new StartSection(payload));
+                add_section(new Wasm::StartSection(payload));
                 break;
             case 9:
-                add_section(new ElementSection(payload));
+                add_section(new Wasm::ElementSection(payload));
                 break;
             case 10:
-                add_section(new CodeSection(payload));
+                add_section(new Wasm::CodeSection(payload));
                 break;
             case 11:
-                add_section(new DataSection(payload));
+                add_section(new Wasm::DataSection(payload));
                 break;
 
             default:

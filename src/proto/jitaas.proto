@@ -1,15 +1,26 @@
 syntax = "proto3";
 
 service Jacaranda {
-  rpc compile(RequestCompilationMessage) returns (Binary) {}
+  rpc compile(WasmFunction) returns (NativeBinary) {}
 }
 
-message RequestCompilationMessage {
-  int32 function_index = 1;
-  string target_data_layout = 2;
+message FunctionType {
+  uint32 param_count = 1;
+  // Will be of type char, see LanguageTypes in wasm.h
+  // Encoded as varint size so four byte width doesn't matter
+  repeated uint32 param_types = 2;
+  uint32 return_count = 3;
+  // Defaults to 0 if not present
+  optional uint32 return_type = 4;
 }
 
-message Binary {
+message WasmFunction {
+  FunctionType func_type = 1;
+  bytes func_body = 2;
+  string target_data_layout = 3;
+}
+
+message NativeBinary {
   bytes data_bytes = 1;
-  int32 data_length = 2;
+  uint32 data_length = 2;
 }

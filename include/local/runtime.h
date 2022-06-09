@@ -25,7 +25,7 @@ public:
     void create_target_machine();
 private:
     void init_execution_state(int function_count);
-    Binary compilation_rpc(Binary bin);
+    NativeBinary compilation_rpc(NativeBinary bin);
 
     std::map<std::string, std::shared_ptr<StaticModule>> static_modules_;
     RuntimeModule *runtime_module_;

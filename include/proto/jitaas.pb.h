@@ -46,44 +46,48 @@ struct TableStruct_jitaas_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxiliaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[2]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[3]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
   static const uint32_t offsets[];
 };
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_jitaas_2eproto;
-class Binary;
-struct BinaryDefaultTypeInternal;
-extern BinaryDefaultTypeInternal _Binary_default_instance_;
-class RequestCompilationMessage;
-struct RequestCompilationMessageDefaultTypeInternal;
-extern RequestCompilationMessageDefaultTypeInternal _RequestCompilationMessage_default_instance_;
+class FunctionType;
+struct FunctionTypeDefaultTypeInternal;
+extern FunctionTypeDefaultTypeInternal _FunctionType_default_instance_;
+class NativeBinary;
+struct NativeBinaryDefaultTypeInternal;
+extern NativeBinaryDefaultTypeInternal _NativeBinary_default_instance_;
+class WasmFunction;
+struct WasmFunctionDefaultTypeInternal;
+extern WasmFunctionDefaultTypeInternal _WasmFunction_default_instance_;
 PROTOBUF_NAMESPACE_OPEN
-template<> ::Binary* Arena::CreateMaybeMessage<::Binary>(Arena*);
-template<> ::RequestCompilationMessage* Arena::CreateMaybeMessage<::RequestCompilationMessage>(Arena*);
+template<> ::FunctionType* Arena::CreateMaybeMessage<::FunctionType>(Arena*);
+template<> ::NativeBinary* Arena::CreateMaybeMessage<::NativeBinary>(Arena*);
+template<> ::WasmFunction* Arena::CreateMaybeMessage<::WasmFunction>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 
 // ===================================================================
 
-class RequestCompilationMessage final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:RequestCompilationMessage) */ {
+class FunctionType final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:FunctionType) */ {
  public:
-  inline RequestCompilationMessage() : RequestCompilationMessage(nullptr) {}
-  ~RequestCompilationMessage() override;
-  explicit constexpr RequestCompilationMessage(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline FunctionType() : FunctionType(nullptr) {}
+  ~FunctionType() override;
+  explicit constexpr FunctionType(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  RequestCompilationMessage(const RequestCompilationMessage& from);
-  RequestCompilationMessage(RequestCompilationMessage&& from) noexcept
-    : RequestCompilationMessage() {
+  FunctionType(const FunctionType& from);
+  FunctionType(FunctionType&& from) noexcept
+    : FunctionType() {
     *this = ::std::move(from);
   }
 
-  inline RequestCompilationMessage& operator=(const RequestCompilationMessage& from) {
+  inline FunctionType& operator=(const FunctionType& from) {
     CopyFrom(from);
     return *this;
   }
-  inline RequestCompilationMessage& operator=(RequestCompilationMessage&& from) noexcept {
+  inline FunctionType& operator=(FunctionType&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -106,20 +110,20 @@ class RequestCompilationMessage final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const RequestCompilationMessage& default_instance() {
+  static const FunctionType& default_instance() {
     return *internal_default_instance();
   }
-  static inline const RequestCompilationMessage* internal_default_instance() {
-    return reinterpret_cast<const RequestCompilationMessage*>(
-               &_RequestCompilationMessage_default_instance_);
+  static inline const FunctionType* internal_default_instance() {
+    return reinterpret_cast<const FunctionType*>(
+               &_FunctionType_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     0;
 
-  friend void swap(RequestCompilationMessage& a, RequestCompilationMessage& b) {
+  friend void swap(FunctionType& a, FunctionType& b) {
     a.Swap(&b);
   }
-  inline void Swap(RequestCompilationMessage* other) {
+  inline void Swap(FunctionType* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -132,7 +136,7 @@ class RequestCompilationMessage final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(RequestCompilationMessage* other) {
+  void UnsafeArenaSwap(FunctionType* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -140,13 +144,13 @@ class RequestCompilationMessage final :
 
   // implements Message ----------------------------------------------
 
-  RequestCompilationMessage* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<RequestCompilationMessage>(arena);
+  FunctionType* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<FunctionType>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const RequestCompilationMessage& from);
+  void CopyFrom(const FunctionType& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom(const RequestCompilationMessage& from);
+  void MergeFrom(const FunctionType& from);
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
   public:
@@ -163,15 +167,15 @@ class RequestCompilationMessage final :
   void SharedCtor();
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(RequestCompilationMessage* other);
+  void InternalSwap(FunctionType* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "RequestCompilationMessage";
+    return "FunctionType";
   }
   protected:
-  explicit RequestCompilationMessage(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit FunctionType(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   private:
   static void ArenaDtor(void* object);
@@ -188,64 +192,100 @@ class RequestCompilationMessage final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kTargetDataLayoutFieldNumber = 2,
-    kFunctionIndexFieldNumber = 1,
+    kParamTypesFieldNumber = 2,
+    kParamCountFieldNumber = 1,
+    kReturnCountFieldNumber = 3,
+    kReturnTypeFieldNumber = 4,
   };
-  // string target_data_layout = 2;
-  void clear_target_data_layout();
-  const std::string& target_data_layout() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_target_data_layout(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_target_data_layout();
-  PROTOBUF_NODISCARD std::string* release_target_data_layout();
-  void set_allocated_target_data_layout(std::string* target_data_layout);
+  // repeated uint32 param_types = 2;
+  int param_types_size() const;
   private:
-  const std::string& _internal_target_data_layout() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_target_data_layout(const std::string& value);
-  std::string* _internal_mutable_target_data_layout();
+  int _internal_param_types_size() const;
+  public:
+  void clear_param_types();
+  private:
+  uint32_t _internal_param_types(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
+      _internal_param_types() const;
+  void _internal_add_param_types(uint32_t value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
+      _internal_mutable_param_types();
+  public:
+  uint32_t param_types(int index) const;
+  void set_param_types(int index, uint32_t value);
+  void add_param_types(uint32_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
+      param_types() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
+      mutable_param_types();
+
+  // uint32 param_count = 1;
+  void clear_param_count();
+  uint32_t param_count() const;
+  void set_param_count(uint32_t value);
+  private:
+  uint32_t _internal_param_count() const;
+  void _internal_set_param_count(uint32_t value);
   public:
 
-  // int32 function_index = 1;
-  void clear_function_index();
-  int32_t function_index() const;
-  void set_function_index(int32_t value);
+  // uint32 return_count = 3;
+  void clear_return_count();
+  uint32_t return_count() const;
+  void set_return_count(uint32_t value);
   private:
-  int32_t _internal_function_index() const;
-  void _internal_set_function_index(int32_t value);
+  uint32_t _internal_return_count() const;
+  void _internal_set_return_count(uint32_t value);
   public:
 
-  // @@protoc_insertion_point(class_scope:RequestCompilationMessage)
+  // optional uint32 return_type = 4;
+  bool has_return_type() const;
+  private:
+  bool _internal_has_return_type() const;
+  public:
+  void clear_return_type();
+  uint32_t return_type() const;
+  void set_return_type(uint32_t value);
+  private:
+  uint32_t _internal_return_type() const;
+  void _internal_set_return_type(uint32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:FunctionType)
  private:
   class _Internal;
 
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr target_data_layout_;
-  int32_t function_index_;
+  ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t > param_types_;
+  mutable std::atomic<int> _param_types_cached_byte_size_;
+  uint32_t param_count_;
+  uint32_t return_count_;
+  uint32_t return_type_;
   friend struct ::TableStruct_jitaas_2eproto;
 };
 // -------------------------------------------------------------------
 
-class Binary final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Binary) */ {
+class WasmFunction final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:WasmFunction) */ {
  public:
-  inline Binary() : Binary(nullptr) {}
-  ~Binary() override;
-  explicit constexpr Binary(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline WasmFunction() : WasmFunction(nullptr) {}
+  ~WasmFunction() override;
+  explicit constexpr WasmFunction(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  Binary(const Binary& from);
-  Binary(Binary&& from) noexcept
-    : Binary() {
+  WasmFunction(const WasmFunction& from);
+  WasmFunction(WasmFunction&& from) noexcept
+    : WasmFunction() {
     *this = ::std::move(from);
   }
 
-  inline Binary& operator=(const Binary& from) {
+  inline WasmFunction& operator=(const WasmFunction& from) {
     CopyFrom(from);
     return *this;
   }
-  inline Binary& operator=(Binary&& from) noexcept {
+  inline WasmFunction& operator=(WasmFunction&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -268,20 +308,20 @@ class Binary final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const Binary& default_instance() {
+  static const WasmFunction& default_instance() {
     return *internal_default_instance();
   }
-  static inline const Binary* internal_default_instance() {
-    return reinterpret_cast<const Binary*>(
-               &_Binary_default_instance_);
+  static inline const WasmFunction* internal_default_instance() {
+    return reinterpret_cast<const WasmFunction*>(
+               &_WasmFunction_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     1;
 
-  friend void swap(Binary& a, Binary& b) {
+  friend void swap(WasmFunction& a, WasmFunction& b) {
     a.Swap(&b);
   }
-  inline void Swap(Binary* other) {
+  inline void Swap(WasmFunction* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -294,7 +334,7 @@ class Binary final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(Binary* other) {
+  void UnsafeArenaSwap(WasmFunction* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -302,13 +342,13 @@ class Binary final :
 
   // implements Message ----------------------------------------------
 
-  Binary* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<Binary>(arena);
+  WasmFunction* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<WasmFunction>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const Binary& from);
+  void CopyFrom(const WasmFunction& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom(const Binary& from);
+  void MergeFrom(const WasmFunction& from);
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
   public:
@@ -325,15 +365,202 @@ class Binary final :
   void SharedCtor();
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(Binary* other);
+  void InternalSwap(WasmFunction* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "Binary";
+    return "WasmFunction";
   }
   protected:
-  explicit Binary(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit WasmFunction(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kFuncBodyFieldNumber = 2,
+    kTargetDataLayoutFieldNumber = 3,
+    kFuncTypeFieldNumber = 1,
+  };
+  // bytes func_body = 2;
+  void clear_func_body();
+  const std::string& func_body() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_func_body(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_func_body();
+  PROTOBUF_NODISCARD std::string* release_func_body();
+  void set_allocated_func_body(std::string* func_body);
+  private:
+  const std::string& _internal_func_body() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_func_body(const std::string& value);
+  std::string* _internal_mutable_func_body();
+  public:
+
+  // string target_data_layout = 3;
+  void clear_target_data_layout();
+  const std::string& target_data_layout() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_target_data_layout(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_target_data_layout();
+  PROTOBUF_NODISCARD std::string* release_target_data_layout();
+  void set_allocated_target_data_layout(std::string* target_data_layout);
+  private:
+  const std::string& _internal_target_data_layout() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_target_data_layout(const std::string& value);
+  std::string* _internal_mutable_target_data_layout();
+  public:
+
+  // .FunctionType func_type = 1;
+  bool has_func_type() const;
+  private:
+  bool _internal_has_func_type() const;
+  public:
+  void clear_func_type();
+  const ::FunctionType& func_type() const;
+  PROTOBUF_NODISCARD ::FunctionType* release_func_type();
+  ::FunctionType* mutable_func_type();
+  void set_allocated_func_type(::FunctionType* func_type);
+  private:
+  const ::FunctionType& _internal_func_type() const;
+  ::FunctionType* _internal_mutable_func_type();
+  public:
+  void unsafe_arena_set_allocated_func_type(
+      ::FunctionType* func_type);
+  ::FunctionType* unsafe_arena_release_func_type();
+
+  // @@protoc_insertion_point(class_scope:WasmFunction)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr func_body_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr target_data_layout_;
+  ::FunctionType* func_type_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_jitaas_2eproto;
+};
+// -------------------------------------------------------------------
+
+class NativeBinary final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:NativeBinary) */ {
+ public:
+  inline NativeBinary() : NativeBinary(nullptr) {}
+  ~NativeBinary() override;
+  explicit constexpr NativeBinary(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  NativeBinary(const NativeBinary& from);
+  NativeBinary(NativeBinary&& from) noexcept
+    : NativeBinary() {
+    *this = ::std::move(from);
+  }
+
+  inline NativeBinary& operator=(const NativeBinary& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline NativeBinary& operator=(NativeBinary&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const NativeBinary& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const NativeBinary* internal_default_instance() {
+    return reinterpret_cast<const NativeBinary*>(
+               &_NativeBinary_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    2;
+
+  friend void swap(NativeBinary& a, NativeBinary& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(NativeBinary* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(NativeBinary* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  NativeBinary* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<NativeBinary>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const NativeBinary& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom(const NativeBinary& from);
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(NativeBinary* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "NativeBinary";
+  }
+  protected:
+  explicit NativeBinary(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   private:
   static void ArenaDtor(void* object);
@@ -367,16 +594,16 @@ class Binary final :
   std::string* _internal_mutable_data_bytes();
   public:
 
-  // int32 data_length = 2;
+  // uint32 data_length = 2;
   void clear_data_length();
-  int32_t data_length() const;
-  void set_data_length(int32_t value);
+  uint32_t data_length() const;
+  void set_data_length(uint32_t value);
   private:
-  int32_t _internal_data_length() const;
-  void _internal_set_data_length(int32_t value);
+  uint32_t _internal_data_length() const;
+  void _internal_set_data_length(uint32_t value);
   public:
 
-  // @@protoc_insertion_point(class_scope:Binary)
+  // @@protoc_insertion_point(class_scope:NativeBinary)
  private:
   class _Internal;
 
@@ -384,7 +611,7 @@ class Binary final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr data_bytes_;
-  int32_t data_length_;
+  uint32_t data_length_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_jitaas_2eproto;
 };
@@ -397,64 +624,304 @@ class Binary final :
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif  // __GNUC__
-// RequestCompilationMessage
+// FunctionType
 
-// int32 function_index = 1;
-inline void RequestCompilationMessage::clear_function_index() {
-  function_index_ = 0;
+// uint32 param_count = 1;
+inline void FunctionType::clear_param_count() {
+  param_count_ = 0u;
 }
-inline int32_t RequestCompilationMessage::_internal_function_index() const {
-  return function_index_;
+inline uint32_t FunctionType::_internal_param_count() const {
+  return param_count_;
 }
-inline int32_t RequestCompilationMessage::function_index() const {
-  // @@protoc_insertion_point(field_get:RequestCompilationMessage.function_index)
-  return _internal_function_index();
+inline uint32_t FunctionType::param_count() const {
+  // @@protoc_insertion_point(field_get:FunctionType.param_count)
+  return _internal_param_count();
 }
-inline void RequestCompilationMessage::_internal_set_function_index(int32_t value) {
+inline void FunctionType::_internal_set_param_count(uint32_t value) {
   
-  function_index_ = value;
+  param_count_ = value;
 }
-inline void RequestCompilationMessage::set_function_index(int32_t value) {
-  _internal_set_function_index(value);
-  // @@protoc_insertion_point(field_set:RequestCompilationMessage.function_index)
+inline void FunctionType::set_param_count(uint32_t value) {
+  _internal_set_param_count(value);
+  // @@protoc_insertion_point(field_set:FunctionType.param_count)
 }
 
-// string target_data_layout = 2;
-inline void RequestCompilationMessage::clear_target_data_layout() {
+// repeated uint32 param_types = 2;
+inline int FunctionType::_internal_param_types_size() const {
+  return param_types_.size();
+}
+inline int FunctionType::param_types_size() const {
+  return _internal_param_types_size();
+}
+inline void FunctionType::clear_param_types() {
+  param_types_.Clear();
+}
+inline uint32_t FunctionType::_internal_param_types(int index) const {
+  return param_types_.Get(index);
+}
+inline uint32_t FunctionType::param_types(int index) const {
+  // @@protoc_insertion_point(field_get:FunctionType.param_types)
+  return _internal_param_types(index);
+}
+inline void FunctionType::set_param_types(int index, uint32_t value) {
+  param_types_.Set(index, value);
+  // @@protoc_insertion_point(field_set:FunctionType.param_types)
+}
+inline void FunctionType::_internal_add_param_types(uint32_t value) {
+  param_types_.Add(value);
+}
+inline void FunctionType::add_param_types(uint32_t value) {
+  _internal_add_param_types(value);
+  // @@protoc_insertion_point(field_add:FunctionType.param_types)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
+FunctionType::_internal_param_types() const {
+  return param_types_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
+FunctionType::param_types() const {
+  // @@protoc_insertion_point(field_list:FunctionType.param_types)
+  return _internal_param_types();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
+FunctionType::_internal_mutable_param_types() {
+  return &param_types_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
+FunctionType::mutable_param_types() {
+  // @@protoc_insertion_point(field_mutable_list:FunctionType.param_types)
+  return _internal_mutable_param_types();
+}
+
+// uint32 return_count = 3;
+inline void FunctionType::clear_return_count() {
+  return_count_ = 0u;
+}
+inline uint32_t FunctionType::_internal_return_count() const {
+  return return_count_;
+}
+inline uint32_t FunctionType::return_count() const {
+  // @@protoc_insertion_point(field_get:FunctionType.return_count)
+  return _internal_return_count();
+}
+inline void FunctionType::_internal_set_return_count(uint32_t value) {
+  
+  return_count_ = value;
+}
+inline void FunctionType::set_return_count(uint32_t value) {
+  _internal_set_return_count(value);
+  // @@protoc_insertion_point(field_set:FunctionType.return_count)
+}
+
+// optional uint32 return_type = 4;
+inline bool FunctionType::_internal_has_return_type() const {
+  bool value = (_has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool FunctionType::has_return_type() const {
+  return _internal_has_return_type();
+}
+inline void FunctionType::clear_return_type() {
+  return_type_ = 0u;
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline uint32_t FunctionType::_internal_return_type() const {
+  return return_type_;
+}
+inline uint32_t FunctionType::return_type() const {
+  // @@protoc_insertion_point(field_get:FunctionType.return_type)
+  return _internal_return_type();
+}
+inline void FunctionType::_internal_set_return_type(uint32_t value) {
+  _has_bits_[0] |= 0x00000001u;
+  return_type_ = value;
+}
+inline void FunctionType::set_return_type(uint32_t value) {
+  _internal_set_return_type(value);
+  // @@protoc_insertion_point(field_set:FunctionType.return_type)
+}
+
+// -------------------------------------------------------------------
+
+// WasmFunction
+
+// .FunctionType func_type = 1;
+inline bool WasmFunction::_internal_has_func_type() const {
+  return this != internal_default_instance() && func_type_ != nullptr;
+}
+inline bool WasmFunction::has_func_type() const {
+  return _internal_has_func_type();
+}
+inline void WasmFunction::clear_func_type() {
+  if (GetArenaForAllocation() == nullptr && func_type_ != nullptr) {
+    delete func_type_;
+  }
+  func_type_ = nullptr;
+}
+inline const ::FunctionType& WasmFunction::_internal_func_type() const {
+  const ::FunctionType* p = func_type_;
+  return p != nullptr ? *p : reinterpret_cast<const ::FunctionType&>(
+      ::_FunctionType_default_instance_);
+}
+inline const ::FunctionType& WasmFunction::func_type() const {
+  // @@protoc_insertion_point(field_get:WasmFunction.func_type)
+  return _internal_func_type();
+}
+inline void WasmFunction::unsafe_arena_set_allocated_func_type(
+    ::FunctionType* func_type) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(func_type_);
+  }
+  func_type_ = func_type;
+  if (func_type) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:WasmFunction.func_type)
+}
+inline ::FunctionType* WasmFunction::release_func_type() {
+  
+  ::FunctionType* temp = func_type_;
+  func_type_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::FunctionType* WasmFunction::unsafe_arena_release_func_type() {
+  // @@protoc_insertion_point(field_release:WasmFunction.func_type)
+  
+  ::FunctionType* temp = func_type_;
+  func_type_ = nullptr;
+  return temp;
+}
+inline ::FunctionType* WasmFunction::_internal_mutable_func_type() {
+  
+  if (func_type_ == nullptr) {
+    auto* p = CreateMaybeMessage<::FunctionType>(GetArenaForAllocation());
+    func_type_ = p;
+  }
+  return func_type_;
+}
+inline ::FunctionType* WasmFunction::mutable_func_type() {
+  ::FunctionType* _msg = _internal_mutable_func_type();
+  // @@protoc_insertion_point(field_mutable:WasmFunction.func_type)
+  return _msg;
+}
+inline void WasmFunction::set_allocated_func_type(::FunctionType* func_type) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete func_type_;
+  }
+  if (func_type) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::FunctionType>::GetOwningArena(func_type);
+    if (message_arena != submessage_arena) {
+      func_type = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, func_type, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  func_type_ = func_type;
+  // @@protoc_insertion_point(field_set_allocated:WasmFunction.func_type)
+}
+
+// bytes func_body = 2;
+inline void WasmFunction::clear_func_body() {
+  func_body_.ClearToEmpty();
+}
+inline const std::string& WasmFunction::func_body() const {
+  // @@protoc_insertion_point(field_get:WasmFunction.func_body)
+  return _internal_func_body();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void WasmFunction::set_func_body(ArgT0&& arg0, ArgT... args) {
+ 
+ func_body_.SetBytes(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:WasmFunction.func_body)
+}
+inline std::string* WasmFunction::mutable_func_body() {
+  std::string* _s = _internal_mutable_func_body();
+  // @@protoc_insertion_point(field_mutable:WasmFunction.func_body)
+  return _s;
+}
+inline const std::string& WasmFunction::_internal_func_body() const {
+  return func_body_.Get();
+}
+inline void WasmFunction::_internal_set_func_body(const std::string& value) {
+  
+  func_body_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+}
+inline std::string* WasmFunction::_internal_mutable_func_body() {
+  
+  return func_body_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+}
+inline std::string* WasmFunction::release_func_body() {
+  // @@protoc_insertion_point(field_release:WasmFunction.func_body)
+  return func_body_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+}
+inline void WasmFunction::set_allocated_func_body(std::string* func_body) {
+  if (func_body != nullptr) {
+    
+  } else {
+    
+  }
+  func_body_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), func_body,
+      GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (func_body_.IsDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited())) {
+    func_body_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:WasmFunction.func_body)
+}
+
+// string target_data_layout = 3;
+inline void WasmFunction::clear_target_data_layout() {
   target_data_layout_.ClearToEmpty();
 }
-inline const std::string& RequestCompilationMessage::target_data_layout() const {
-  // @@protoc_insertion_point(field_get:RequestCompilationMessage.target_data_layout)
+inline const std::string& WasmFunction::target_data_layout() const {
+  // @@protoc_insertion_point(field_get:WasmFunction.target_data_layout)
   return _internal_target_data_layout();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void RequestCompilationMessage::set_target_data_layout(ArgT0&& arg0, ArgT... args) {
+void WasmFunction::set_target_data_layout(ArgT0&& arg0, ArgT... args) {
  
  target_data_layout_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:RequestCompilationMessage.target_data_layout)
+  // @@protoc_insertion_point(field_set:WasmFunction.target_data_layout)
 }
-inline std::string* RequestCompilationMessage::mutable_target_data_layout() {
+inline std::string* WasmFunction::mutable_target_data_layout() {
   std::string* _s = _internal_mutable_target_data_layout();
-  // @@protoc_insertion_point(field_mutable:RequestCompilationMessage.target_data_layout)
+  // @@protoc_insertion_point(field_mutable:WasmFunction.target_data_layout)
   return _s;
 }
-inline const std::string& RequestCompilationMessage::_internal_target_data_layout() const {
+inline const std::string& WasmFunction::_internal_target_data_layout() const {
   return target_data_layout_.Get();
 }
-inline void RequestCompilationMessage::_internal_set_target_data_layout(const std::string& value) {
+inline void WasmFunction::_internal_set_target_data_layout(const std::string& value) {
   
   target_data_layout_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
 }
-inline std::string* RequestCompilationMessage::_internal_mutable_target_data_layout() {
+inline std::string* WasmFunction::_internal_mutable_target_data_layout() {
   
   return target_data_layout_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
 }
-inline std::string* RequestCompilationMessage::release_target_data_layout() {
-  // @@protoc_insertion_point(field_release:RequestCompilationMessage.target_data_layout)
+inline std::string* WasmFunction::release_target_data_layout() {
+  // @@protoc_insertion_point(field_release:WasmFunction.target_data_layout)
   return target_data_layout_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
 }
-inline void RequestCompilationMessage::set_allocated_target_data_layout(std::string* target_data_layout) {
+inline void WasmFunction::set_allocated_target_data_layout(std::string* target_data_layout) {
   if (target_data_layout != nullptr) {
     
   } else {
@@ -467,49 +934,49 @@ inline void RequestCompilationMessage::set_allocated_target_data_layout(std::str
     target_data_layout_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:RequestCompilationMessage.target_data_layout)
+  // @@protoc_insertion_point(field_set_allocated:WasmFunction.target_data_layout)
 }
 
 // -------------------------------------------------------------------
 
-// Binary
+// NativeBinary
 
 // bytes data_bytes = 1;
-inline void Binary::clear_data_bytes() {
+inline void NativeBinary::clear_data_bytes() {
   data_bytes_.ClearToEmpty();
 }
-inline const std::string& Binary::data_bytes() const {
-  // @@protoc_insertion_point(field_get:Binary.data_bytes)
+inline const std::string& NativeBinary::data_bytes() const {
+  // @@protoc_insertion_point(field_get:NativeBinary.data_bytes)
   return _internal_data_bytes();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void Binary::set_data_bytes(ArgT0&& arg0, ArgT... args) {
+void NativeBinary::set_data_bytes(ArgT0&& arg0, ArgT... args) {
  
  data_bytes_.SetBytes(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Binary.data_bytes)
+  // @@protoc_insertion_point(field_set:NativeBinary.data_bytes)
 }
-inline std::string* Binary::mutable_data_bytes() {
+inline std::string* NativeBinary::mutable_data_bytes() {
   std::string* _s = _internal_mutable_data_bytes();
-  // @@protoc_insertion_point(field_mutable:Binary.data_bytes)
+  // @@protoc_insertion_point(field_mutable:NativeBinary.data_bytes)
   return _s;
 }
-inline const std::string& Binary::_internal_data_bytes() const {
+inline const std::string& NativeBinary::_internal_data_bytes() const {
   return data_bytes_.Get();
 }
-inline void Binary::_internal_set_data_bytes(const std::string& value) {
+inline void NativeBinary::_internal_set_data_bytes(const std::string& value) {
   
   data_bytes_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
 }
-inline std::string* Binary::_internal_mutable_data_bytes() {
+inline std::string* NativeBinary::_internal_mutable_data_bytes() {
   
   return data_bytes_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
 }
-inline std::string* Binary::release_data_bytes() {
-  // @@protoc_insertion_point(field_release:Binary.data_bytes)
+inline std::string* NativeBinary::release_data_bytes() {
+  // @@protoc_insertion_point(field_release:NativeBinary.data_bytes)
   return data_bytes_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
 }
-inline void Binary::set_allocated_data_bytes(std::string* data_bytes) {
+inline void NativeBinary::set_allocated_data_bytes(std::string* data_bytes) {
   if (data_bytes != nullptr) {
     
   } else {
@@ -522,32 +989,34 @@ inline void Binary::set_allocated_data_bytes(std::string* data_bytes) {
     data_bytes_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:Binary.data_bytes)
+  // @@protoc_insertion_point(field_set_allocated:NativeBinary.data_bytes)
 }
 
-// int32 data_length = 2;
-inline void Binary::clear_data_length() {
-  data_length_ = 0;
+// uint32 data_length = 2;
+inline void NativeBinary::clear_data_length() {
+  data_length_ = 0u;
 }
-inline int32_t Binary::_internal_data_length() const {
+inline uint32_t NativeBinary::_internal_data_length() const {
   return data_length_;
 }
-inline int32_t Binary::data_length() const {
-  // @@protoc_insertion_point(field_get:Binary.data_length)
+inline uint32_t NativeBinary::data_length() const {
+  // @@protoc_insertion_point(field_get:NativeBinary.data_length)
   return _internal_data_length();
 }
-inline void Binary::_internal_set_data_length(int32_t value) {
+inline void NativeBinary::_internal_set_data_length(uint32_t value) {
   
   data_length_ = value;
 }
-inline void Binary::set_data_length(int32_t value) {
+inline void NativeBinary::set_data_length(uint32_t value) {
   _internal_set_data_length(value);
-  // @@protoc_insertion_point(field_set:Binary.data_length)
+  // @@protoc_insertion_point(field_set:NativeBinary.data_length)
 }
 
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 

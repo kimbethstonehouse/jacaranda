@@ -8,12 +8,6 @@
 #include <llvm/Support/DynamicLibrary.h>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 
-const char *main_str = "main";
-const char *atoi_str = "atoi";
-
-Payload main_payload(main_str, 4);
-Payload atoi_payload(atoi_str, 4);
-
 // Opens a connection to the compiler
 Runtime::Runtime(JacarandaClient *client) : client_(client) {
     // Map regions of memory to execute native code
@@ -73,17 +67,12 @@ void *Runtime::request_compilation(int function_index) {
     // Imported functions are ignored for now
 //    if (!func->second.internal_function()) return nullptr;
 
-    // TODO: send the actual src payload rather than function name
     // Write to the remote compiler asking for the compiled code
-    Binary native = client_->compile(function_index, target_machine_->createDataLayout().getStringRepresentation());
+    NativeBinary native = client_->compile(func->second.function_type(),
+                                     func->second.function_body(),
+                                     target_machine_->createDataLayout().getStringRepresentation());
 
-    // TODO: problem with this memcpy here
     memcpy(next_function_, native.data_bytes().data(), native.data_length());
-
-//    for (int i = 0; i < native.data_length(); i++) {
-//        *(next_function_+i) = native.data_bytes().data()[i];
-//    }
-
     jump_table_[function_index] = next_function_;
 
     // Pad to 16 bytes
@@ -109,14 +98,14 @@ void Runtime::run(const std::string &filename, int argc, char **argv) {
     runtime_module_ = new RuntimeModule(static_module_it->second);
     init_execution_state(runtime_module_->function_count());
 
-    auto start_section = runtime_module_->static_module()->get_section<StartSection>();
+    auto start_section = runtime_module_->static_module()->get_section<Wasm::StartSection>();
     if (start_section != nullptr) {
         if (jump_table_[start_section->get_idx()] == &trampoline_to_compile) request_compilation(start_section->get_idx());
         trampoline_to_execute(start_section->get_idx(), jump_table_, argc, argv, this);
     }
 
     // StaticModule must export a start function
-    auto exports = runtime_module_->static_module()->get_section<ExportSection>()->exports();
+    auto exports = runtime_module_->static_module()->get_section<Wasm::ExportSection>()->exports();
     bool found_main = false;
     for (const auto &exp : exports) {
         // The main function may be called something else, but let's ignore that for now
