@@ -11,8 +11,8 @@ void Wasm::TypeSection::parse_section() {
     for (int i = 0; i < count_; i++) {
         unsigned char form = payload.read_uleb128(VARUINT7);
         if (form != LanguageTypes::FUNC) {
-            throw load_exception("local: parse: invalid function type value " + std::to_string(form) +
-                                        ", should be " + std::to_string(LanguageTypes::FUNC));
+            throw parse_exception("invalid function type value " + std::to_string(form) +
+                                  ", should be " + std::to_string(LanguageTypes::FUNC));
         }
 
         // Parse the function type
@@ -44,8 +44,8 @@ void Wasm::ImportSection::parse_section() {
         unsigned char type = payload.read_uleb128(VARUINT7);
 
         if (type != ExternalKind::FUNCTION) {
-            throw load_exception("local: parse: invalid external kind " + std::to_string(type) +
-                                ", currently only functions are supported");
+            throw parse_exception("invalid external kind " + std::to_string(type) +
+                                  ", currently only functions are supported");
         }
 
         unsigned int type_index = payload.read_uleb128(VARUINT32);
@@ -94,3 +94,20 @@ void Wasm::ExportSection::parse_section() {
     }
 }
 
+void Wasm::FunctionBody::parse_body() {
+    body_size_ = payload_.read_uleb128(VARUINT32);
+    local_count_ = payload_.read_uleb128(VARUINT32);
+
+    for (int i = 0; i < local_count_; i++) {
+        local_variables_.push_back(LocalEntry(payload_.read_uleb128(VARUINT32),
+                                              ValueType(payload_.read_uleb128(VARUINT7))));
+    }
+
+    int bytecode_length = payload_.data_end()-payload_.at();
+    code_ = Payload(payload_.at(), payload_.data_end()-payload_.at());
+
+    // Sanity check
+    if (*code_.data_end() != 0x0b) {
+        throw compile_exception("error during function body decoding, end byte does not equal 0x0b");
+    }
+}

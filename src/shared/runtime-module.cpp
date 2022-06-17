@@ -21,7 +21,7 @@ void RuntimeModule::load_functions()
     auto code = static_module_->get_section<Wasm::CodeSection>()->bodies();
 
     if (functions.size() != code.size()) {
-        throw run_exception("local: run: number of function declarations in function section "
+        throw execute_exception("number of function declarations in function section "
                             "does not match number of function definitions in code section");
     }
 

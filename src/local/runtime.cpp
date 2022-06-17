@@ -14,7 +14,7 @@ Runtime::Runtime(JacarandaClient *client) : client_(client) {
     code_section_ = (char *) mmap(nullptr, pow(2, 30),
                                   PROT_EXEC | PROT_READ | PROT_WRITE,MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     if (code_section_ == MAP_FAILED) {
-        throw std::runtime_error("mmap failed");
+        throw execute_exception("mmap failed");
     }
     next_function_ = code_section_;
     create_target_machine();
@@ -47,7 +47,9 @@ void Runtime::create_target_machine() {
 	}
 #endif
 
-    target_machine_ = llvm::EngineBuilder().selectTarget(triple, "", llvm::sys::getHostCPUName(), targetAttributes);
+    target_machine_ = std::unique_ptr<llvm::TargetMachine>(llvm::EngineBuilder().selectTarget(
+            llvm::Triple(llvm::sys::getProcessTriple()), "",
+            llvm::sys::getHostCPUName(), targetAttributes));
 }
 
 extern "C" void *do_request_compilation(int function_index, Runtime *runtime) {
@@ -61,16 +63,20 @@ void *Runtime::request_compilation(int function_index) {
     auto func = functions.find(function_index);
 
     if (func == functions.end()) {
-        throw run_exception("local: run: tried to invoke nonexistent function with id " + std::to_string(function_index));
+        throw execute_exception("tried to invoke nonexistent function with id " + std::to_string(function_index));
     }
 
     // Imported functions are ignored for now
 //    if (!func->second.internal_function()) return nullptr;
 
     // Write to the remote compiler asking for the compiled code
-    NativeBinary native = client_->compile(func->second.function_type(),
-                                     func->second.function_body(),
-                                     target_machine_->createDataLayout().getStringRepresentation());
+    NativeBinary native = client_->compile("add-x86",function_index,
+                                           func->second.internal_function(),
+                                           func->second.function_type(),
+                                           func->second.function_body(),
+                                           target_machine_->createDataLayout().getStringRepresentation(),
+                                           target_machine_->getProgramPointerSize());
+
 
     memcpy(next_function_, native.data_bytes().data(), native.data_length());
     jump_table_[function_index] = next_function_;
@@ -91,7 +97,7 @@ void Runtime::run(const std::string &filename, int argc, char **argv) {
     auto static_module_it = static_modules_.find(filename);
 
     if (static_module_it == static_modules_.end()) {
-        throw run_exception("local: run: static module was not loaded correctly");
+        throw execute_exception("static module was not loaded correctly");
     }
 
     // Instantiate the runtime module and runtime environment
@@ -119,7 +125,7 @@ void Runtime::run(const std::string &filename, int argc, char **argv) {
     }
 
     if (!found_main) {
-        throw run_exception("local: run: module did not export _start function");
+        throw execute_exception("module did not export _start function");
     }
 }
 

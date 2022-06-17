@@ -30,7 +30,7 @@ private:
     std::map<std::string, std::shared_ptr<StaticModule>> static_modules_;
     RuntimeModule *runtime_module_;
     JacarandaClient *client_;
-    llvm::TargetMachine *target_machine_;
+    std::unique_ptr<llvm::TargetMachine> target_machine_;
     char *code_section_;
     char *next_function_;
     void **jump_table_;

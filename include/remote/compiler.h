@@ -1,24 +1,22 @@
 #pragma once
 
 #include <jitaas.pb.h>
+#include <llvm/IR/Module.h>
+#include <llvm/IR/IRBuilder.h>
 
 class Compiler {
+    static std::map<unsigned char, llvm::Type *> llvm_types;
+    typedef llvm::SmallVector<llvm::PHINode*, 1> PhiVector;
+
 public:
     Compiler() {}
-    ~Compiler() {}
+    ~Compiler() {
+        for (auto entry : module_architecture_pairs_) { delete entry.second; }
+    }
     void compile(const WasmFunction *wasm, NativeBinary *native);
+private:
+    void createLLVMIR(const WasmFunction *wasm);
+    PhiVector createPhis(llvm::BasicBlock* basic_block, llvm::IRBuilder<> &ir_builder, llvm::Type *type);
+    void addGlobalData(const WasmFunction *wasm, llvm::Module *llvm_module);
+    std::map<std::string, llvm::Module *> module_architecture_pairs_;
 };
-
-// TODO: Not currently parsed.
-/* A sequence of local variable declarations followed by bytecode
- * instructions. Instructions are encoded as an opcode followed by
- * zero or mode immediates. Each function body must end with the end opcode. */
-//class FunctionBody {
-//public:
-//    FunctionBody() {}
-//private:
-//    unsigned int body_size_;
-//    unsigned int local_count_;
-//    std::map<int, LocalEntry> local_variables_;
-//    Payload code_;
-//};

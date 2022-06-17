@@ -1,5 +1,7 @@
 #pragma once
 
+#include <llvm/IR/Type.h>
+
 #define CUSTOM_SECTION_ID 0
 #define TYPE_SECTION_ID 1
 #define IMPORT_SECTION_ID 2
@@ -12,6 +14,7 @@
 #define ELEMENT_SECTION_ID 9
 #define CODE_SECTION_ID 10
 #define DATA_SECTION_ID 11
+
 
 namespace LanguageTypes {
     // Technically negative, but we use the
@@ -41,14 +44,17 @@ enum VaruintN {
 static const char wasm_magic_reference[4] = {0x00, 0x61, 0x73, 0x6d};   // {NULL} asm
 static const char wasm_version_reference[4] = {0x01, 0x00, 0x00, 0x00}; // Version 1
 
-class load_exception : public std::runtime_error
-{
+class parse_exception : public std::runtime_error {
 public:
-    load_exception(const std::string &message) : runtime_error(message) {}
+    parse_exception(const std::string &message) : runtime_error("parse: " + message) {}
 };
 
-class run_exception : public std::runtime_error
-{
+class execute_exception : public std::runtime_error {
 public:
-    run_exception(const std::string &message) : runtime_error(message) {}
+    execute_exception(const std::string &message) : runtime_error("execute: " + message) {}
+};
+
+class compile_exception : public std::runtime_error {
+public:
+    compile_exception(const std::string &message) : runtime_error("compile: " + message) {}
 };

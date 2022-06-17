@@ -12,14 +12,14 @@ StaticModule::StaticModule(const std::string &filename) {
     // Open the file for reading
     int fd = open(filename.c_str(), O_RDONLY);
     if (fd < 0) {
-        throw load_exception("local: load: unable to open file '" + filename + "'");
+        throw parse_exception("unable to open file '" + filename + "'");
     }
 
     // Stat the file to obtain the size
     struct stat64 st;
     if (fstat64(fd, &st) < 0) {
         close(fd);
-        throw load_exception("local: load: unable to stat file '" + filename + "'");
+        throw parse_exception("unable to stat file '" + filename + "'");
     }
 
     // Check that we can at least read the magic number and version number (the first eight bytes)
@@ -27,7 +27,7 @@ StaticModule::StaticModule(const std::string &filename) {
 
     if (buffer_size_ < 8) {
         close(fd);
-        throw load_exception("local: load: invalid file size for '" + filename + "'");
+        throw parse_exception("invalid file size for '" + filename + "'");
     }
 
     // Now, map the file into memory, and close the file descriptor
@@ -36,7 +36,7 @@ StaticModule::StaticModule(const std::string &filename) {
 
     // Check to see if the mapping failed
     if (buffer_ == MAP_FAILED) {
-        throw load_exception("local: load: unable to map file '" + filename + "'");
+        throw parse_exception("unable to map file '" + filename + "'");
     }
 
     // Store the buffer end pointer, which is the byte AFTER the last byte of the mapped file
@@ -52,13 +52,13 @@ void StaticModule::parse_sections() {
     // Check magic number
     const char *magic = &buffer_[0];
     if (memcmp(magic, wasm_magic_reference, sizeof(wasm_magic_reference)) != 0) {
-        throw load_exception("local: parse: invalid magic number");
+        throw parse_exception("invalid magic number");
     }
 
     // Check version number
     const char *version = &buffer_[4];
     if (memcmp(version, wasm_version_reference, sizeof(wasm_version_reference)) != 0) {
-        throw load_exception("local: parse: invalid version number");
+        throw parse_exception("invalid version number");
     }
 
     // Populate the section mapping
@@ -114,7 +114,7 @@ void StaticModule::parse_sections() {
                 break;
 
             default:
-                throw load_exception("local: parse: unknown section id");
+                throw parse_exception("unknown section id");
         }
 
         // Increment the current file pointer by the stated section length.

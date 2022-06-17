@@ -15,9 +15,14 @@ message FunctionType {
 }
 
 message WasmFunction {
-  FunctionType func_type = 1;
-  bytes func_body = 2;
-  string target_data_layout = 3;
+  // A hash of the module:function:architecture pair
+  string hash = 1;
+  uint32 func_idx = 2;
+  bool is_imported = 3;
+  FunctionType func_type = 4;
+  bytes func_body = 5;
+  string target_data_layout = 6;
+  uint32 program_pointer_size = 7;
 }
 
 message NativeBinary {

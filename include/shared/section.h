@@ -20,7 +20,7 @@ namespace Wasm {
         void validate() {
             if (type_ != LanguageTypes::I32 && type_ != LanguageTypes::I64 &&
                 type_ != LanguageTypes::F32 && type_ != LanguageTypes::F64) {
-                throw load_exception("local: parse: invalid value type form");
+                throw parse_exception("invalid value type form");
             }
         }
     };
@@ -113,6 +113,7 @@ namespace Wasm {
     class LocalEntry {
     public:
         LocalEntry(unsigned int count, ValueType type) : count_(count), type_(type) {}
+        unsigned char type() const { return type_.type(); }
     private:
         unsigned int count_;
         ValueType type_;
@@ -273,5 +274,28 @@ namespace Wasm {
     public:
         static constexpr int id = DATA_SECTION_ID;
         DataSection(Payload payload) : Section(payload) {}
+    };
+
+/* A sequence of local variable declarations followed by bytecode
+ * instructions. Instructions are encoded as an opcode followed by
+ * zero or mode immediates. Each function body must end with the end opcode.
+ * body_size varuint32: indicating the size in bytes of the function body to follow
+ * local_count varuint32: indicating the number of local entries
+ * locals local_entry*: repeated LocalEntries
+ * code byte*: bytecode of the function
+ * end byte: 0x0b to indicate the end of the body */
+    class FunctionBody {
+    public:
+        FunctionBody(Payload payload) : payload_(payload) { parse_body(); }
+
+        Wasm::LocalEntry local(int idx) { return local_variables_.at(idx); }
+        unsigned int local_count() { return local_count_; }
+    private:
+        void parse_body();
+        Payload payload_;
+        unsigned int body_size_;
+        unsigned int local_count_;
+        std::vector<Wasm::LocalEntry> local_variables_;
+        Payload code_;
     };
 }
