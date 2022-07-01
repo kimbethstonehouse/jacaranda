@@ -4,10 +4,12 @@ project(remote)
 enable_language(ASM)
 
 set(SOURCES
-        ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/server.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/compiler.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/stubs.S)
+        ${REMOTE_DIR}/main.cpp
+        ${REMOTE_DIR}/server.cpp
+        ${REMOTE_DIR}/compiler.cpp
+        ${REMOTE_DIR}/decoder.cpp
+        ${REMOTE_DIR}/stubs.S
+        ${SHARED_DIR}/section.cpp)
 add_executable(remote ${SOURCES})
 
 target_include_directories(remote PRIVATE

@@ -12,7 +12,8 @@
 class StaticModule {
 public:
     StaticModule(const std::string &filename);
-    ~StaticModule();
+    ~StaticModule(// todo: memleaks
+    );
 
     template <class T> T *get_section() { return (T *)section_map_[T::id]; }
 

@@ -29,21 +29,6 @@ public:
         return *this;
     }
 
-    // Overloaded (de)serialisation functions
-//    template <typename Packer>
-//    void msgpack_pack(Packer& pk) const {
-//        pk.pack_bin(size_);
-//        pk.pack_bin_body(start_, size_);
-//    }
-//
-//    void msgpack_unpack(clmdep_msgpack::object const& o) {
-//        start_ = o.via.bin.ptr;
-//        ptr_ = start_;
-//
-//        size_ = o.via.bin.size;
-//        end_ = start_ + size_;
-//    }
-
     void reset() { ptr_ = start_; }
     bool eob() const { return ptr_ >= end_; }
     const char *at() const { return ptr_; }
@@ -58,11 +43,10 @@ public:
 
     unsigned char read_u8() { return consume(); }
 
-    // Read one number encoded in unsigned little endian base
-    template <typename T = unsigned int> T read_uleb128(enum VaruintN limit) {
+    // Read one number encoded in signed little endian base
+    template <typename T = unsigned int> T read_leb128(enum VarintN limit) {
         T result = 0;
         T shift = 0;
-        T length = 0;
 
         while (true) {
             char c = consume();
@@ -70,10 +54,32 @@ public:
             // Ignore the msb using & 0x7f
             result |= (c & 0x7f) << shift;
             shift += 7;
-            length += 7;
 
             // If the msb is clear, we have read the last byte
-            if (!(c & 0x80) || length >= limit) { // The limit is at most ceil(limit / 7) bytes
+            if (!(c & 0x80) || shift >= limit) { // The limit is at most ceil(limit / 7) bytes
+                if (shift < limit && (c & 0x40)) result |= (~0 << shift);
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    // Read one number encoded in unsigned little endian base
+    // This number can be interpreted as signed, but MUST be sign extended if stored in a type with a larger width than shift
+    template <typename T = unsigned int> T read_uleb128(enum VaruintN limit) {
+        T result = 0;
+        T shift = 0;
+
+        while (true) {
+            char c = consume();
+
+            // Ignore the msb using & 0x7f
+            result |= (c & 0x7f) << shift;
+            shift += 7;
+
+            // If the msb is clear, we have read the last byte
+            if (!(c & 0x80) || shift >= limit) { // The limit is at most ceil(limit / 7) bytes
                 break;
             }
         }

@@ -15,6 +15,24 @@
 #define CODE_SECTION_ID 10
 #define DATA_SECTION_ID 11
 
+// CALL
+#define CALL_OPCODE 0x10
+
+// CONTROL FLOW
+#define BLOCK_OPCODE 0x02
+#define END_OPCODE 0x0b
+#define BR_IF_OPCODE 0x0d
+#define RETURN_OPCODE 0x0f
+
+// VARIABLE ACCESS
+#define GET_LOCAL_OPCODE 0x20
+#define SET_LOCAL_OPCODE 0x21
+
+// CONSTANTS
+#define I32_CONST_OPCODE 0x41
+
+// COMPARISON OPERATORS
+#define I32_EQZ_OPCODE 0x45
 
 namespace LanguageTypes {
     // Technically negative, but we use the
@@ -23,6 +41,8 @@ namespace LanguageTypes {
     unsigned char const I64 = 0x7e;
     unsigned char const F32 = 0x7d;
     unsigned char const F64 = 0x7c;
+    // Indicates that a block leaves no results on the stack
+    unsigned char const NO_RET = 0x40;
     unsigned char const ANYFUNC = 0x70;
     unsigned char const FUNC = 0x60;
 }
@@ -41,6 +61,13 @@ enum VaruintN {
     VARUINT32 = 32,
 };
 
+// Supported varintN sizes
+enum VarintN {
+    VARINT7 = 7,
+    VARINT32 = 32,
+    VARINT64 = 64,
+};
+
 static const char wasm_magic_reference[4] = {0x00, 0x61, 0x73, 0x6d};   // {NULL} asm
 static const char wasm_version_reference[4] = {0x01, 0x00, 0x00, 0x00}; // Version 1
 
@@ -57,4 +84,9 @@ public:
 class compile_exception : public std::runtime_error {
 public:
     compile_exception(const std::string &message) : runtime_error("compile: " + message) {}
+};
+
+class decode_exception : public std::runtime_error {
+public:
+    decode_exception(const std::string &message) : runtime_error("decode: " + message) {}
 };

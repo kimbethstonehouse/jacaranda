@@ -8,6 +8,7 @@
 #include <wasm.h>
 #include <payload.h>
 #include <memory>
+#include "instruction.h"
 
 namespace Wasm {
     class ValueType {
@@ -284,6 +285,7 @@ namespace Wasm {
  * locals local_entry*: repeated LocalEntries
  * code byte*: bytecode of the function
  * end byte: 0x0b to indicate the end of the body */
+// todo: move to instruction.h
     class FunctionBody {
     public:
         FunctionBody(Payload payload) : payload_(payload) { parse_body(); }
@@ -292,10 +294,10 @@ namespace Wasm {
         unsigned int local_count() { return local_count_; }
     private:
         void parse_body();
+        std::vector<std::unique_ptr<Instruction>> instructions_;
         Payload payload_;
         unsigned int body_size_;
         unsigned int local_count_;
         std::vector<Wasm::LocalEntry> local_variables_;
-        Payload code_;
     };
 }

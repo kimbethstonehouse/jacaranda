@@ -103,11 +103,43 @@ void Wasm::FunctionBody::parse_body() {
                                               ValueType(payload_.read_uleb128(VARUINT7))));
     }
 
-    int bytecode_length = payload_.data_end()-payload_.at();
-    code_ = Payload(payload_.at(), payload_.data_end()-payload_.at());
+    while(payload_.at() != payload_.data_end()) {
+        // TODO: account for the prefix bytes
+        char opcode = payload_.read_u8();
+
+        switch(opcode) {
+            case CALL_OPCODE:
+                instructions_.push_back(std::unique_ptr<Instruction>(new CallInstruction(
+                        payload_.read_uleb128(VARUINT32))));
+            case BLOCK_OPCODE:
+                instructions_.push_back(std::unique_ptr<Instruction>(new BlockInstruction(
+                        // uint7 is not a mistake as we look for 0x40 rather than -0x40
+                        payload_.read_uleb128(VARUINT7))));
+            case END_OPCODE:
+                instructions_.push_back(std::unique_ptr<Instruction>(new EndInstruction()));
+            case BR_IF_OPCODE:
+                instructions_.push_back(std::unique_ptr<Instruction>(new BrIfInstruction(
+                        payload_.read_uleb128(VARUINT32))));
+            case RETURN_OPCODE:
+                instructions_.push_back(std::unique_ptr<Instruction>(new ReturnInstruction()));
+            case GET_LOCAL_OPCODE:
+                instructions_.push_back(std::unique_ptr<Instruction>(new GetLocalInstruction(
+                        payload_.read_uleb128(VARUINT32))));
+            case SET_LOCAL_OPCODE:
+                instructions_.push_back(std::unique_ptr<Instruction>(new SetLocalInstruction(
+                        payload_.read_uleb128(VARUINT32))));
+            case I32_CONST_OPCODE:
+                instructions_.push_back(std::unique_ptr<Instruction>(new I32ConstInstruction(
+                        payload_.read_leb128(VARINT32))));
+            case I32_EQZ_OPCODE:
+                instructions_.push_back(std::unique_ptr<Instruction>(new I32EqzInstruction()));
+            default:
+                throw new decode_exception("unsupported instruction with opcode " + std::to_string(opcode) + " encountered");
+        }
+    }
 
     // Sanity check
-    if (*code_.data_end() != 0x0b) {
-        throw compile_exception("error during function body decoding, end byte does not equal 0x0b");
+    if (*payload_.at() != END_OPCODE) {
+        throw decode_exception("error during function body decoding, expected end byte to be 0x0b, but was " + std::to_string(*payload_.at()));
     }
 }
