@@ -12,7 +12,7 @@ A stub for the central code repository. At the moment, the compiler requests cod
 
 *See src/runtime/runtime.cpp*
 
-Responsible for allocating memory, initialising jump tables and handling the execution of the native code provided by the compiler, function-by-function.
+Responsible for allocating memory, initialising jump tables and handling the execution of the native code provided by the compiler, function-by-function. The assembly files are specific to x86, so they will be the first thing to update when porting to ARM.
 
 ## JacarandaCompiler
 
