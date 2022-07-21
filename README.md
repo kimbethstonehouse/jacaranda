@@ -29,8 +29,8 @@ Handle the communication between services. Responsible for serialising and deser
 ## Building
 
 ```
-git clone
-cd jitaas
+git clone git@github.com:kimbethstonehouse/jacaranda.git
+cd jacaranda
 mkdir build && cd build
 cmake ..
 make
