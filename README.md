@@ -22,7 +22,7 @@ Handles the actual compilation of the WebAssembly binary code. Currently respond
 
 ## JacarandaEnvoys
 
-*See src/*/*-envoy.cpp*
+*See src/\*/\*-envoy.cpp*
 
 Handle the communication between services. Responsible for serialising and deserialising information into protocol buffers and making remote procedure calls via stubs. Communication is done via gRPC as it allows bidirectional communication, rather than unidirectional procedure calls from client to server only.
 
