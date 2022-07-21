@@ -3,12 +3,12 @@
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <static-module.h>
+#include <wasm-module.h>
 #include <payload.h>
 #include <section.h>
 #include <fstream>
 
-StaticModule::StaticModule(const std::string &filename) {
+WasmModule::WasmModule(const std::string &filename) {
     // Open the file for reading
     int fd = open(filename.c_str(), O_RDONLY);
     if (fd < 0) {
@@ -46,9 +46,9 @@ StaticModule::StaticModule(const std::string &filename) {
     parse_sections();
 }
 
-StaticModule::~StaticModule() { munmap((void *)buffer_, buffer_size_); }
+WasmModule::~WasmModule() { munmap((void *)buffer_, buffer_size_); }
 
-void StaticModule::parse_sections() {
+void WasmModule::parse_sections() {
     // Check magic number
     const char *magic = &buffer_[0];
     if (memcmp(magic, wasm_magic_reference, sizeof(wasm_magic_reference)) != 0) {
@@ -120,4 +120,39 @@ void StaticModule::parse_sections() {
         // Increment the current file pointer by the stated section length.
         offset += section_length;
     }
+
+    load_functions();
 }
+
+// Function index space indexes all imported and internally-defined function definitions,
+// assigning monotonically-increasing indices based on the order of definition in the module
+void WasmModule::load_functions() {
+    auto imports = get_section<Wasm::ImportSection>()->imports();
+    auto type_section = get_section<Wasm::TypeSection>();
+
+    Payload blank = Payload();
+    for (const auto &import : imports) {
+        if (import.second.import_type() == ExternalKind::FUNCTION) {
+            functions_.insert({import.first, Function(false, import.first, type_section->get_type(import.second.type_index()), blank)});
+        }
+    }
+
+    auto functions = get_section<Wasm::FunctionSection>()->functions();
+    auto code = get_section<Wasm::CodeSection>()->bodies();
+
+    if (functions.size() != code.size()) {
+        throw execute_exception("number of function declarations in function section "
+                                "does not match number of function definitions in code section");
+    }
+
+    int index;
+    int index_offset = imports.size();
+
+    for (const auto &function : functions) {
+        index = function.first + index_offset;
+        functions_.insert({index, Function(true, index, type_section->get_type(function.second.type_index()), code.find(function.first)->second)});
+    }
+
+    function_count_ = index + 1; // The count is the last zero-based index plus one
+}
+

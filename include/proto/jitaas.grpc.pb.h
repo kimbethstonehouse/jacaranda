@@ -33,41 +33,81 @@ class Jacaranda final {
   class StubInterface {
    public:
     virtual ~StubInterface() {}
-    virtual ::grpc::Status compile(::grpc::ClientContext* context, const ::WasmFunction& request, ::NativeBinary* response) = 0;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::NativeBinary>> Asynccompile(::grpc::ClientContext* context, const ::WasmFunction& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::NativeBinary>>(AsynccompileRaw(context, request, cq));
+    virtual ::grpc::Status request_compile(::grpc::ClientContext* context, const ::CompilationRequest& request, ::NativeBinary* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::NativeBinary>> Asyncrequest_compile(::grpc::ClientContext* context, const ::CompilationRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::NativeBinary>>(Asyncrequest_compileRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::NativeBinary>> PrepareAsynccompile(::grpc::ClientContext* context, const ::WasmFunction& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::NativeBinary>>(PrepareAsynccompileRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::NativeBinary>> PrepareAsyncrequest_compile(::grpc::ClientContext* context, const ::CompilationRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::NativeBinary>>(PrepareAsyncrequest_compileRaw(context, request, cq));
+    }
+    virtual ::grpc::Status request_code(::grpc::ClientContext* context, const ::CodeRequest& request, ::WasmFunction* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::WasmFunction>> Asyncrequest_code(::grpc::ClientContext* context, const ::CodeRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::WasmFunction>>(Asyncrequest_codeRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::WasmFunction>> PrepareAsyncrequest_code(::grpc::ClientContext* context, const ::CodeRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::WasmFunction>>(PrepareAsyncrequest_codeRaw(context, request, cq));
+    }
+    virtual ::grpc::Status request_function_indices(::grpc::ClientContext* context, const ::IndicesRequest& request, ::FunctionIndices* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::FunctionIndices>> Asyncrequest_function_indices(::grpc::ClientContext* context, const ::IndicesRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::FunctionIndices>>(Asyncrequest_function_indicesRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::FunctionIndices>> PrepareAsyncrequest_function_indices(::grpc::ClientContext* context, const ::IndicesRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::FunctionIndices>>(PrepareAsyncrequest_function_indicesRaw(context, request, cq));
     }
     class async_interface {
      public:
       virtual ~async_interface() {}
-      virtual void compile(::grpc::ClientContext* context, const ::WasmFunction* request, ::NativeBinary* response, std::function<void(::grpc::Status)>) = 0;
-      virtual void compile(::grpc::ClientContext* context, const ::WasmFunction* request, ::NativeBinary* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      virtual void request_compile(::grpc::ClientContext* context, const ::CompilationRequest* request, ::NativeBinary* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void request_compile(::grpc::ClientContext* context, const ::CompilationRequest* request, ::NativeBinary* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      virtual void request_code(::grpc::ClientContext* context, const ::CodeRequest* request, ::WasmFunction* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void request_code(::grpc::ClientContext* context, const ::CodeRequest* request, ::WasmFunction* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      virtual void request_function_indices(::grpc::ClientContext* context, const ::IndicesRequest* request, ::FunctionIndices* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void request_function_indices(::grpc::ClientContext* context, const ::IndicesRequest* request, ::FunctionIndices* response, ::grpc::ClientUnaryReactor* reactor) = 0;
     };
     typedef class async_interface experimental_async_interface;
     virtual class async_interface* async() { return nullptr; }
     class async_interface* experimental_async() { return async(); }
    private:
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::NativeBinary>* AsynccompileRaw(::grpc::ClientContext* context, const ::WasmFunction& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::NativeBinary>* PrepareAsynccompileRaw(::grpc::ClientContext* context, const ::WasmFunction& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::NativeBinary>* Asyncrequest_compileRaw(::grpc::ClientContext* context, const ::CompilationRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::NativeBinary>* PrepareAsyncrequest_compileRaw(::grpc::ClientContext* context, const ::CompilationRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::WasmFunction>* Asyncrequest_codeRaw(::grpc::ClientContext* context, const ::CodeRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::WasmFunction>* PrepareAsyncrequest_codeRaw(::grpc::ClientContext* context, const ::CodeRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::FunctionIndices>* Asyncrequest_function_indicesRaw(::grpc::ClientContext* context, const ::IndicesRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::FunctionIndices>* PrepareAsyncrequest_function_indicesRaw(::grpc::ClientContext* context, const ::IndicesRequest& request, ::grpc::CompletionQueue* cq) = 0;
   };
   class Stub final : public StubInterface {
    public:
     Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options = ::grpc::StubOptions());
-    ::grpc::Status compile(::grpc::ClientContext* context, const ::WasmFunction& request, ::NativeBinary* response) override;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::NativeBinary>> Asynccompile(::grpc::ClientContext* context, const ::WasmFunction& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::NativeBinary>>(AsynccompileRaw(context, request, cq));
+    ::grpc::Status request_compile(::grpc::ClientContext* context, const ::CompilationRequest& request, ::NativeBinary* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::NativeBinary>> Asyncrequest_compile(::grpc::ClientContext* context, const ::CompilationRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::NativeBinary>>(Asyncrequest_compileRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::NativeBinary>> PrepareAsynccompile(::grpc::ClientContext* context, const ::WasmFunction& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::NativeBinary>>(PrepareAsynccompileRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::NativeBinary>> PrepareAsyncrequest_compile(::grpc::ClientContext* context, const ::CompilationRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::NativeBinary>>(PrepareAsyncrequest_compileRaw(context, request, cq));
+    }
+    ::grpc::Status request_code(::grpc::ClientContext* context, const ::CodeRequest& request, ::WasmFunction* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::WasmFunction>> Asyncrequest_code(::grpc::ClientContext* context, const ::CodeRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::WasmFunction>>(Asyncrequest_codeRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::WasmFunction>> PrepareAsyncrequest_code(::grpc::ClientContext* context, const ::CodeRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::WasmFunction>>(PrepareAsyncrequest_codeRaw(context, request, cq));
+    }
+    ::grpc::Status request_function_indices(::grpc::ClientContext* context, const ::IndicesRequest& request, ::FunctionIndices* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::FunctionIndices>> Asyncrequest_function_indices(::grpc::ClientContext* context, const ::IndicesRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::FunctionIndices>>(Asyncrequest_function_indicesRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::FunctionIndices>> PrepareAsyncrequest_function_indices(::grpc::ClientContext* context, const ::IndicesRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::FunctionIndices>>(PrepareAsyncrequest_function_indicesRaw(context, request, cq));
     }
     class async final :
       public StubInterface::async_interface {
      public:
-      void compile(::grpc::ClientContext* context, const ::WasmFunction* request, ::NativeBinary* response, std::function<void(::grpc::Status)>) override;
-      void compile(::grpc::ClientContext* context, const ::WasmFunction* request, ::NativeBinary* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void request_compile(::grpc::ClientContext* context, const ::CompilationRequest* request, ::NativeBinary* response, std::function<void(::grpc::Status)>) override;
+      void request_compile(::grpc::ClientContext* context, const ::CompilationRequest* request, ::NativeBinary* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void request_code(::grpc::ClientContext* context, const ::CodeRequest* request, ::WasmFunction* response, std::function<void(::grpc::Status)>) override;
+      void request_code(::grpc::ClientContext* context, const ::CodeRequest* request, ::WasmFunction* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void request_function_indices(::grpc::ClientContext* context, const ::IndicesRequest* request, ::FunctionIndices* response, std::function<void(::grpc::Status)>) override;
+      void request_function_indices(::grpc::ClientContext* context, const ::IndicesRequest* request, ::FunctionIndices* response, ::grpc::ClientUnaryReactor* reactor) override;
      private:
       friend class Stub;
       explicit async(Stub* stub): stub_(stub) { }
@@ -79,9 +119,15 @@ class Jacaranda final {
    private:
     std::shared_ptr< ::grpc::ChannelInterface> channel_;
     class async async_stub_{this};
-    ::grpc::ClientAsyncResponseReader< ::NativeBinary>* AsynccompileRaw(::grpc::ClientContext* context, const ::WasmFunction& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::NativeBinary>* PrepareAsynccompileRaw(::grpc::ClientContext* context, const ::WasmFunction& request, ::grpc::CompletionQueue* cq) override;
-    const ::grpc::internal::RpcMethod rpcmethod_compile_;
+    ::grpc::ClientAsyncResponseReader< ::NativeBinary>* Asyncrequest_compileRaw(::grpc::ClientContext* context, const ::CompilationRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::NativeBinary>* PrepareAsyncrequest_compileRaw(::grpc::ClientContext* context, const ::CompilationRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::WasmFunction>* Asyncrequest_codeRaw(::grpc::ClientContext* context, const ::CodeRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::WasmFunction>* PrepareAsyncrequest_codeRaw(::grpc::ClientContext* context, const ::CodeRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::FunctionIndices>* Asyncrequest_function_indicesRaw(::grpc::ClientContext* context, const ::IndicesRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::FunctionIndices>* PrepareAsyncrequest_function_indicesRaw(::grpc::ClientContext* context, const ::IndicesRequest& request, ::grpc::CompletionQueue* cq) override;
+    const ::grpc::internal::RpcMethod rpcmethod_request_compile_;
+    const ::grpc::internal::RpcMethod rpcmethod_request_code_;
+    const ::grpc::internal::RpcMethod rpcmethod_request_function_indices_;
   };
   static std::unique_ptr<Stub> NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options = ::grpc::StubOptions());
 
@@ -89,147 +135,415 @@ class Jacaranda final {
    public:
     Service();
     virtual ~Service();
-    virtual ::grpc::Status compile(::grpc::ServerContext* context, const ::WasmFunction* request, ::NativeBinary* response);
+    virtual ::grpc::Status request_compile(::grpc::ServerContext* context, const ::CompilationRequest* request, ::NativeBinary* response);
+    virtual ::grpc::Status request_code(::grpc::ServerContext* context, const ::CodeRequest* request, ::WasmFunction* response);
+    virtual ::grpc::Status request_function_indices(::grpc::ServerContext* context, const ::IndicesRequest* request, ::FunctionIndices* response);
   };
   template <class BaseClass>
-  class WithAsyncMethod_compile : public BaseClass {
+  class WithAsyncMethod_request_compile : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
-    WithAsyncMethod_compile() {
+    WithAsyncMethod_request_compile() {
       ::grpc::Service::MarkMethodAsync(0);
     }
-    ~WithAsyncMethod_compile() override {
+    ~WithAsyncMethod_request_compile() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status compile(::grpc::ServerContext* /*context*/, const ::WasmFunction* /*request*/, ::NativeBinary* /*response*/) override {
+    ::grpc::Status request_compile(::grpc::ServerContext* /*context*/, const ::CompilationRequest* /*request*/, ::NativeBinary* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void Requestcompile(::grpc::ServerContext* context, ::WasmFunction* request, ::grpc::ServerAsyncResponseWriter< ::NativeBinary>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+    void Requestrequest_compile(::grpc::ServerContext* context, ::CompilationRequest* request, ::grpc::ServerAsyncResponseWriter< ::NativeBinary>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(0, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
-  typedef WithAsyncMethod_compile<Service > AsyncService;
   template <class BaseClass>
-  class WithCallbackMethod_compile : public BaseClass {
+  class WithAsyncMethod_request_code : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
-    WithCallbackMethod_compile() {
+    WithAsyncMethod_request_code() {
+      ::grpc::Service::MarkMethodAsync(1);
+    }
+    ~WithAsyncMethod_request_code() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status request_code(::grpc::ServerContext* /*context*/, const ::CodeRequest* /*request*/, ::WasmFunction* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void Requestrequest_code(::grpc::ServerContext* context, ::CodeRequest* request, ::grpc::ServerAsyncResponseWriter< ::WasmFunction>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithAsyncMethod_request_function_indices : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_request_function_indices() {
+      ::grpc::Service::MarkMethodAsync(2);
+    }
+    ~WithAsyncMethod_request_function_indices() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status request_function_indices(::grpc::ServerContext* /*context*/, const ::IndicesRequest* /*request*/, ::FunctionIndices* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void Requestrequest_function_indices(::grpc::ServerContext* context, ::IndicesRequest* request, ::grpc::ServerAsyncResponseWriter< ::FunctionIndices>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  typedef WithAsyncMethod_request_compile<WithAsyncMethod_request_code<WithAsyncMethod_request_function_indices<Service > > > AsyncService;
+  template <class BaseClass>
+  class WithCallbackMethod_request_compile : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithCallbackMethod_request_compile() {
       ::grpc::Service::MarkMethodCallback(0,
-          new ::grpc::internal::CallbackUnaryHandler< ::WasmFunction, ::NativeBinary>(
+          new ::grpc::internal::CallbackUnaryHandler< ::CompilationRequest, ::NativeBinary>(
             [this](
-                   ::grpc::CallbackServerContext* context, const ::WasmFunction* request, ::NativeBinary* response) { return this->compile(context, request, response); }));}
-    void SetMessageAllocatorFor_compile(
-        ::grpc::MessageAllocator< ::WasmFunction, ::NativeBinary>* allocator) {
+                   ::grpc::CallbackServerContext* context, const ::CompilationRequest* request, ::NativeBinary* response) { return this->request_compile(context, request, response); }));}
+    void SetMessageAllocatorFor_request_compile(
+        ::grpc::MessageAllocator< ::CompilationRequest, ::NativeBinary>* allocator) {
       ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(0);
-      static_cast<::grpc::internal::CallbackUnaryHandler< ::WasmFunction, ::NativeBinary>*>(handler)
+      static_cast<::grpc::internal::CallbackUnaryHandler< ::CompilationRequest, ::NativeBinary>*>(handler)
               ->SetMessageAllocator(allocator);
     }
-    ~WithCallbackMethod_compile() override {
+    ~WithCallbackMethod_request_compile() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status compile(::grpc::ServerContext* /*context*/, const ::WasmFunction* /*request*/, ::NativeBinary* /*response*/) override {
+    ::grpc::Status request_compile(::grpc::ServerContext* /*context*/, const ::CompilationRequest* /*request*/, ::NativeBinary* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    virtual ::grpc::ServerUnaryReactor* compile(
-      ::grpc::CallbackServerContext* /*context*/, const ::WasmFunction* /*request*/, ::NativeBinary* /*response*/)  { return nullptr; }
+    virtual ::grpc::ServerUnaryReactor* request_compile(
+      ::grpc::CallbackServerContext* /*context*/, const ::CompilationRequest* /*request*/, ::NativeBinary* /*response*/)  { return nullptr; }
   };
-  typedef WithCallbackMethod_compile<Service > CallbackService;
+  template <class BaseClass>
+  class WithCallbackMethod_request_code : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithCallbackMethod_request_code() {
+      ::grpc::Service::MarkMethodCallback(1,
+          new ::grpc::internal::CallbackUnaryHandler< ::CodeRequest, ::WasmFunction>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::CodeRequest* request, ::WasmFunction* response) { return this->request_code(context, request, response); }));}
+    void SetMessageAllocatorFor_request_code(
+        ::grpc::MessageAllocator< ::CodeRequest, ::WasmFunction>* allocator) {
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(1);
+      static_cast<::grpc::internal::CallbackUnaryHandler< ::CodeRequest, ::WasmFunction>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~WithCallbackMethod_request_code() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status request_code(::grpc::ServerContext* /*context*/, const ::CodeRequest* /*request*/, ::WasmFunction* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* request_code(
+      ::grpc::CallbackServerContext* /*context*/, const ::CodeRequest* /*request*/, ::WasmFunction* /*response*/)  { return nullptr; }
+  };
+  template <class BaseClass>
+  class WithCallbackMethod_request_function_indices : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithCallbackMethod_request_function_indices() {
+      ::grpc::Service::MarkMethodCallback(2,
+          new ::grpc::internal::CallbackUnaryHandler< ::IndicesRequest, ::FunctionIndices>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::IndicesRequest* request, ::FunctionIndices* response) { return this->request_function_indices(context, request, response); }));}
+    void SetMessageAllocatorFor_request_function_indices(
+        ::grpc::MessageAllocator< ::IndicesRequest, ::FunctionIndices>* allocator) {
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(2);
+      static_cast<::grpc::internal::CallbackUnaryHandler< ::IndicesRequest, ::FunctionIndices>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~WithCallbackMethod_request_function_indices() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status request_function_indices(::grpc::ServerContext* /*context*/, const ::IndicesRequest* /*request*/, ::FunctionIndices* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* request_function_indices(
+      ::grpc::CallbackServerContext* /*context*/, const ::IndicesRequest* /*request*/, ::FunctionIndices* /*response*/)  { return nullptr; }
+  };
+  typedef WithCallbackMethod_request_compile<WithCallbackMethod_request_code<WithCallbackMethod_request_function_indices<Service > > > CallbackService;
   typedef CallbackService ExperimentalCallbackService;
   template <class BaseClass>
-  class WithGenericMethod_compile : public BaseClass {
+  class WithGenericMethod_request_compile : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
-    WithGenericMethod_compile() {
+    WithGenericMethod_request_compile() {
       ::grpc::Service::MarkMethodGeneric(0);
     }
-    ~WithGenericMethod_compile() override {
+    ~WithGenericMethod_request_compile() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status compile(::grpc::ServerContext* /*context*/, const ::WasmFunction* /*request*/, ::NativeBinary* /*response*/) override {
+    ::grpc::Status request_compile(::grpc::ServerContext* /*context*/, const ::CompilationRequest* /*request*/, ::NativeBinary* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
   };
   template <class BaseClass>
-  class WithRawMethod_compile : public BaseClass {
+  class WithGenericMethod_request_code : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
-    WithRawMethod_compile() {
-      ::grpc::Service::MarkMethodRaw(0);
+    WithGenericMethod_request_code() {
+      ::grpc::Service::MarkMethodGeneric(1);
     }
-    ~WithRawMethod_compile() override {
+    ~WithGenericMethod_request_code() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status compile(::grpc::ServerContext* /*context*/, const ::WasmFunction* /*request*/, ::NativeBinary* /*response*/) override {
+    ::grpc::Status request_code(::grpc::ServerContext* /*context*/, const ::CodeRequest* /*request*/, ::WasmFunction* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void Requestcompile(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+  };
+  template <class BaseClass>
+  class WithGenericMethod_request_function_indices : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_request_function_indices() {
+      ::grpc::Service::MarkMethodGeneric(2);
+    }
+    ~WithGenericMethod_request_function_indices() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status request_function_indices(::grpc::ServerContext* /*context*/, const ::IndicesRequest* /*request*/, ::FunctionIndices* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithRawMethod_request_compile : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_request_compile() {
+      ::grpc::Service::MarkMethodRaw(0);
+    }
+    ~WithRawMethod_request_compile() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status request_compile(::grpc::ServerContext* /*context*/, const ::CompilationRequest* /*request*/, ::NativeBinary* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void Requestrequest_compile(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(0, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
-  class WithRawCallbackMethod_compile : public BaseClass {
+  class WithRawMethod_request_code : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
-    WithRawCallbackMethod_compile() {
+    WithRawMethod_request_code() {
+      ::grpc::Service::MarkMethodRaw(1);
+    }
+    ~WithRawMethod_request_code() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status request_code(::grpc::ServerContext* /*context*/, const ::CodeRequest* /*request*/, ::WasmFunction* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void Requestrequest_code(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithRawMethod_request_function_indices : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_request_function_indices() {
+      ::grpc::Service::MarkMethodRaw(2);
+    }
+    ~WithRawMethod_request_function_indices() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status request_function_indices(::grpc::ServerContext* /*context*/, const ::IndicesRequest* /*request*/, ::FunctionIndices* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void Requestrequest_function_indices(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithRawCallbackMethod_request_compile : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawCallbackMethod_request_compile() {
       ::grpc::Service::MarkMethodRawCallback(0,
           new ::grpc::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
             [this](
-                   ::grpc::CallbackServerContext* context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->compile(context, request, response); }));
+                   ::grpc::CallbackServerContext* context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->request_compile(context, request, response); }));
     }
-    ~WithRawCallbackMethod_compile() override {
+    ~WithRawCallbackMethod_request_compile() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status compile(::grpc::ServerContext* /*context*/, const ::WasmFunction* /*request*/, ::NativeBinary* /*response*/) override {
+    ::grpc::Status request_compile(::grpc::ServerContext* /*context*/, const ::CompilationRequest* /*request*/, ::NativeBinary* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    virtual ::grpc::ServerUnaryReactor* compile(
+    virtual ::grpc::ServerUnaryReactor* request_compile(
       ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)  { return nullptr; }
   };
   template <class BaseClass>
-  class WithStreamedUnaryMethod_compile : public BaseClass {
+  class WithRawCallbackMethod_request_code : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
-    WithStreamedUnaryMethod_compile() {
+    WithRawCallbackMethod_request_code() {
+      ::grpc::Service::MarkMethodRawCallback(1,
+          new ::grpc::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->request_code(context, request, response); }));
+    }
+    ~WithRawCallbackMethod_request_code() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status request_code(::grpc::ServerContext* /*context*/, const ::CodeRequest* /*request*/, ::WasmFunction* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* request_code(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)  { return nullptr; }
+  };
+  template <class BaseClass>
+  class WithRawCallbackMethod_request_function_indices : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawCallbackMethod_request_function_indices() {
+      ::grpc::Service::MarkMethodRawCallback(2,
+          new ::grpc::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->request_function_indices(context, request, response); }));
+    }
+    ~WithRawCallbackMethod_request_function_indices() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status request_function_indices(::grpc::ServerContext* /*context*/, const ::IndicesRequest* /*request*/, ::FunctionIndices* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* request_function_indices(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)  { return nullptr; }
+  };
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_request_compile : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_request_compile() {
       ::grpc::Service::MarkMethodStreamed(0,
         new ::grpc::internal::StreamedUnaryHandler<
-          ::WasmFunction, ::NativeBinary>(
+          ::CompilationRequest, ::NativeBinary>(
             [this](::grpc::ServerContext* context,
                    ::grpc::ServerUnaryStreamer<
-                     ::WasmFunction, ::NativeBinary>* streamer) {
-                       return this->Streamedcompile(context,
+                     ::CompilationRequest, ::NativeBinary>* streamer) {
+                       return this->Streamedrequest_compile(context,
                          streamer);
                   }));
     }
-    ~WithStreamedUnaryMethod_compile() override {
+    ~WithStreamedUnaryMethod_request_compile() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable regular version of this method
-    ::grpc::Status compile(::grpc::ServerContext* /*context*/, const ::WasmFunction* /*request*/, ::NativeBinary* /*response*/) override {
+    ::grpc::Status request_compile(::grpc::ServerContext* /*context*/, const ::CompilationRequest* /*request*/, ::NativeBinary* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     // replace default version of method with streamed unary
-    virtual ::grpc::Status Streamedcompile(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::WasmFunction,::NativeBinary>* server_unary_streamer) = 0;
+    virtual ::grpc::Status Streamedrequest_compile(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::CompilationRequest,::NativeBinary>* server_unary_streamer) = 0;
   };
-  typedef WithStreamedUnaryMethod_compile<Service > StreamedUnaryService;
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_request_code : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_request_code() {
+      ::grpc::Service::MarkMethodStreamed(1,
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::CodeRequest, ::WasmFunction>(
+            [this](::grpc::ServerContext* context,
+                   ::grpc::ServerUnaryStreamer<
+                     ::CodeRequest, ::WasmFunction>* streamer) {
+                       return this->Streamedrequest_code(context,
+                         streamer);
+                  }));
+    }
+    ~WithStreamedUnaryMethod_request_code() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status request_code(::grpc::ServerContext* /*context*/, const ::CodeRequest* /*request*/, ::WasmFunction* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status Streamedrequest_code(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::CodeRequest,::WasmFunction>* server_unary_streamer) = 0;
+  };
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_request_function_indices : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_request_function_indices() {
+      ::grpc::Service::MarkMethodStreamed(2,
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::IndicesRequest, ::FunctionIndices>(
+            [this](::grpc::ServerContext* context,
+                   ::grpc::ServerUnaryStreamer<
+                     ::IndicesRequest, ::FunctionIndices>* streamer) {
+                       return this->Streamedrequest_function_indices(context,
+                         streamer);
+                  }));
+    }
+    ~WithStreamedUnaryMethod_request_function_indices() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status request_function_indices(::grpc::ServerContext* /*context*/, const ::IndicesRequest* /*request*/, ::FunctionIndices* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status Streamedrequest_function_indices(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::IndicesRequest,::FunctionIndices>* server_unary_streamer) = 0;
+  };
+  typedef WithStreamedUnaryMethod_request_compile<WithStreamedUnaryMethod_request_code<WithStreamedUnaryMethod_request_function_indices<Service > > > StreamedUnaryService;
   typedef Service SplitStreamedService;
-  typedef WithStreamedUnaryMethod_compile<Service > StreamedService;
+  typedef WithStreamedUnaryMethod_request_compile<WithStreamedUnaryMethod_request_code<WithStreamedUnaryMethod_request_function_indices<Service > > > StreamedService;
 };
 
 

@@ -81,6 +81,11 @@ public:
     execute_exception(const std::string &message) : runtime_error("execute: " + message) {}
 };
 
+class repository_exception : public std::runtime_error {
+public:
+    repository_exception(const std::string &message) : runtime_error("repository: " + message) {}
+};
+
 class compile_exception : public std::runtime_error {
 public:
     compile_exception(const std::string &message) : runtime_error("compile: " + message) {}

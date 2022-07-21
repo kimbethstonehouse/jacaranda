@@ -46,16 +46,28 @@ struct TableStruct_jitaas_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxiliaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[3]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[7]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
   static const uint32_t offsets[];
 };
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_jitaas_2eproto;
+class CodeRequest;
+struct CodeRequestDefaultTypeInternal;
+extern CodeRequestDefaultTypeInternal _CodeRequest_default_instance_;
+class CompilationRequest;
+struct CompilationRequestDefaultTypeInternal;
+extern CompilationRequestDefaultTypeInternal _CompilationRequest_default_instance_;
+class FunctionIndices;
+struct FunctionIndicesDefaultTypeInternal;
+extern FunctionIndicesDefaultTypeInternal _FunctionIndices_default_instance_;
 class FunctionType;
 struct FunctionTypeDefaultTypeInternal;
 extern FunctionTypeDefaultTypeInternal _FunctionType_default_instance_;
+class IndicesRequest;
+struct IndicesRequestDefaultTypeInternal;
+extern IndicesRequestDefaultTypeInternal _IndicesRequest_default_instance_;
 class NativeBinary;
 struct NativeBinaryDefaultTypeInternal;
 extern NativeBinaryDefaultTypeInternal _NativeBinary_default_instance_;
@@ -63,12 +75,340 @@ class WasmFunction;
 struct WasmFunctionDefaultTypeInternal;
 extern WasmFunctionDefaultTypeInternal _WasmFunction_default_instance_;
 PROTOBUF_NAMESPACE_OPEN
+template<> ::CodeRequest* Arena::CreateMaybeMessage<::CodeRequest>(Arena*);
+template<> ::CompilationRequest* Arena::CreateMaybeMessage<::CompilationRequest>(Arena*);
+template<> ::FunctionIndices* Arena::CreateMaybeMessage<::FunctionIndices>(Arena*);
 template<> ::FunctionType* Arena::CreateMaybeMessage<::FunctionType>(Arena*);
+template<> ::IndicesRequest* Arena::CreateMaybeMessage<::IndicesRequest>(Arena*);
 template<> ::NativeBinary* Arena::CreateMaybeMessage<::NativeBinary>(Arena*);
 template<> ::WasmFunction* Arena::CreateMaybeMessage<::WasmFunction>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 
 // ===================================================================
+
+class IndicesRequest final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:IndicesRequest) */ {
+ public:
+  inline IndicesRequest() : IndicesRequest(nullptr) {}
+  ~IndicesRequest() override;
+  explicit constexpr IndicesRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  IndicesRequest(const IndicesRequest& from);
+  IndicesRequest(IndicesRequest&& from) noexcept
+    : IndicesRequest() {
+    *this = ::std::move(from);
+  }
+
+  inline IndicesRequest& operator=(const IndicesRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline IndicesRequest& operator=(IndicesRequest&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const IndicesRequest& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const IndicesRequest* internal_default_instance() {
+    return reinterpret_cast<const IndicesRequest*>(
+               &_IndicesRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    0;
+
+  friend void swap(IndicesRequest& a, IndicesRequest& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(IndicesRequest* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(IndicesRequest* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  IndicesRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<IndicesRequest>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const IndicesRequest& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom(const IndicesRequest& from);
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(IndicesRequest* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "IndicesRequest";
+  }
+  protected:
+  explicit IndicesRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kModuleNameFieldNumber = 1,
+  };
+  // string module_name = 1;
+  void clear_module_name();
+  const std::string& module_name() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_module_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_module_name();
+  PROTOBUF_NODISCARD std::string* release_module_name();
+  void set_allocated_module_name(std::string* module_name);
+  private:
+  const std::string& _internal_module_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_module_name(const std::string& value);
+  std::string* _internal_mutable_module_name();
+  public:
+
+  // @@protoc_insertion_point(class_scope:IndicesRequest)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr module_name_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_jitaas_2eproto;
+};
+// -------------------------------------------------------------------
+
+class FunctionIndices final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:FunctionIndices) */ {
+ public:
+  inline FunctionIndices() : FunctionIndices(nullptr) {}
+  ~FunctionIndices() override;
+  explicit constexpr FunctionIndices(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  FunctionIndices(const FunctionIndices& from);
+  FunctionIndices(FunctionIndices&& from) noexcept
+    : FunctionIndices() {
+    *this = ::std::move(from);
+  }
+
+  inline FunctionIndices& operator=(const FunctionIndices& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline FunctionIndices& operator=(FunctionIndices&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const FunctionIndices& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const FunctionIndices* internal_default_instance() {
+    return reinterpret_cast<const FunctionIndices*>(
+               &_FunctionIndices_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    1;
+
+  friend void swap(FunctionIndices& a, FunctionIndices& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(FunctionIndices* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(FunctionIndices* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  FunctionIndices* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<FunctionIndices>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const FunctionIndices& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom(const FunctionIndices& from);
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(FunctionIndices* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "FunctionIndices";
+  }
+  protected:
+  explicit FunctionIndices(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kFuncCountFieldNumber = 1,
+    kMainIdxFieldNumber = 2,
+    kStartIdxFieldNumber = 3,
+  };
+  // uint32 func_count = 1;
+  void clear_func_count();
+  uint32_t func_count() const;
+  void set_func_count(uint32_t value);
+  private:
+  uint32_t _internal_func_count() const;
+  void _internal_set_func_count(uint32_t value);
+  public:
+
+  // uint32 main_idx = 2;
+  void clear_main_idx();
+  uint32_t main_idx() const;
+  void set_main_idx(uint32_t value);
+  private:
+  uint32_t _internal_main_idx() const;
+  void _internal_set_main_idx(uint32_t value);
+  public:
+
+  // optional uint32 start_idx = 3;
+  bool has_start_idx() const;
+  private:
+  bool _internal_has_start_idx() const;
+  public:
+  void clear_start_idx();
+  uint32_t start_idx() const;
+  void set_start_idx(uint32_t value);
+  private:
+  uint32_t _internal_start_idx() const;
+  void _internal_set_start_idx(uint32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:FunctionIndices)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  uint32_t func_count_;
+  uint32_t main_idx_;
+  uint32_t start_idx_;
+  friend struct ::TableStruct_jitaas_2eproto;
+};
+// -------------------------------------------------------------------
 
 class FunctionType final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:FunctionType) */ {
@@ -118,7 +458,7 @@ class FunctionType final :
                &_FunctionType_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    0;
+    2;
 
   friend void swap(FunctionType& a, FunctionType& b) {
     a.Swap(&b);
@@ -268,6 +608,373 @@ class FunctionType final :
 };
 // -------------------------------------------------------------------
 
+class CompilationRequest final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CompilationRequest) */ {
+ public:
+  inline CompilationRequest() : CompilationRequest(nullptr) {}
+  ~CompilationRequest() override;
+  explicit constexpr CompilationRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CompilationRequest(const CompilationRequest& from);
+  CompilationRequest(CompilationRequest&& from) noexcept
+    : CompilationRequest() {
+    *this = ::std::move(from);
+  }
+
+  inline CompilationRequest& operator=(const CompilationRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CompilationRequest& operator=(CompilationRequest&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CompilationRequest& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CompilationRequest* internal_default_instance() {
+    return reinterpret_cast<const CompilationRequest*>(
+               &_CompilationRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    3;
+
+  friend void swap(CompilationRequest& a, CompilationRequest& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CompilationRequest* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CompilationRequest* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CompilationRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CompilationRequest>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CompilationRequest& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom(const CompilationRequest& from);
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CompilationRequest* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CompilationRequest";
+  }
+  protected:
+  explicit CompilationRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kModuleNameFieldNumber = 1,
+    kArchitectureFieldNumber = 2,
+    kTargetDataLayoutFieldNumber = 4,
+    kFuncIdxFieldNumber = 3,
+    kProgramPointerSizeFieldNumber = 5,
+  };
+  // string module_name = 1;
+  void clear_module_name();
+  const std::string& module_name() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_module_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_module_name();
+  PROTOBUF_NODISCARD std::string* release_module_name();
+  void set_allocated_module_name(std::string* module_name);
+  private:
+  const std::string& _internal_module_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_module_name(const std::string& value);
+  std::string* _internal_mutable_module_name();
+  public:
+
+  // string architecture = 2;
+  void clear_architecture();
+  const std::string& architecture() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_architecture(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_architecture();
+  PROTOBUF_NODISCARD std::string* release_architecture();
+  void set_allocated_architecture(std::string* architecture);
+  private:
+  const std::string& _internal_architecture() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_architecture(const std::string& value);
+  std::string* _internal_mutable_architecture();
+  public:
+
+  // string target_data_layout = 4;
+  void clear_target_data_layout();
+  const std::string& target_data_layout() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_target_data_layout(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_target_data_layout();
+  PROTOBUF_NODISCARD std::string* release_target_data_layout();
+  void set_allocated_target_data_layout(std::string* target_data_layout);
+  private:
+  const std::string& _internal_target_data_layout() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_target_data_layout(const std::string& value);
+  std::string* _internal_mutable_target_data_layout();
+  public:
+
+  // uint32 func_idx = 3;
+  void clear_func_idx();
+  uint32_t func_idx() const;
+  void set_func_idx(uint32_t value);
+  private:
+  uint32_t _internal_func_idx() const;
+  void _internal_set_func_idx(uint32_t value);
+  public:
+
+  // uint32 program_pointer_size = 5;
+  void clear_program_pointer_size();
+  uint32_t program_pointer_size() const;
+  void set_program_pointer_size(uint32_t value);
+  private:
+  uint32_t _internal_program_pointer_size() const;
+  void _internal_set_program_pointer_size(uint32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CompilationRequest)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr module_name_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr architecture_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr target_data_layout_;
+  uint32_t func_idx_;
+  uint32_t program_pointer_size_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_jitaas_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CodeRequest final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CodeRequest) */ {
+ public:
+  inline CodeRequest() : CodeRequest(nullptr) {}
+  ~CodeRequest() override;
+  explicit constexpr CodeRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CodeRequest(const CodeRequest& from);
+  CodeRequest(CodeRequest&& from) noexcept
+    : CodeRequest() {
+    *this = ::std::move(from);
+  }
+
+  inline CodeRequest& operator=(const CodeRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CodeRequest& operator=(CodeRequest&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CodeRequest& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CodeRequest* internal_default_instance() {
+    return reinterpret_cast<const CodeRequest*>(
+               &_CodeRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    4;
+
+  friend void swap(CodeRequest& a, CodeRequest& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CodeRequest* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CodeRequest* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CodeRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CodeRequest>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CodeRequest& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom(const CodeRequest& from);
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CodeRequest* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CodeRequest";
+  }
+  protected:
+  explicit CodeRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kModuleNameFieldNumber = 1,
+    kFuncIdxFieldNumber = 2,
+  };
+  // string module_name = 1;
+  void clear_module_name();
+  const std::string& module_name() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_module_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_module_name();
+  PROTOBUF_NODISCARD std::string* release_module_name();
+  void set_allocated_module_name(std::string* module_name);
+  private:
+  const std::string& _internal_module_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_module_name(const std::string& value);
+  std::string* _internal_mutable_module_name();
+  public:
+
+  // uint32 func_idx = 2;
+  void clear_func_idx();
+  uint32_t func_idx() const;
+  void set_func_idx(uint32_t value);
+  private:
+  uint32_t _internal_func_idx() const;
+  void _internal_set_func_idx(uint32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CodeRequest)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr module_name_;
+  uint32_t func_idx_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_jitaas_2eproto;
+};
+// -------------------------------------------------------------------
+
 class WasmFunction final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:WasmFunction) */ {
  public:
@@ -316,7 +1023,7 @@ class WasmFunction final :
                &_WasmFunction_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    1;
+    5;
 
   friend void swap(WasmFunction& a, WasmFunction& b) {
     a.Swap(&b);
@@ -390,29 +1097,11 @@ class WasmFunction final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kHashFieldNumber = 1,
-    kFuncBodyFieldNumber = 5,
-    kTargetDataLayoutFieldNumber = 6,
-    kFuncTypeFieldNumber = 4,
-    kFuncIdxFieldNumber = 2,
-    kIsImportedFieldNumber = 3,
-    kProgramPointerSizeFieldNumber = 7,
+    kFuncBodyFieldNumber = 3,
+    kFuncTypeFieldNumber = 2,
+    kIsImportedFieldNumber = 1,
   };
-  // string hash = 1;
-  void clear_hash();
-  const std::string& hash() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_hash(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_hash();
-  PROTOBUF_NODISCARD std::string* release_hash();
-  void set_allocated_hash(std::string* hash);
-  private:
-  const std::string& _internal_hash() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_hash(const std::string& value);
-  std::string* _internal_mutable_hash();
-  public:
-
-  // bytes func_body = 5;
+  // bytes func_body = 3;
   void clear_func_body();
   const std::string& func_body() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -426,21 +1115,7 @@ class WasmFunction final :
   std::string* _internal_mutable_func_body();
   public:
 
-  // string target_data_layout = 6;
-  void clear_target_data_layout();
-  const std::string& target_data_layout() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_target_data_layout(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_target_data_layout();
-  PROTOBUF_NODISCARD std::string* release_target_data_layout();
-  void set_allocated_target_data_layout(std::string* target_data_layout);
-  private:
-  const std::string& _internal_target_data_layout() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_target_data_layout(const std::string& value);
-  std::string* _internal_mutable_target_data_layout();
-  public:
-
-  // .FunctionType func_type = 4;
+  // .FunctionType func_type = 2;
   bool has_func_type() const;
   private:
   bool _internal_has_func_type() const;
@@ -458,31 +1133,13 @@ class WasmFunction final :
       ::FunctionType* func_type);
   ::FunctionType* unsafe_arena_release_func_type();
 
-  // uint32 func_idx = 2;
-  void clear_func_idx();
-  uint32_t func_idx() const;
-  void set_func_idx(uint32_t value);
-  private:
-  uint32_t _internal_func_idx() const;
-  void _internal_set_func_idx(uint32_t value);
-  public:
-
-  // bool is_imported = 3;
+  // bool is_imported = 1;
   void clear_is_imported();
   bool is_imported() const;
   void set_is_imported(bool value);
   private:
   bool _internal_is_imported() const;
   void _internal_set_is_imported(bool value);
-  public:
-
-  // uint32 program_pointer_size = 7;
-  void clear_program_pointer_size();
-  uint32_t program_pointer_size() const;
-  void set_program_pointer_size(uint32_t value);
-  private:
-  uint32_t _internal_program_pointer_size() const;
-  void _internal_set_program_pointer_size(uint32_t value);
   public:
 
   // @@protoc_insertion_point(class_scope:WasmFunction)
@@ -492,13 +1149,9 @@ class WasmFunction final :
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr hash_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr func_body_;
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr target_data_layout_;
   ::FunctionType* func_type_;
-  uint32_t func_idx_;
   bool is_imported_;
-  uint32_t program_pointer_size_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_jitaas_2eproto;
 };
@@ -552,7 +1205,7 @@ class NativeBinary final :
                &_NativeBinary_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    2;
+    6;
 
   friend void swap(NativeBinary& a, NativeBinary& b) {
     a.Swap(&b);
@@ -673,6 +1326,133 @@ class NativeBinary final :
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif  // __GNUC__
+// IndicesRequest
+
+// string module_name = 1;
+inline void IndicesRequest::clear_module_name() {
+  module_name_.ClearToEmpty();
+}
+inline const std::string& IndicesRequest::module_name() const {
+  // @@protoc_insertion_point(field_get:IndicesRequest.module_name)
+  return _internal_module_name();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void IndicesRequest::set_module_name(ArgT0&& arg0, ArgT... args) {
+ 
+ module_name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:IndicesRequest.module_name)
+}
+inline std::string* IndicesRequest::mutable_module_name() {
+  std::string* _s = _internal_mutable_module_name();
+  // @@protoc_insertion_point(field_mutable:IndicesRequest.module_name)
+  return _s;
+}
+inline const std::string& IndicesRequest::_internal_module_name() const {
+  return module_name_.Get();
+}
+inline void IndicesRequest::_internal_set_module_name(const std::string& value) {
+  
+  module_name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+}
+inline std::string* IndicesRequest::_internal_mutable_module_name() {
+  
+  return module_name_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+}
+inline std::string* IndicesRequest::release_module_name() {
+  // @@protoc_insertion_point(field_release:IndicesRequest.module_name)
+  return module_name_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+}
+inline void IndicesRequest::set_allocated_module_name(std::string* module_name) {
+  if (module_name != nullptr) {
+    
+  } else {
+    
+  }
+  module_name_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), module_name,
+      GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (module_name_.IsDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited())) {
+    module_name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:IndicesRequest.module_name)
+}
+
+// -------------------------------------------------------------------
+
+// FunctionIndices
+
+// uint32 func_count = 1;
+inline void FunctionIndices::clear_func_count() {
+  func_count_ = 0u;
+}
+inline uint32_t FunctionIndices::_internal_func_count() const {
+  return func_count_;
+}
+inline uint32_t FunctionIndices::func_count() const {
+  // @@protoc_insertion_point(field_get:FunctionIndices.func_count)
+  return _internal_func_count();
+}
+inline void FunctionIndices::_internal_set_func_count(uint32_t value) {
+  
+  func_count_ = value;
+}
+inline void FunctionIndices::set_func_count(uint32_t value) {
+  _internal_set_func_count(value);
+  // @@protoc_insertion_point(field_set:FunctionIndices.func_count)
+}
+
+// uint32 main_idx = 2;
+inline void FunctionIndices::clear_main_idx() {
+  main_idx_ = 0u;
+}
+inline uint32_t FunctionIndices::_internal_main_idx() const {
+  return main_idx_;
+}
+inline uint32_t FunctionIndices::main_idx() const {
+  // @@protoc_insertion_point(field_get:FunctionIndices.main_idx)
+  return _internal_main_idx();
+}
+inline void FunctionIndices::_internal_set_main_idx(uint32_t value) {
+  
+  main_idx_ = value;
+}
+inline void FunctionIndices::set_main_idx(uint32_t value) {
+  _internal_set_main_idx(value);
+  // @@protoc_insertion_point(field_set:FunctionIndices.main_idx)
+}
+
+// optional uint32 start_idx = 3;
+inline bool FunctionIndices::_internal_has_start_idx() const {
+  bool value = (_has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool FunctionIndices::has_start_idx() const {
+  return _internal_has_start_idx();
+}
+inline void FunctionIndices::clear_start_idx() {
+  start_idx_ = 0u;
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline uint32_t FunctionIndices::_internal_start_idx() const {
+  return start_idx_;
+}
+inline uint32_t FunctionIndices::start_idx() const {
+  // @@protoc_insertion_point(field_get:FunctionIndices.start_idx)
+  return _internal_start_idx();
+}
+inline void FunctionIndices::_internal_set_start_idx(uint32_t value) {
+  _has_bits_[0] |= 0x00000001u;
+  start_idx_ = value;
+}
+inline void FunctionIndices::set_start_idx(uint32_t value) {
+  _internal_set_start_idx(value);
+  // @@protoc_insertion_point(field_set:FunctionIndices.start_idx)
+}
+
+// -------------------------------------------------------------------
+
 // FunctionType
 
 // uint32 param_count = 1;
@@ -792,80 +1572,281 @@ inline void FunctionType::set_return_type(uint32_t value) {
 
 // -------------------------------------------------------------------
 
-// WasmFunction
+// CompilationRequest
 
-// string hash = 1;
-inline void WasmFunction::clear_hash() {
-  hash_.ClearToEmpty();
+// string module_name = 1;
+inline void CompilationRequest::clear_module_name() {
+  module_name_.ClearToEmpty();
 }
-inline const std::string& WasmFunction::hash() const {
-  // @@protoc_insertion_point(field_get:WasmFunction.hash)
-  return _internal_hash();
+inline const std::string& CompilationRequest::module_name() const {
+  // @@protoc_insertion_point(field_get:CompilationRequest.module_name)
+  return _internal_module_name();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void WasmFunction::set_hash(ArgT0&& arg0, ArgT... args) {
+void CompilationRequest::set_module_name(ArgT0&& arg0, ArgT... args) {
  
- hash_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:WasmFunction.hash)
+ module_name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CompilationRequest.module_name)
 }
-inline std::string* WasmFunction::mutable_hash() {
-  std::string* _s = _internal_mutable_hash();
-  // @@protoc_insertion_point(field_mutable:WasmFunction.hash)
+inline std::string* CompilationRequest::mutable_module_name() {
+  std::string* _s = _internal_mutable_module_name();
+  // @@protoc_insertion_point(field_mutable:CompilationRequest.module_name)
   return _s;
 }
-inline const std::string& WasmFunction::_internal_hash() const {
-  return hash_.Get();
+inline const std::string& CompilationRequest::_internal_module_name() const {
+  return module_name_.Get();
 }
-inline void WasmFunction::_internal_set_hash(const std::string& value) {
+inline void CompilationRequest::_internal_set_module_name(const std::string& value) {
   
-  hash_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+  module_name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
 }
-inline std::string* WasmFunction::_internal_mutable_hash() {
+inline std::string* CompilationRequest::_internal_mutable_module_name() {
   
-  return hash_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+  return module_name_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
 }
-inline std::string* WasmFunction::release_hash() {
-  // @@protoc_insertion_point(field_release:WasmFunction.hash)
-  return hash_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+inline std::string* CompilationRequest::release_module_name() {
+  // @@protoc_insertion_point(field_release:CompilationRequest.module_name)
+  return module_name_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
 }
-inline void WasmFunction::set_allocated_hash(std::string* hash) {
-  if (hash != nullptr) {
+inline void CompilationRequest::set_allocated_module_name(std::string* module_name) {
+  if (module_name != nullptr) {
     
   } else {
     
   }
-  hash_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), hash,
+  module_name_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), module_name,
       GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (hash_.IsDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited())) {
-    hash_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  if (module_name_.IsDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited())) {
+    module_name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:WasmFunction.hash)
+  // @@protoc_insertion_point(field_set_allocated:CompilationRequest.module_name)
 }
 
-// uint32 func_idx = 2;
-inline void WasmFunction::clear_func_idx() {
+// string architecture = 2;
+inline void CompilationRequest::clear_architecture() {
+  architecture_.ClearToEmpty();
+}
+inline const std::string& CompilationRequest::architecture() const {
+  // @@protoc_insertion_point(field_get:CompilationRequest.architecture)
+  return _internal_architecture();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CompilationRequest::set_architecture(ArgT0&& arg0, ArgT... args) {
+ 
+ architecture_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CompilationRequest.architecture)
+}
+inline std::string* CompilationRequest::mutable_architecture() {
+  std::string* _s = _internal_mutable_architecture();
+  // @@protoc_insertion_point(field_mutable:CompilationRequest.architecture)
+  return _s;
+}
+inline const std::string& CompilationRequest::_internal_architecture() const {
+  return architecture_.Get();
+}
+inline void CompilationRequest::_internal_set_architecture(const std::string& value) {
+  
+  architecture_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+}
+inline std::string* CompilationRequest::_internal_mutable_architecture() {
+  
+  return architecture_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+}
+inline std::string* CompilationRequest::release_architecture() {
+  // @@protoc_insertion_point(field_release:CompilationRequest.architecture)
+  return architecture_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+}
+inline void CompilationRequest::set_allocated_architecture(std::string* architecture) {
+  if (architecture != nullptr) {
+    
+  } else {
+    
+  }
+  architecture_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), architecture,
+      GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (architecture_.IsDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited())) {
+    architecture_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CompilationRequest.architecture)
+}
+
+// uint32 func_idx = 3;
+inline void CompilationRequest::clear_func_idx() {
   func_idx_ = 0u;
 }
-inline uint32_t WasmFunction::_internal_func_idx() const {
+inline uint32_t CompilationRequest::_internal_func_idx() const {
   return func_idx_;
 }
-inline uint32_t WasmFunction::func_idx() const {
-  // @@protoc_insertion_point(field_get:WasmFunction.func_idx)
+inline uint32_t CompilationRequest::func_idx() const {
+  // @@protoc_insertion_point(field_get:CompilationRequest.func_idx)
   return _internal_func_idx();
 }
-inline void WasmFunction::_internal_set_func_idx(uint32_t value) {
+inline void CompilationRequest::_internal_set_func_idx(uint32_t value) {
   
   func_idx_ = value;
 }
-inline void WasmFunction::set_func_idx(uint32_t value) {
+inline void CompilationRequest::set_func_idx(uint32_t value) {
   _internal_set_func_idx(value);
-  // @@protoc_insertion_point(field_set:WasmFunction.func_idx)
+  // @@protoc_insertion_point(field_set:CompilationRequest.func_idx)
 }
 
-// bool is_imported = 3;
+// string target_data_layout = 4;
+inline void CompilationRequest::clear_target_data_layout() {
+  target_data_layout_.ClearToEmpty();
+}
+inline const std::string& CompilationRequest::target_data_layout() const {
+  // @@protoc_insertion_point(field_get:CompilationRequest.target_data_layout)
+  return _internal_target_data_layout();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CompilationRequest::set_target_data_layout(ArgT0&& arg0, ArgT... args) {
+ 
+ target_data_layout_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CompilationRequest.target_data_layout)
+}
+inline std::string* CompilationRequest::mutable_target_data_layout() {
+  std::string* _s = _internal_mutable_target_data_layout();
+  // @@protoc_insertion_point(field_mutable:CompilationRequest.target_data_layout)
+  return _s;
+}
+inline const std::string& CompilationRequest::_internal_target_data_layout() const {
+  return target_data_layout_.Get();
+}
+inline void CompilationRequest::_internal_set_target_data_layout(const std::string& value) {
+  
+  target_data_layout_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+}
+inline std::string* CompilationRequest::_internal_mutable_target_data_layout() {
+  
+  return target_data_layout_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+}
+inline std::string* CompilationRequest::release_target_data_layout() {
+  // @@protoc_insertion_point(field_release:CompilationRequest.target_data_layout)
+  return target_data_layout_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+}
+inline void CompilationRequest::set_allocated_target_data_layout(std::string* target_data_layout) {
+  if (target_data_layout != nullptr) {
+    
+  } else {
+    
+  }
+  target_data_layout_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), target_data_layout,
+      GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (target_data_layout_.IsDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited())) {
+    target_data_layout_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CompilationRequest.target_data_layout)
+}
+
+// uint32 program_pointer_size = 5;
+inline void CompilationRequest::clear_program_pointer_size() {
+  program_pointer_size_ = 0u;
+}
+inline uint32_t CompilationRequest::_internal_program_pointer_size() const {
+  return program_pointer_size_;
+}
+inline uint32_t CompilationRequest::program_pointer_size() const {
+  // @@protoc_insertion_point(field_get:CompilationRequest.program_pointer_size)
+  return _internal_program_pointer_size();
+}
+inline void CompilationRequest::_internal_set_program_pointer_size(uint32_t value) {
+  
+  program_pointer_size_ = value;
+}
+inline void CompilationRequest::set_program_pointer_size(uint32_t value) {
+  _internal_set_program_pointer_size(value);
+  // @@protoc_insertion_point(field_set:CompilationRequest.program_pointer_size)
+}
+
+// -------------------------------------------------------------------
+
+// CodeRequest
+
+// string module_name = 1;
+inline void CodeRequest::clear_module_name() {
+  module_name_.ClearToEmpty();
+}
+inline const std::string& CodeRequest::module_name() const {
+  // @@protoc_insertion_point(field_get:CodeRequest.module_name)
+  return _internal_module_name();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CodeRequest::set_module_name(ArgT0&& arg0, ArgT... args) {
+ 
+ module_name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CodeRequest.module_name)
+}
+inline std::string* CodeRequest::mutable_module_name() {
+  std::string* _s = _internal_mutable_module_name();
+  // @@protoc_insertion_point(field_mutable:CodeRequest.module_name)
+  return _s;
+}
+inline const std::string& CodeRequest::_internal_module_name() const {
+  return module_name_.Get();
+}
+inline void CodeRequest::_internal_set_module_name(const std::string& value) {
+  
+  module_name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+}
+inline std::string* CodeRequest::_internal_mutable_module_name() {
+  
+  return module_name_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+}
+inline std::string* CodeRequest::release_module_name() {
+  // @@protoc_insertion_point(field_release:CodeRequest.module_name)
+  return module_name_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+}
+inline void CodeRequest::set_allocated_module_name(std::string* module_name) {
+  if (module_name != nullptr) {
+    
+  } else {
+    
+  }
+  module_name_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), module_name,
+      GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (module_name_.IsDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited())) {
+    module_name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CodeRequest.module_name)
+}
+
+// uint32 func_idx = 2;
+inline void CodeRequest::clear_func_idx() {
+  func_idx_ = 0u;
+}
+inline uint32_t CodeRequest::_internal_func_idx() const {
+  return func_idx_;
+}
+inline uint32_t CodeRequest::func_idx() const {
+  // @@protoc_insertion_point(field_get:CodeRequest.func_idx)
+  return _internal_func_idx();
+}
+inline void CodeRequest::_internal_set_func_idx(uint32_t value) {
+  
+  func_idx_ = value;
+}
+inline void CodeRequest::set_func_idx(uint32_t value) {
+  _internal_set_func_idx(value);
+  // @@protoc_insertion_point(field_set:CodeRequest.func_idx)
+}
+
+// -------------------------------------------------------------------
+
+// WasmFunction
+
+// bool is_imported = 1;
 inline void WasmFunction::clear_is_imported() {
   is_imported_ = false;
 }
@@ -885,7 +1866,7 @@ inline void WasmFunction::set_is_imported(bool value) {
   // @@protoc_insertion_point(field_set:WasmFunction.is_imported)
 }
 
-// .FunctionType func_type = 4;
+// .FunctionType func_type = 2;
 inline bool WasmFunction::_internal_has_func_type() const {
   return this != internal_default_instance() && func_type_ != nullptr;
 }
@@ -975,7 +1956,7 @@ inline void WasmFunction::set_allocated_func_type(::FunctionType* func_type) {
   // @@protoc_insertion_point(field_set_allocated:WasmFunction.func_type)
 }
 
-// bytes func_body = 5;
+// bytes func_body = 3;
 inline void WasmFunction::clear_func_body() {
   func_body_.ClearToEmpty();
 }
@@ -1024,77 +2005,6 @@ inline void WasmFunction::set_allocated_func_body(std::string* func_body) {
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:WasmFunction.func_body)
-}
-
-// string target_data_layout = 6;
-inline void WasmFunction::clear_target_data_layout() {
-  target_data_layout_.ClearToEmpty();
-}
-inline const std::string& WasmFunction::target_data_layout() const {
-  // @@protoc_insertion_point(field_get:WasmFunction.target_data_layout)
-  return _internal_target_data_layout();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void WasmFunction::set_target_data_layout(ArgT0&& arg0, ArgT... args) {
- 
- target_data_layout_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:WasmFunction.target_data_layout)
-}
-inline std::string* WasmFunction::mutable_target_data_layout() {
-  std::string* _s = _internal_mutable_target_data_layout();
-  // @@protoc_insertion_point(field_mutable:WasmFunction.target_data_layout)
-  return _s;
-}
-inline const std::string& WasmFunction::_internal_target_data_layout() const {
-  return target_data_layout_.Get();
-}
-inline void WasmFunction::_internal_set_target_data_layout(const std::string& value) {
-  
-  target_data_layout_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
-}
-inline std::string* WasmFunction::_internal_mutable_target_data_layout() {
-  
-  return target_data_layout_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
-}
-inline std::string* WasmFunction::release_target_data_layout() {
-  // @@protoc_insertion_point(field_release:WasmFunction.target_data_layout)
-  return target_data_layout_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
-}
-inline void WasmFunction::set_allocated_target_data_layout(std::string* target_data_layout) {
-  if (target_data_layout != nullptr) {
-    
-  } else {
-    
-  }
-  target_data_layout_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), target_data_layout,
-      GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (target_data_layout_.IsDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited())) {
-    target_data_layout_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:WasmFunction.target_data_layout)
-}
-
-// uint32 program_pointer_size = 7;
-inline void WasmFunction::clear_program_pointer_size() {
-  program_pointer_size_ = 0u;
-}
-inline uint32_t WasmFunction::_internal_program_pointer_size() const {
-  return program_pointer_size_;
-}
-inline uint32_t WasmFunction::program_pointer_size() const {
-  // @@protoc_insertion_point(field_get:WasmFunction.program_pointer_size)
-  return _internal_program_pointer_size();
-}
-inline void WasmFunction::_internal_set_program_pointer_size(uint32_t value) {
-  
-  program_pointer_size_ = value;
-}
-inline void WasmFunction::set_program_pointer_size(uint32_t value) {
-  _internal_set_program_pointer_size(value);
-  // @@protoc_insertion_point(field_set:WasmFunction.program_pointer_size)
 }
 
 // -------------------------------------------------------------------
@@ -1175,6 +2085,14 @@ inline void NativeBinary::set_data_length(uint32_t value) {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

@@ -7,15 +7,19 @@
 #include <vector>
 #include <wasm.h>
 #include <payload.h>
+#include <function.h>
 
-// A stateless static module.
-class StaticModule {
+// A lazily parsed WebAssembly module.
+class WasmModule {
 public:
-    StaticModule(const std::string &filename);
-    ~StaticModule(// todo: memleaks
+    WasmModule(const std::string &filename);
+    ~WasmModule(// todo: memleaks
     );
 
     template <class T> T *get_section() { return (T *)section_map_[T::id]; }
+
+    std::map<int, Function> &functions() { return functions_; }
+    int function_count() { return function_count_; }
 
 private:
     const char *buffer_, *buffer_end_;
@@ -24,9 +28,13 @@ private:
     std::map<int, void *> section_map_;
     std::vector<void *> custom_sections_;
 
+    std::map<int, Function> functions_;
+    int function_count_;
+
     template <class T> void add_section(T *section) { section_map_[T::id] = section; }
 
     void parse_sections();
+    void load_functions();
 
     template <typename T = unsigned int> T read_uleb128(const char *&p, VaruintN limit) {
         T result = 0;

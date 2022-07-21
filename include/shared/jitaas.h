@@ -4,6 +4,10 @@
 #define MAX_FILE_SIZE 102400 // 100KB max
 #define PTR_SIZE 8
 
+static const std::string compiler_address("0.0.0.0:50051");
+static const std::string runtime_address("0.0.0.0:50051");
+static const std::string repository_address("0.0.0.0:50051");
+
 inline size_t align(size_t a, size_t b) { return (1 + (a - 1) / b) * b; }
 
 ///** Read file into buffer. */

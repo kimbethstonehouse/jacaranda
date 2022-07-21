@@ -4,7 +4,6 @@
 
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include <llvm/Support/DynamicLibrary.h>
-#include <llvm/Support/TargetSelect.h>
 
 // Creates a phi node for the argument of branches to a basic block.
 Decoder::PhiVector Decoder::createPhis(llvm::BasicBlock* basic_block, llvm::IRBuilder<> &ir_builder, llvm::Type *type) {
@@ -19,12 +18,12 @@ Decoder::PhiVector Decoder::createPhis(llvm::BasicBlock* basic_block, llvm::IRBu
     return result;
 }
 
-void Decoder::createLLVMIR(const WasmFunction *wasm) {
+void Decoder::createLLVMIR(const CompilationRequest *request, const WasmFunction *function) {
     // Emit LLVM IR for the module.
     llvm::LLVMContext llvm_context;
     llvm::Module llvm_module("", llvm_context);
 
-    llvm_module.setDataLayout(wasm->target_data_layout());
+    llvm_module.setDataLayout(request->target_data_layout());
 
     llvm::Type *i32 = llvm::Type::getInt32Ty(llvm_context);
     llvm::Type *i64 = llvm::Type::getInt64Ty(llvm_context);
@@ -47,30 +46,30 @@ void Decoder::createLLVMIR(const WasmFunction *wasm) {
                                                                           false,
                                                                           llvm::GlobalVariable::ExternalLinkage,
                                                                           nullptr,
-                                                                          getExternalName("typeId", wasm->func_idx()));
+                                                                          getExternalName("typeId", request->func_idx()));
 
     // Create the function declaration
-    llvm::Function* function = llvm::Function::Create(asLLVMType(llvm_context, wasm->func_type()),
-                                                      llvm::Function::ExternalLinkage, getExternalName("function", wasm->func_idx()), llvm_module);
-    function->setCallingConv(llvm::CallingConv::C); // todo: change!
-    function->setPersonalityFn(personality_function);
+    llvm::Function* llvm_function = llvm::Function::Create(asLLVMType(llvm_context, function->func_type()),
+                                                      llvm::Function::ExternalLinkage, getExternalName("function", request->func_idx()), llvm_module);
+    llvm_function->setCallingConv(llvm::CallingConv::C); // todo: change!
+    llvm_function->setPersonalityFn(personality_function);
 
     // Add the function definition
     llvm::IRBuilder<> ir_builder(llvm_context);
 
     // Create an initial basic block for the function
-    auto entry_basic_block = llvm::BasicBlock::Create(llvm_context, "entry", function);
+    auto entry_basic_block = llvm::BasicBlock::Create(llvm_context, "entry", llvm_function);
 
     // Create the return basic block, and push the root control context for the function.
-    auto return_basic_block = llvm::BasicBlock::Create(llvm_context, "return", function);
+    auto return_basic_block = llvm::BasicBlock::Create(llvm_context, "return", llvm_function);
     auto return_phis = createPhis(return_basic_block, ir_builder,
-                                  asLLVMType(llvm_context, wasm->func_type().return_type()));
+                                  asLLVMType(llvm_context, function->func_type().return_type()));
     ir_builder.SetInsertPoint(entry_basic_block);
 
     // Create and initialize allocas for all the parameters.
-    auto llvm_arg_iterator = function->arg_begin();
-    for(uintptr_t param_idx = 0; param_idx < wasm->func_type().param_count(); ++param_idx) {
-        auto param_type = wasm->func_type().param_types(param_idx);
+    auto llvm_arg_iterator = llvm_function->arg_begin();
+    for(uintptr_t param_idx = 0; param_idx < function->func_type().param_count(); ++param_idx) {
+        auto param_type = function->func_type().param_types(param_idx);
         auto param_pointer = ir_builder.CreateAlloca(asLLVMType(llvm_context, param_type), nullptr, "");
 
         // Copy the parameter value into the local that stores it.
@@ -79,7 +78,7 @@ void Decoder::createLLVMIR(const WasmFunction *wasm) {
     }
 
     // Parsing is done lazily, so the WebAssembly function body will need to be parsed now.
-    Payload payload(wasm->func_body().data(), wasm->func_body().length());
+    Payload payload(function->func_body().data(), function->func_body().length());
     Wasm::FunctionBody function_body(payload);
     // todo: for each instruction in vector, convert to llvm ir
 

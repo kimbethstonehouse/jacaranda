@@ -1,7 +1,7 @@
 #include <iostream>
 #include <runtime.h>
 #include <grpcpp/create_channel.h>
-#include <client.h>
+#include <runtime-envoy.h>
 
 int main(int argc, char **argv) {
     if (argc < 2) {
@@ -9,10 +9,9 @@ int main(int argc, char **argv) {
         return -1;
     }
 
-    // Assumes the jacaranda server is up and running
-    JacarandaClient jacaranda_client(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()));
+    // Define ourselves as a client so that we can request code from the compiler (assumes the compiler is up and running)
+    RuntimeEnvoy envoy(grpc::CreateChannel(compiler_address, grpc::InsecureChannelCredentials()));
     // TODO: ideally we wouldn't create a new runtime everytime, but have the runtime persist between executions...
-    Runtime runtime(&jacaranda_client);
-    runtime.load_module(argv[1]);
+    Runtime runtime(&envoy);
     runtime.run(argv[1], argc-2, argv+2);
 }

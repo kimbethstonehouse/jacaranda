@@ -1,4 +1,5 @@
-add_subdirectory(local)
+add_subdirectory(repository)
+add_subdirectory(compiler)
+add_subdirectory(runtime)
 add_subdirectory(proto)
-add_subdirectory(remote)
 add_subdirectory(shared)
