@@ -5,10 +5,10 @@
 #include <map>
 #include <vector>
 #include <optional>
+#include <memory>
 #include <wasm.h>
 #include <payload.h>
-#include <memory>
-#include "instruction.h"
+#include <instruction.h>
 
 namespace Wasm {
     class ValueType {

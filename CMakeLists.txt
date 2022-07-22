@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(jitaas)
+project(jacaranda)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_GENERATOR "Unix Makefiles")
@@ -12,8 +12,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/exe")
 set(REPOSITORY_DIR "${SOURCE_DIR}/repository")
 set(COMPILER_DIR "${SOURCE_DIR}/compiler")
 set(RUNTIME_DIR "${SOURCE_DIR}/runtime")
-set(PROTO_DIR "${SOURCE_DIR}/proto")
 set(SHARED_DIR "${SOURCE_DIR}/shared")
+set(PROTO_DIR "${SOURCE_DIR}/proto")
 
 find_package(Protobuf CONFIG REQUIRED)
 find_package(gRPC CONFIG REQUIRED)

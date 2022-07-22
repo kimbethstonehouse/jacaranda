@@ -1,4 +1,5 @@
 #pragma once
+
 #include <fstream>
 
 #define MAX_FILE_SIZE 102400 // 100KB max

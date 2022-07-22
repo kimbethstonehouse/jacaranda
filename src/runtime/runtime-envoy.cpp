@@ -6,7 +6,7 @@ FunctionIndices RuntimeEnvoy::request_function_indices(std::string module_name) 
     grpc::ClientContext context;
 
     request.set_module_name(module_name);
-    stub_->request_function_indices(&context, request, &indices);
+    repository_stub_->request_function_indices(&context, request, &indices);
     return indices;
 }
 
@@ -22,6 +22,6 @@ NativeBinary RuntimeEnvoy::request_compile(std::string module_name, std::string 
     request.set_target_data_layout(target_data_layout);
     request.set_program_pointer_size(program_pointer_size);
 
-    stub_->request_compile(&context, request, &native);
+    compiler_stub_->request_compile(&context, request, &native);
     return native;
 }

@@ -32,6 +32,8 @@ void Repository::function_indices(const IndicesRequest *request, FunctionIndices
     if (!found_main) {
         throw repository_exception("module did not export _start function");
     }
+
+    indices->set_func_count(wasm_module->function_count());
 }
 
 // todo: this is horribly inefficient

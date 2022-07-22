@@ -1,5 +1,5 @@
 add_subdirectory(repository)
 add_subdirectory(compiler)
 add_subdirectory(runtime)
-add_subdirectory(proto)
 add_subdirectory(shared)
+add_subdirectory(proto)

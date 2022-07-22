@@ -1,8 +1,8 @@
-#include <jitaas.grpc.pb.h>
-#include <grpcpp/channel.h>
-#include "repository.h"
-
 #pragma once
+
+#include <grpcpp/channel.h>
+#include <jacaranda.grpc.pb.h>
+#include <repository.h>
 
 class RepositoryEnvoy final : public Jacaranda::Service {
 public:

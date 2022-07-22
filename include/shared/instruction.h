@@ -1,3 +1,5 @@
+#pragma once
+
 #include <wasm.h>
 #include <section.h>
 

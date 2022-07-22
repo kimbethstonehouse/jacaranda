@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
+
 project(repository)
 
 set(SOURCES
@@ -13,4 +14,4 @@ target_include_directories(repository PRIVATE
         ${INCLUDE_DIR}/proto
         ${INCLUDE_DIR}/shared)
 
-target_link_libraries(repository jitaas_grpc_proto)
+target_link_libraries(repository jacaranda_grpc_proto ${llvm_libs})

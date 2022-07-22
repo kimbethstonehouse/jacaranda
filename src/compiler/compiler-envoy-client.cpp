@@ -1,7 +1,6 @@
-#include <jitaas.grpc.pb.h>
-#include <compiler-envoy.h>
+#include <compiler-envoy-client.h>
 
-WasmFunction CompilerEnvoy::request_code(std::string module_name, unsigned int function_idx) {
+WasmFunction CompilerEnvoyClient::request_code(std::string module_name, unsigned int function_idx) {
     CodeRequest request;
     WasmFunction function;
     grpc::ClientContext context;

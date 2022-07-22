@@ -3,10 +3,10 @@
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <fstream>
 #include <wasm-module.h>
 #include <payload.h>
 #include <section.h>
-#include <fstream>
 
 WasmModule::WasmModule(const std::string &filename) {
     // Open the file for reading

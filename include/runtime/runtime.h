@@ -1,15 +1,13 @@
 #pragma once
 
+#include <llvm/Target/TargetMachine.h>
 #include <string>
 #include <map>
-#include <wasm-module.h>
-#include <function.h>
-#include <memory.h>
-#include <jitaas.h>
-#include <jitaas.grpc.pb.h>
-#include <runtime-envoy.h>
 #include <sys/mman.h>
-#include <llvm/Target/TargetMachine.h>
+#include <memory.h>
+#include <jacaranda.grpc.pb.h>
+#include <jacaranda.h>
+#include <runtime-envoy.h>
 
 // TODO: fix args and ret types
 extern "C" int trampoline_to_execute(int function_index, void **jump_table_, int argc, char **argv, void *runtime_);
@@ -17,7 +15,7 @@ extern "C" void trampoline_to_compile(int, void *, void *);
 
 class Runtime {
 public:
-    Runtime(RuntimeEnvoy *client);
+    Runtime(RuntimeEnvoy *envoy);
     ~Runtime();
     void load_module(const std::string &filename);
     void run(const std::string &filename, int argc, char **argv);

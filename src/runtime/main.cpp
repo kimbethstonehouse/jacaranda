@@ -1,6 +1,6 @@
+#include <grpcpp/create_channel.h>
 #include <iostream>
 #include <runtime.h>
-#include <grpcpp/create_channel.h>
 #include <runtime-envoy.h>
 
 int main(int argc, char **argv) {
@@ -10,8 +10,9 @@ int main(int argc, char **argv) {
     }
 
     // Define ourselves as a client so that we can request code from the compiler (assumes the compiler is up and running)
-    RuntimeEnvoy envoy(grpc::CreateChannel(compiler_address, grpc::InsecureChannelCredentials()));
-    // TODO: ideally we wouldn't create a new runtime everytime, but have the runtime persist between executions...
-    Runtime runtime(&envoy);
+    RuntimeEnvoy *envoy = new RuntimeEnvoy(grpc::CreateChannel(compiler_address, grpc::InsecureChannelCredentials()),
+                                           grpc::CreateChannel(repository_address, grpc::InsecureChannelCredentials()));
+    // todo: ideally we wouldn't create a new runtime everytime, but have the runtime persist between executions...
+    Runtime runtime(envoy);
     runtime.run(argv[1], argc-2, argv+2);
 }

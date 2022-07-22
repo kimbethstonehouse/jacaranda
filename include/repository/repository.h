@@ -1,7 +1,7 @@
-#include <jitaas.grpc.pb.h>
-#include <wasm-module.h>
-
 #pragma once
+
+#include <jacaranda.grpc.pb.h>
+#include <wasm-module.h>
 
 class Repository {
 public:

@@ -1,12 +1,10 @@
-#include <runtime.h>
-#include <section.h>
-#include <sys/un.h>
-
 #include <grpcpp/create_channel.h>
+#include <sys/un.h>
 #include <llvm/Support/Host.h>
 #include <llvm/Support/TargetSelect.h>
 #include <llvm/Support/DynamicLibrary.h>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
+#include <runtime.h>
 
 // The envoy communicates with other components (e.g. the compiler) on our behalf
 Runtime::Runtime(RuntimeEnvoy *envoy) : envoy_(envoy) {
@@ -21,6 +19,7 @@ Runtime::Runtime(RuntimeEnvoy *envoy) : envoy_(envoy) {
 }
 
 Runtime::~Runtime() {
+    delete envoy_;
     munmap(code_section_, pow(2, 30));
     munmap(jump_table_, function_count_ * PTR_SIZE);
 }
@@ -75,7 +74,7 @@ void Runtime::run(const std::string &filename, int argc, char **argv) {
     request_function_indices(filename);
     init_execution_state();
 
-    if (!start_idx_.has_value()) {
+    if (start_idx_.has_value()) {
         if (jump_table_[start_idx_.value()] == &trampoline_to_compile) request_compilation(start_idx_.value());
         trampoline_to_execute(start_idx_.value(), jump_table_, argc, argv, this);
     }
