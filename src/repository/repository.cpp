@@ -43,6 +43,7 @@ void Repository::code(const CodeRequest *request, WasmFunction *function) {
 
     // Check if the WebAssembly module has already been loaded
     if (wasm_module_it == static_modules_.end()) {
+        // todo: make thread safe
         wasm_module = std::make_shared<WasmModule>(request->module_name());
         static_modules_.insert({request->module_name(), wasm_module});
     } else {

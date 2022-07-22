@@ -6,10 +6,10 @@
 
 class CompilerEnvoyClient {
 public:
-    CompilerEnvoyClient(std::shared_ptr<grpc::Channel> channel) : stub_(Jacaranda::NewStub(channel)) {}
+    CompilerEnvoyClient(std::shared_ptr<grpc::Channel> channel) : stub_(RepositoryService::NewStub(channel)) {}
 
     WasmFunction request_code(std::string module_name, unsigned int function_idx);
 
 private:
-    std::unique_ptr<Jacaranda::Stub> stub_;
+    std::unique_ptr<RepositoryService::Stub> stub_;
 };

@@ -1,10 +1,12 @@
 syntax = "proto3";
 
-service Jacaranda {
+service CompilerService {
   rpc request_compile(CompilationRequest) returns (NativeBinary) {}
+}
+
+service RepositoryService {
   rpc request_code(CodeRequest) returns (WasmFunction) {}
   rpc request_function_indices(IndicesRequest) returns (FunctionIndices) {}
-
 }
 
 message IndicesRequest {

@@ -3,7 +3,7 @@
 #include <jacaranda.grpc.pb.h>
 #include <compiler.h>
 
-class CompilerEnvoyServer final : public Jacaranda::Service {
+class CompilerEnvoyServer final : public CompilerService::Service {
 public:
     CompilerEnvoyServer(Compiler *compiler) : compiler_(compiler) {}
     ~CompilerEnvoyServer() { delete compiler_; }

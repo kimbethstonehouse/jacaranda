@@ -4,7 +4,7 @@
 #include <jacaranda.grpc.pb.h>
 #include <repository.h>
 
-class RepositoryEnvoy final : public Jacaranda::Service {
+class RepositoryEnvoy final : public RepositoryService::Service {
 public:
     grpc::Status request_code(grpc::ServerContext *context, const CodeRequest *request, WasmFunction *function) override {
         repository_.code(request, function);

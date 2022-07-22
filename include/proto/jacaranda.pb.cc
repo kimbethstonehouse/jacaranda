@@ -225,16 +225,16 @@ const char descriptor_table_protodef_jacaranda_2eproto[] PROTOBUF_SECTION_VARIAB
   "ction\022\023\n\013is_imported\030\001 \001(\010\022 \n\tfunc_type\030"
   "\002 \001(\0132\r.FunctionType\022\021\n\tfunc_body\030\003 \001(\014\""
   "7\n\014NativeBinary\022\022\n\ndata_bytes\030\001 \001(\014\022\023\n\013d"
-  "ata_length\030\002 \001(\r2\264\001\n\tJacaranda\0227\n\017reques"
-  "t_compile\022\023.CompilationRequest\032\r.NativeB"
-  "inary\"\000\022-\n\014request_code\022\014.CodeRequest\032\r."
-  "WasmFunction\"\000\022\?\n\030request_function_indic"
-  "es\022\017.IndicesRequest\032\020.FunctionIndices\"\000b"
-  "\006proto3"
+  "ata_length\030\002 \001(\r2J\n\017CompilerService\0227\n\017r"
+  "equest_compile\022\023.CompilationRequest\032\r.Na"
+  "tiveBinary\"\0002\203\001\n\021RepositoryService\022-\n\014re"
+  "quest_code\022\014.CodeRequest\032\r.WasmFunction\""
+  "\000\022\?\n\030request_function_indices\022\017.IndicesR"
+  "equest\032\020.FunctionIndices\"\000b\006proto3"
   ;
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_jacaranda_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_jacaranda_2eproto = {
-  false, false, 807, descriptor_table_protodef_jacaranda_2eproto, "jacaranda.proto", 
+  false, false, 834, descriptor_table_protodef_jacaranda_2eproto, "jacaranda.proto", 
   &descriptor_table_jacaranda_2eproto_once, nullptr, 0, 7,
   schemas, file_default_instances, TableStruct_jacaranda_2eproto::offsets,
   file_level_metadata_jacaranda_2eproto, file_level_enum_descriptors_jacaranda_2eproto, file_level_service_descriptors_jacaranda_2eproto,
