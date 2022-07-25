@@ -63,10 +63,10 @@ trampoline_to_compile:
 
         mov %r8, %rsi
 
-        //push %r9
+        push %r9
         and $0xfffffffffffffff0, %rsp
         call do_request_compilation
-        //pop %r9
+        pop %r9
 
         mov %rbp, %rsp
 
