@@ -1,6 +1,6 @@
 # Jacaranda
 
-The infrastructure is currently split into three main sections.
+The infrastructure is currently split into three main sections: the repository, the runtime and the compiler.
 
 ## JacarandaRepository
 
@@ -20,17 +20,17 @@ See ```src/compiler/compiler.cpp```
 
 Handles the actual compilation of the WebAssembly binary code. Currently responds with precompiled code until LLVM is integrated.
 
-### JacarandaEnvoys
+## JacarandaEnvoys
 
 See ```src/*/*envoy.cpp```
 
 Handle the communication between services. Responsible for serialising and deserialising information into protocol buffers and making remote procedure calls via stubs. Communication is done via gRPC as it allows bidirectional communication, rather than unidirectional procedure calls from client to server only.
 
-### Trampolines
+## Trampolines
 
 The trampoline functions in trampoline.S facilitate moving between x86 code and C++ code. The C++ code will be compiled by gcc (or clang) to x86 code that follows the System V ABI, which is not always what we want. 
 
-### Building
+## Building
 
 ```
 git clone git@github.com:kimbethstonehouse/jacaranda.git
@@ -40,7 +40,7 @@ cmake ..
 make
 ```
 
-### Testing
+## Executing
 
 Currently, the compiler does nothing but return precompiled x86 code for a very basic addition program. The expected output is the sum of the two program arguments, e.g. ```./exe/runtime add.wasm 5 6``` should output ```11```. The corresponding C code is:
 
@@ -104,9 +104,7 @@ main:
     ret
 ```
 
-### Executing
-
-Open three separate terminals. Follow this order, since each component depends on the previous service being up and running.
+To execute, open three separate terminals. Follow this order, since each component depends on the previous service being up and running.
 
 ```
 ./exe/repository
@@ -123,6 +121,6 @@ This triggers a sequence of events. Firstly, the runtime ```run``` function is c
 
 Run then requests compiled code for the starting function, copies the compiler response into executable memory, and updates the jump table pointer before calling ```trampoline_to_execute```. The purpose of this trampoline function is to move the function parameters into an expected location, according to the calling convention in use. Since this requires manipulating registers and the stack, the trampoline must be implemented in assembly. The trampoline function then jumps to the address held in the jump table entry for the relevant function index. Should the function in question not have been compiled yet, the compile function will need to be invoked with the function index as an argument. This requires preserving the function arguments so that the function can be reinvoked after compilation has finished, which is handled by ```trampoline_to_compile```.
 
-### Calling convention
+## Calling convention
 
 Note that ```trampoline_to_execute``` will be called for the start function for every WebAssembly module. Each of these start functions may require a different function signature, which would ordinarily be used by the compiler to implement the calling convention for us. Since this function cannot have multiple function signature, it uses an argc argv pattern to handle all start functions. The trampoline function is then responsible for parsing this argc argv pattern into a calling convention that the rest of the application code can expect. Ideally, this would be something standard like System V. However, for implementation simplicity, we currently pass all parameters on the stack, and only use registers to store the current function index (used by the compiler to determine what function was being invoked when compilation was triggered) and the pointer to the jump table (used to call a particular function). However, the cost of this simplicity is twofold: passing arguments on the stack is slow, and when we move back into C++ code (for example, to call the compiler), we must transition back to System V. For this reason, this calling convention will probably change in future. 
