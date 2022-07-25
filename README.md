@@ -42,7 +42,7 @@ make
 
 ### Testing
 
-Currently, the compiler does nothing but return precompiled x86 code for a very basic addition program. The expected output is the sum of the two program arguments, e.g. ```./exe/runtime test.wasm 5 6``` should output ```11```. The corresponding C code is:
+Currently, the compiler does nothing but return precompiled x86 code for a very basic addition program. The expected output is the sum of the two program arguments, e.g. ```./exe/runtime add.wasm 5 6``` should output ```11```. The corresponding C code is:
 
 ```
 int atoi(char *c) {
