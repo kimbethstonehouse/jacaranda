@@ -10,7 +10,7 @@ __stub_atoi:
     mov 16(%rbp), %rax
     mov (%rax), %al
 
-    // Subtract 0x48 to convert ASCII to number
+    // Subtract 0x30 to convert ASCII to number
     sub $0x30, %al
     movzx %al, %eax
 

@@ -62,10 +62,11 @@ void *Runtime::request_compilation(int function_index) {
                                           target_machine_->createDataLayout().getStringRepresentation(),
                                           target_machine_->getProgramPointerSize());
 
+    // Copy the result into executable memory and update the jump table pointer
     memcpy(next_function_, native.data_bytes().data(), native.data_length());
     jump_table_[function_index] = next_function_;
 
-    // Pad to 16 bytes
+    // x86 optimisation: x86 CPUs can branch more efficiently when targets are 16-byte aligned
     next_function_ += align(native.data_length(), 16);
     return jump_table_[function_index];
 }
@@ -74,18 +75,20 @@ void Runtime::run(const std::string &filename, int argc, char **argv) {
     request_function_indices(filename);
     init_execution_state();
 
+    // The start index refers to an optional start section in the WebAssembly module, intended for initialising the state of a module
     if (start_idx_.has_value()) {
         if (jump_table_[start_idx_.value()] == &trampoline_to_compile) request_compilation(start_idx_.value());
         trampoline_to_execute(start_idx_.value(), jump_table_, argc, argv, this);
     }
 
+    // The main index refers to the first function to be executed, and is NOT optional
     if (jump_table_[main_idx_] == &trampoline_to_compile) request_compilation(main_idx_);
     int res = trampoline_to_execute(main_idx_, jump_table_, argc, argv, this);
     std::cout << "Result: " << res << std::endl;
 }
 
 // The runtime needs to know how many functions are in the WebAssembly module, and what the starting function index is
-// The rest of the WebAssembly binary can perhaps be stored elsewhere, like the code repository
+// The actual WebAssembly binary is stored in the central code repository, and the runtime does not access it
 void Runtime::request_function_indices(const std::string &filename) {
     FunctionIndices indices = envoy_->request_function_indices(filename);
     function_count_ = indices.func_count();
@@ -93,6 +96,7 @@ void Runtime::request_function_indices(const std::string &filename) {
     main_idx_ = indices.main_idx();
 }
 
+// Initialise each function pointer to the address of the compile function
 void Runtime::init_execution_state() {
     jump_table_ = (void **) mmap(nullptr, function_count_ * PTR_SIZE,
                                 PROT_EXEC | PROT_READ | PROT_WRITE,MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
