@@ -85,6 +85,18 @@ namespace Wasm {
         int local_index_;
     };
 
+    // memory_immediate type encoded as:
+    // flags varuint32 containing the alignment in the least significant bits encoded as log2(alignment)
+    // offset varuint32 containing the value of the offset
+    // Load one byte and sign extend i8 to i32
+    class I32Load8_sInstruction : public Instruction {
+    public:
+        I32Load8_sInstruction(int flags, int offset) : Instruction(I32_LOAD8_S_OPCODE), flags_(flags), offset_(offset) {}
+    private:
+        int flags_;
+        int offset_;
+    };
+
     // value varuint32
     // a constant value interpreted as i32
     class I32ConstInstruction : public Instruction {

@@ -1097,11 +1097,12 @@ class WasmFunction final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kFuncBodyFieldNumber = 3,
-    kFuncTypeFieldNumber = 2,
+    kFuncBodyFieldNumber = 2,
+    kFuncTypeFieldNumber = 4,
     kIsImportedFieldNumber = 1,
+    kBodyLengthFieldNumber = 3,
   };
-  // bytes func_body = 3;
+  // bytes func_body = 2;
   void clear_func_body();
   const std::string& func_body() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -1115,7 +1116,7 @@ class WasmFunction final :
   std::string* _internal_mutable_func_body();
   public:
 
-  // .FunctionType func_type = 2;
+  // .FunctionType func_type = 4;
   bool has_func_type() const;
   private:
   bool _internal_has_func_type() const;
@@ -1142,6 +1143,15 @@ class WasmFunction final :
   void _internal_set_is_imported(bool value);
   public:
 
+  // uint32 body_length = 3;
+  void clear_body_length();
+  uint32_t body_length() const;
+  void set_body_length(uint32_t value);
+  private:
+  uint32_t _internal_body_length() const;
+  void _internal_set_body_length(uint32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:WasmFunction)
  private:
   class _Internal;
@@ -1152,6 +1162,7 @@ class WasmFunction final :
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr func_body_;
   ::FunctionType* func_type_;
   bool is_imported_;
+  uint32_t body_length_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_jacaranda_2eproto;
 };
@@ -1866,7 +1877,78 @@ inline void WasmFunction::set_is_imported(bool value) {
   // @@protoc_insertion_point(field_set:WasmFunction.is_imported)
 }
 
-// .FunctionType func_type = 2;
+// bytes func_body = 2;
+inline void WasmFunction::clear_func_body() {
+  func_body_.ClearToEmpty();
+}
+inline const std::string& WasmFunction::func_body() const {
+  // @@protoc_insertion_point(field_get:WasmFunction.func_body)
+  return _internal_func_body();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void WasmFunction::set_func_body(ArgT0&& arg0, ArgT... args) {
+ 
+ func_body_.SetBytes(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:WasmFunction.func_body)
+}
+inline std::string* WasmFunction::mutable_func_body() {
+  std::string* _s = _internal_mutable_func_body();
+  // @@protoc_insertion_point(field_mutable:WasmFunction.func_body)
+  return _s;
+}
+inline const std::string& WasmFunction::_internal_func_body() const {
+  return func_body_.Get();
+}
+inline void WasmFunction::_internal_set_func_body(const std::string& value) {
+  
+  func_body_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+}
+inline std::string* WasmFunction::_internal_mutable_func_body() {
+  
+  return func_body_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+}
+inline std::string* WasmFunction::release_func_body() {
+  // @@protoc_insertion_point(field_release:WasmFunction.func_body)
+  return func_body_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+}
+inline void WasmFunction::set_allocated_func_body(std::string* func_body) {
+  if (func_body != nullptr) {
+    
+  } else {
+    
+  }
+  func_body_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), func_body,
+      GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (func_body_.IsDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited())) {
+    func_body_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:WasmFunction.func_body)
+}
+
+// uint32 body_length = 3;
+inline void WasmFunction::clear_body_length() {
+  body_length_ = 0u;
+}
+inline uint32_t WasmFunction::_internal_body_length() const {
+  return body_length_;
+}
+inline uint32_t WasmFunction::body_length() const {
+  // @@protoc_insertion_point(field_get:WasmFunction.body_length)
+  return _internal_body_length();
+}
+inline void WasmFunction::_internal_set_body_length(uint32_t value) {
+  
+  body_length_ = value;
+}
+inline void WasmFunction::set_body_length(uint32_t value) {
+  _internal_set_body_length(value);
+  // @@protoc_insertion_point(field_set:WasmFunction.body_length)
+}
+
+// .FunctionType func_type = 4;
 inline bool WasmFunction::_internal_has_func_type() const {
   return this != internal_default_instance() && func_type_ != nullptr;
 }
@@ -1954,57 +2036,6 @@ inline void WasmFunction::set_allocated_func_type(::FunctionType* func_type) {
   }
   func_type_ = func_type;
   // @@protoc_insertion_point(field_set_allocated:WasmFunction.func_type)
-}
-
-// bytes func_body = 3;
-inline void WasmFunction::clear_func_body() {
-  func_body_.ClearToEmpty();
-}
-inline const std::string& WasmFunction::func_body() const {
-  // @@protoc_insertion_point(field_get:WasmFunction.func_body)
-  return _internal_func_body();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void WasmFunction::set_func_body(ArgT0&& arg0, ArgT... args) {
- 
- func_body_.SetBytes(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:WasmFunction.func_body)
-}
-inline std::string* WasmFunction::mutable_func_body() {
-  std::string* _s = _internal_mutable_func_body();
-  // @@protoc_insertion_point(field_mutable:WasmFunction.func_body)
-  return _s;
-}
-inline const std::string& WasmFunction::_internal_func_body() const {
-  return func_body_.Get();
-}
-inline void WasmFunction::_internal_set_func_body(const std::string& value) {
-  
-  func_body_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
-}
-inline std::string* WasmFunction::_internal_mutable_func_body() {
-  
-  return func_body_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
-}
-inline std::string* WasmFunction::release_func_body() {
-  // @@protoc_insertion_point(field_release:WasmFunction.func_body)
-  return func_body_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
-}
-inline void WasmFunction::set_allocated_func_body(std::string* func_body) {
-  if (func_body != nullptr) {
-    
-  } else {
-    
-  }
-  func_body_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), func_body,
-      GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (func_body_.IsDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited())) {
-    func_body_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:WasmFunction.func_body)
 }
 
 // -------------------------------------------------------------------

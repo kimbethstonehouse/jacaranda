@@ -91,7 +91,8 @@ constexpr WasmFunction::WasmFunction(
   ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
   : func_body_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
   , func_type_(nullptr)
-  , is_imported_(false){}
+  , is_imported_(false)
+  , body_length_(0u){}
 struct WasmFunctionDefaultTypeInternal {
   constexpr WasmFunctionDefaultTypeInternal()
     : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
@@ -178,8 +179,9 @@ const uint32_t TableStruct_jacaranda_2eproto::offsets[] PROTOBUF_SECTION_VARIABL
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::WasmFunction, is_imported_),
-  PROTOBUF_FIELD_OFFSET(::WasmFunction, func_type_),
   PROTOBUF_FIELD_OFFSET(::WasmFunction, func_body_),
+  PROTOBUF_FIELD_OFFSET(::WasmFunction, body_length_),
+  PROTOBUF_FIELD_OFFSET(::WasmFunction, func_type_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::NativeBinary, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -196,7 +198,7 @@ static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOB
   { 33, -1, -1, sizeof(::CompilationRequest)},
   { 44, -1, -1, sizeof(::CodeRequest)},
   { 52, -1, -1, sizeof(::WasmFunction)},
-  { 61, -1, -1, sizeof(::NativeBinary)},
+  { 62, -1, -1, sizeof(::NativeBinary)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -221,20 +223,21 @@ const char descriptor_table_protodef_jacaranda_2eproto[] PROTOBUF_SECTION_VARIAB
   "\014architecture\030\002 \001(\t\022\020\n\010func_idx\030\003 \001(\r\022\032\n"
   "\022target_data_layout\030\004 \001(\t\022\034\n\024program_poi"
   "nter_size\030\005 \001(\r\"4\n\013CodeRequest\022\023\n\013module"
-  "_name\030\001 \001(\t\022\020\n\010func_idx\030\002 \001(\r\"X\n\014WasmFun"
-  "ction\022\023\n\013is_imported\030\001 \001(\010\022 \n\tfunc_type\030"
-  "\002 \001(\0132\r.FunctionType\022\021\n\tfunc_body\030\003 \001(\014\""
-  "7\n\014NativeBinary\022\022\n\ndata_bytes\030\001 \001(\014\022\023\n\013d"
-  "ata_length\030\002 \001(\r2J\n\017CompilerService\0227\n\017r"
-  "equest_compile\022\023.CompilationRequest\032\r.Na"
-  "tiveBinary\"\0002\203\001\n\021RepositoryService\022-\n\014re"
-  "quest_code\022\014.CodeRequest\032\r.WasmFunction\""
-  "\000\022\?\n\030request_function_indices\022\017.IndicesR"
-  "equest\032\020.FunctionIndices\"\000b\006proto3"
+  "_name\030\001 \001(\t\022\020\n\010func_idx\030\002 \001(\r\"m\n\014WasmFun"
+  "ction\022\023\n\013is_imported\030\001 \001(\010\022\021\n\tfunc_body\030"
+  "\002 \001(\014\022\023\n\013body_length\030\003 \001(\r\022 \n\tfunc_type\030"
+  "\004 \001(\0132\r.FunctionType\"7\n\014NativeBinary\022\022\n\n"
+  "data_bytes\030\001 \001(\014\022\023\n\013data_length\030\002 \001(\r2J\n"
+  "\017CompilerService\0227\n\017request_compile\022\023.Co"
+  "mpilationRequest\032\r.NativeBinary\"\0002\203\001\n\021Re"
+  "positoryService\022-\n\014request_code\022\014.CodeRe"
+  "quest\032\r.WasmFunction\"\000\022\?\n\030request_functi"
+  "on_indices\022\017.IndicesRequest\032\020.FunctionIn"
+  "dices\"\000b\006proto3"
   ;
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_jacaranda_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_jacaranda_2eproto = {
-  false, false, 834, descriptor_table_protodef_jacaranda_2eproto, "jacaranda.proto", 
+  false, false, 855, descriptor_table_protodef_jacaranda_2eproto, "jacaranda.proto", 
   &descriptor_table_jacaranda_2eproto_once, nullptr, 0, 7,
   schemas, file_default_instances, TableStruct_jacaranda_2eproto::offsets,
   file_level_metadata_jacaranda_2eproto, file_level_enum_descriptors_jacaranda_2eproto, file_level_service_descriptors_jacaranda_2eproto,
@@ -1607,7 +1610,9 @@ WasmFunction::WasmFunction(const WasmFunction& from)
   } else {
     func_type_ = nullptr;
   }
-  is_imported_ = from.is_imported_;
+  ::memcpy(&is_imported_, &from.is_imported_,
+    static_cast<size_t>(reinterpret_cast<char*>(&body_length_) -
+    reinterpret_cast<char*>(&is_imported_)) + sizeof(body_length_));
   // @@protoc_insertion_point(copy_constructor:WasmFunction)
 }
 
@@ -1618,8 +1623,8 @@ func_body_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAl
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 ::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
     reinterpret_cast<char*>(&func_type_) - reinterpret_cast<char*>(this)),
-    0, static_cast<size_t>(reinterpret_cast<char*>(&is_imported_) -
-    reinterpret_cast<char*>(&func_type_)) + sizeof(is_imported_));
+    0, static_cast<size_t>(reinterpret_cast<char*>(&body_length_) -
+    reinterpret_cast<char*>(&func_type_)) + sizeof(body_length_));
 }
 
 WasmFunction::~WasmFunction() {
@@ -1656,7 +1661,9 @@ void WasmFunction::Clear() {
     delete func_type_;
   }
   func_type_ = nullptr;
-  is_imported_ = false;
+  ::memset(&is_imported_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&body_length_) -
+      reinterpret_cast<char*>(&is_imported_)) + sizeof(body_length_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -1674,19 +1681,27 @@ const char* WasmFunction::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_I
         } else
           goto handle_unusual;
         continue;
-      // .FunctionType func_type = 2;
+      // bytes func_body = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
-          ptr = ctx->ParseMessage(_internal_mutable_func_type(), ptr);
+          auto str = _internal_mutable_func_body();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // bytes func_body = 3;
+      // uint32 body_length = 3;
       case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
-          auto str = _internal_mutable_func_body();
-          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
+          body_length_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .FunctionType func_type = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 34)) {
+          ptr = ctx->ParseMessage(_internal_mutable_func_type(), ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -1726,18 +1741,24 @@ uint8_t* WasmFunction::_InternalSerialize(
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBoolToArray(1, this->_internal_is_imported(), target);
   }
 
-  // .FunctionType func_type = 2;
+  // bytes func_body = 2;
+  if (!this->_internal_func_body().empty()) {
+    target = stream->WriteBytesMaybeAliased(
+        2, this->_internal_func_body(), target);
+  }
+
+  // uint32 body_length = 3;
+  if (this->_internal_body_length() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(3, this->_internal_body_length(), target);
+  }
+
+  // .FunctionType func_type = 4;
   if (this->_internal_has_func_type()) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
       InternalWriteMessage(
-        2, _Internal::func_type(this), target, stream);
-  }
-
-  // bytes func_body = 3;
-  if (!this->_internal_func_body().empty()) {
-    target = stream->WriteBytesMaybeAliased(
-        3, this->_internal_func_body(), target);
+        4, _Internal::func_type(this), target, stream);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -1756,14 +1777,14 @@ size_t WasmFunction::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // bytes func_body = 3;
+  // bytes func_body = 2;
   if (!this->_internal_func_body().empty()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
         this->_internal_func_body());
   }
 
-  // .FunctionType func_type = 2;
+  // .FunctionType func_type = 4;
   if (this->_internal_has_func_type()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
@@ -1773,6 +1794,11 @@ size_t WasmFunction::ByteSizeLong() const {
   // bool is_imported = 1;
   if (this->_internal_is_imported() != 0) {
     total_size += 1 + 1;
+  }
+
+  // uint32 body_length = 3;
+  if (this->_internal_body_length() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32SizePlusOne(this->_internal_body_length());
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
@@ -1806,6 +1832,9 @@ void WasmFunction::MergeFrom(const WasmFunction& from) {
   if (from._internal_is_imported() != 0) {
     _internal_set_is_imported(from._internal_is_imported());
   }
+  if (from._internal_body_length() != 0) {
+    _internal_set_body_length(from._internal_body_length());
+  }
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -1831,8 +1860,8 @@ void WasmFunction::InternalSwap(WasmFunction* other) {
       &other->func_body_, rhs_arena
   );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(WasmFunction, is_imported_)
-      + sizeof(WasmFunction::is_imported_)
+      PROTOBUF_FIELD_OFFSET(WasmFunction, body_length_)
+      + sizeof(WasmFunction::body_length_)
       - PROTOBUF_FIELD_OFFSET(WasmFunction, func_type_)>(
           reinterpret_cast<char*>(&func_type_),
           reinterpret_cast<char*>(&other->func_type_));

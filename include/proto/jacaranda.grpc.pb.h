@@ -25,6 +25,7 @@
 #include <grpcpp/impl/codegen/stub_options.h>
 #include <grpcpp/impl/codegen/sync_stream.h>
 
+// todo: add arenas to improve efficiency
 class CompilerService final {
  public:
   static constexpr char const* service_full_name() {

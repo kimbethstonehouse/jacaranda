@@ -5,8 +5,7 @@
 
 class CompilerEnvoyServer final : public CompilerService::Service {
 public:
-    CompilerEnvoyServer(Compiler *compiler) : compiler_(compiler) {}
-    ~CompilerEnvoyServer() { delete compiler_; }
+    CompilerEnvoyServer(std::shared_ptr<Compiler> compiler) : compiler_(compiler) {}
 
     grpc::Status request_compile(grpc::ServerContext *context, const CompilationRequest *request, NativeBinary *native) override {
         compiler_->compile(request, native);
@@ -14,5 +13,5 @@ public:
     }
 
 private:
-    Compiler *compiler_;
+    std::shared_ptr<Compiler> compiler_;
 };

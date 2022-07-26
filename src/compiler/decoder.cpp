@@ -18,7 +18,7 @@ Decoder::PhiVector Decoder::createPhis(llvm::BasicBlock* basic_block, llvm::IRBu
     return result;
 }
 
-void Decoder::createLLVMIR(const CompilationRequest *request, const WasmFunction *function) {
+void Decoder::createLLVMIR(const CompilationRequest *request, WasmFunction function) {
     // Emit LLVM IR for the module.
     llvm::LLVMContext llvm_context;
     llvm::Module llvm_module("", llvm_context);
@@ -49,7 +49,7 @@ void Decoder::createLLVMIR(const CompilationRequest *request, const WasmFunction
                                                                           getExternalName("typeId", request->func_idx()));
 
     // Create the function declaration
-    llvm::Function* llvm_function = llvm::Function::Create(asLLVMType(llvm_context, function->func_type()),
+    llvm::Function* llvm_function = llvm::Function::Create(asLLVMType(llvm_context, function.func_type()),
                                                       llvm::Function::ExternalLinkage, getExternalName("function", request->func_idx()), llvm_module);
     llvm_function->setCallingConv(llvm::CallingConv::C); // todo: change!
     llvm_function->setPersonalityFn(personality_function);
@@ -63,13 +63,13 @@ void Decoder::createLLVMIR(const CompilationRequest *request, const WasmFunction
     // Create the return basic block, and push the root control context for the function.
     auto return_basic_block = llvm::BasicBlock::Create(llvm_context, "return", llvm_function);
     auto return_phis = createPhis(return_basic_block, ir_builder,
-                                  asLLVMType(llvm_context, function->func_type().return_type()));
+                                  asLLVMType(llvm_context, function.func_type().return_type()));
     ir_builder.SetInsertPoint(entry_basic_block);
 
     // Create and initialize allocas for all the parameters.
     auto llvm_arg_iterator = llvm_function->arg_begin();
-    for(uintptr_t param_idx = 0; param_idx < function->func_type().param_count(); ++param_idx) {
-        auto param_type = function->func_type().param_types(param_idx);
+    for(uintptr_t param_idx = 0; param_idx < function.func_type().param_count(); ++param_idx) {
+        auto param_type = function.func_type().param_types(param_idx);
         auto param_pointer = ir_builder.CreateAlloca(asLLVMType(llvm_context, param_type), nullptr, "");
 
         // Copy the parameter value into the local that stores it.
@@ -78,7 +78,7 @@ void Decoder::createLLVMIR(const CompilationRequest *request, const WasmFunction
     }
 
     // Parsing is done lazily, so the WebAssembly function body will need to be parsed now.
-    Payload payload(function->func_body().data(), function->func_body().length());
+    Payload payload(function.func_body().data(), function.func_body().length());
     Wasm::FunctionBody function_body(payload);
     // todo: for each instruction in vector, convert to llvm ir
 

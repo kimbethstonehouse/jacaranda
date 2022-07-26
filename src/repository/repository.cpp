@@ -59,22 +59,25 @@ void Repository::code(const CodeRequest *request, WasmFunction *function) {
     }
 
     auto func = func_it->second;
-    function->set_is_imported(func.internal_function());
+    function->set_is_imported(!func.internal_function());
 
-    FunctionType rpc_function_type;
-    rpc_function_type.set_param_count(func.function_type()->param_count());
+    FunctionType *rpc_function_type = new FunctionType;
+    rpc_function_type->set_param_count(func.function_type()->param_count());
 
     // Protocol buffers guarantee to retain parameter order
     for (Wasm::ValueType value_type : func.function_type()->param_types()) {
-        rpc_function_type.add_param_types(value_type.type());
+        rpc_function_type->add_param_types(value_type.type());
     }
 
-    rpc_function_type.set_return_count(func.function_type()->return_count());
+    rpc_function_type->set_return_count(func.function_type()->return_count());
     // Optional type is only present if the function has a return value
     if (func.function_type()->return_count() > 0) {
-        rpc_function_type.set_return_type(func.function_type()->return_type().value().type());
+        rpc_function_type->set_return_type(func.function_type()->return_type().value().type());
     }
 
-    function->set_allocated_func_type(&rpc_function_type);
-    function->set_func_body(func.function_body().data_start(), func.function_body().size());
+    function->set_func_body(func.function_body()->data_start(), func.function_body()->size());
+    function->set_body_length(func.function_body()->size());
+
+    // Takes ownership of rpc_function_type and manages deletion
+    function->set_allocated_func_type(rpc_function_type);
 }

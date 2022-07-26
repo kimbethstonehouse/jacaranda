@@ -1,5 +1,6 @@
 syntax = "proto3";
 
+// todo: add arenas to improve efficiency
 service CompilerService {
   rpc request_compile(CompilationRequest) returns (NativeBinary) {}
 }
@@ -44,8 +45,9 @@ message CodeRequest {
 
 message WasmFunction {
   bool is_imported = 1;
-  FunctionType func_type = 2;
-  bytes func_body = 3;
+  bytes func_body = 2;
+  uint32 body_length = 3;
+  FunctionType func_type = 4;
 }
 
 message NativeBinary {

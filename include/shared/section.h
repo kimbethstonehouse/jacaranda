@@ -146,11 +146,11 @@ namespace Wasm {
     public:
         static constexpr int id = TYPE_SECTION_ID;
         TypeSection(Payload payload) : Section(payload) { parse_section(); }
-        std::unique_ptr<FunctionType> &get_type(const int &idx) { return types_.at(idx); }
+        std::shared_ptr<FunctionType> get_type(const int &idx) const { return types_.at(idx); }
     private:
         unsigned int count_;
         // Map from function index to signature
-        std::map<int, std::unique_ptr<FunctionType>> types_;
+        std::map<int, std::shared_ptr<FunctionType>> types_;
         void parse_section() override;
     };
 
@@ -258,13 +258,14 @@ namespace Wasm {
     public:
         static constexpr int id = CODE_SECTION_ID;
         CodeSection(Payload payload) : Section(payload) { parse_section(); }
+//        ~CodeSection() { for (auto entry : bodies_) { delete entry.second; } }
 
-        Payload get_body(int index) const { return bodies_.at(index); }
-        std::map<int, Payload> bodies() const { return bodies_; }
+        std::shared_ptr<Payload> get_body(int index) const { return bodies_.at(index); }
+        std::map<int, std::shared_ptr<Payload>> bodies() const { return bodies_; }
     private:
         unsigned int count_;
         // We parse the bodies themselves lazily. Leave as buffers in the meantime.
-        std::map<int, Payload> bodies_;
+        std::map<int, std::shared_ptr<Payload>> bodies_;
         void parse_section() override;
     };
 
@@ -294,7 +295,7 @@ namespace Wasm {
         unsigned int local_count() { return local_count_; }
     private:
         void parse_body();
-        std::vector<std::unique_ptr<Instruction>> instructions_;
+        std::vector<std::shared_ptr<Instruction>> instructions_;
         Payload payload_;
         unsigned int body_size_;
         unsigned int local_count_;

@@ -30,7 +30,7 @@ void Wasm::TypeSection::parse_section() {
             return_type = ValueType(payload.read_uleb128(VARUINT7));
         }
 
-        types_.insert({i, std::unique_ptr<FunctionType>(new FunctionType(param_count, param_types, return_count, return_type))});
+        types_.insert({i, std::make_shared<FunctionType>(FunctionType(param_count, param_types, return_count, return_type))});
     }
 }
 
@@ -43,14 +43,25 @@ void Wasm::ImportSection::parse_section() {
         std::string import_name = payload.read_name(VARUINT32);
         unsigned char type = payload.read_uleb128(VARUINT7);
 
-        if (type != ExternalKind::FUNCTION) {
+        if (type == ExternalKind::FUNCTION) {
+            unsigned int type_index = payload.read_uleb128(VARUINT32);
+            imports_.insert({i, ImportEntry(module_name, import_name, type, type_index)});
+        } else if (type == ExternalKind::TABLE) {
+            // todo: actually store this information
+            int element_type = payload.read_leb128(VARINT7);
+            bool flags = payload.read_uleb128(VARUINT1);
+            int initial = payload.read_uleb128(VARUINT32);
+            if (flags) int maximum = payload.read_uleb128(VARUINT32);
+        } else if (type == ExternalKind::MEMORY) {
+            // todo: actually store this information
+            bool flags = payload.read_uleb128(VARUINT1);
+            int initial = payload.read_uleb128(VARUINT32);
+            if (flags) int maximum = payload.read_uleb128(VARUINT32);
+        } else {
+            // todo: parse global types
             throw parse_exception("invalid external kind " + std::to_string(type) +
-                                  ", currently only functions are supported");
+                      ", currently only functions, tables and memories are supported");
         }
-
-        unsigned int type_index = payload.read_uleb128(VARUINT32);
-
-        imports_.insert({i, ImportEntry(module_name, import_name, type, type_index)});
     }
 }
 
@@ -76,7 +87,7 @@ void Wasm::CodeSection::parse_section() {
 
     for (int i = 0; i < count_; i++) {
         unsigned int body_size = payload.read_uleb128(VARUINT32);
-        bodies_.insert({i, Payload(payload.at(), body_size)});
+        bodies_.insert({i, std::make_shared<Payload>(payload.at(), body_size)});
         payload.skip(body_size);
     }
 }
@@ -95,7 +106,6 @@ void Wasm::ExportSection::parse_section() {
 }
 
 void Wasm::FunctionBody::parse_body() {
-    body_size_ = payload_.read_uleb128(VARUINT32);
     local_count_ = payload_.read_uleb128(VARUINT32);
 
     for (int i = 0; i < local_count_; i++) {
@@ -109,30 +119,48 @@ void Wasm::FunctionBody::parse_body() {
 
         switch(opcode) {
             case CALL_OPCODE:
-                instructions_.push_back(std::unique_ptr<Instruction>(new CallInstruction(
+                instructions_.push_back(std::make_shared<Instruction>(CallInstruction(
                         payload_.read_uleb128(VARUINT32))));
+                break;
             case BLOCK_OPCODE:
-                instructions_.push_back(std::unique_ptr<Instruction>(new BlockInstruction(
+                instructions_.push_back(std::make_shared<Instruction>(BlockInstruction(
                         // uint7 is not a mistake as we look for 0x40 rather than -0x40
                         payload_.read_uleb128(VARUINT7))));
+                break;
             case END_OPCODE:
-                instructions_.push_back(std::unique_ptr<Instruction>(new EndInstruction()));
+                instructions_.push_back(std::make_shared<Instruction>(EndInstruction()));
+                break;
             case BR_IF_OPCODE:
-                instructions_.push_back(std::unique_ptr<Instruction>(new BrIfInstruction(
+                instructions_.push_back(std::make_shared<Instruction>(BrIfInstruction(
                         payload_.read_uleb128(VARUINT32))));
+                break;
             case RETURN_OPCODE:
-                instructions_.push_back(std::unique_ptr<Instruction>(new ReturnInstruction()));
+                instructions_.push_back(std::make_shared<Instruction>(ReturnInstruction()));
+                break;
             case GET_LOCAL_OPCODE:
-                instructions_.push_back(std::unique_ptr<Instruction>(new GetLocalInstruction(
+                instructions_.push_back(std::make_shared<Instruction>(GetLocalInstruction(
                         payload_.read_uleb128(VARUINT32))));
+                break;
             case SET_LOCAL_OPCODE:
-                instructions_.push_back(std::unique_ptr<Instruction>(new SetLocalInstruction(
+                instructions_.push_back(std::make_shared<Instruction>(SetLocalInstruction(
                         payload_.read_uleb128(VARUINT32))));
+                break;
+            case (0x28): //todo: what?
+                instructions_.push_back(std::make_shared<Instruction>(I32Load8_sInstruction(
+                        payload_.read_uleb128(VARUINT32), payload_.read_uleb128(VARUINT32))));
+                break;
+            case (I32_LOAD8_S_OPCODE):
+                instructions_.push_back(std::make_shared<Instruction>(I32Load8_sInstruction(
+                        payload_.read_uleb128(VARUINT32), payload_.read_uleb128(VARUINT32))));
+                break;
             case I32_CONST_OPCODE:
-                instructions_.push_back(std::unique_ptr<Instruction>(new I32ConstInstruction(
+                instructions_.push_back(std::make_shared<Instruction>(I32ConstInstruction(
                         payload_.read_leb128(VARINT32))));
+                break;
             case I32_EQZ_OPCODE:
-                instructions_.push_back(std::unique_ptr<Instruction>(new I32EqzInstruction()));
+                instructions_.push_back(std::make_shared<Instruction>(I32EqzInstruction()));
+                break;
+                // todo: go back through binary and add more
             default:
                 throw new decode_exception("unsupported instruction with opcode " + std::to_string(opcode) + " encountered");
         }

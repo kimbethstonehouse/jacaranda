@@ -7,7 +7,7 @@
 #include <runtime.h>
 
 // The envoy communicates with other components (e.g. the compiler) on our behalf
-Runtime::Runtime(RuntimeEnvoy *envoy) : envoy_(envoy) {
+Runtime::Runtime(std::shared_ptr<RuntimeEnvoy> envoy) : envoy_(envoy) {
     // Map regions of memory to execute native code
     code_section_ = (char *) mmap(nullptr, pow(2, 30),
                                   PROT_EXEC | PROT_READ | PROT_WRITE,MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
@@ -19,7 +19,6 @@ Runtime::Runtime(RuntimeEnvoy *envoy) : envoy_(envoy) {
 }
 
 Runtime::~Runtime() {
-    delete envoy_;
     munmap(code_section_, pow(2, 30));
     munmap(jump_table_, function_count_ * PTR_SIZE);
 }
@@ -58,7 +57,7 @@ extern "C" void *do_request_compilation(int function_index, Runtime *runtime) {
 
 void *Runtime::request_compilation(int function_index) {
     // Write to the remote compiler asking for the compiled code
-    NativeBinary native = envoy_->request_compile("add", "x86", function_index,
+    NativeBinary native = envoy_->request_compile(module_name_, "x86", function_index,
                                           target_machine_->createDataLayout().getStringRepresentation(),
                                           target_machine_->getProgramPointerSize());
 
@@ -72,7 +71,8 @@ void *Runtime::request_compilation(int function_index) {
 }
 
 void Runtime::run(const std::string &filename, int argc, char **argv) {
-    request_function_indices(filename);
+    set_module_name(filename);
+    request_function_indices();
     init_execution_state();
 
     // The start index refers to an optional start section in the WebAssembly module, intended for initialising the state of a module
@@ -89,8 +89,8 @@ void Runtime::run(const std::string &filename, int argc, char **argv) {
 
 // The runtime needs to know how many functions are in the WebAssembly module, and what the starting function index is
 // The actual WebAssembly binary is stored in the central code repository, and the runtime does not access it
-void Runtime::request_function_indices(const std::string &filename) {
-    FunctionIndices indices = envoy_->request_function_indices(filename);
+void Runtime::request_function_indices() {
+    FunctionIndices indices = envoy_->request_function_indices(module_name_);
     function_count_ = indices.func_count();
     if (indices.has_start_idx()) start_idx_ = indices.start_idx();
     main_idx_ = indices.main_idx();

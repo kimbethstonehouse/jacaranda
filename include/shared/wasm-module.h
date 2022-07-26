@@ -13,8 +13,7 @@
 class WasmModule {
 public:
     WasmModule(const std::string &filename);
-    ~WasmModule(// todo: memleaks
-    );
+    ~WasmModule();
 
     template <class T> T *get_section() { return (T *)section_map_[T::id]; }
 

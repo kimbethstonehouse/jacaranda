@@ -46,7 +46,10 @@ WasmModule::WasmModule(const std::string &filename) {
     parse_sections();
 }
 
-WasmModule::~WasmModule() { munmap((void *)buffer_, buffer_size_); }
+WasmModule::~WasmModule() {
+    for (auto entry : section_map_) { delete entry.second; }
+    munmap((void *)buffer_, buffer_size_);
+}
 
 void WasmModule::parse_sections() {
     // Check magic number
@@ -130,10 +133,10 @@ void WasmModule::load_functions() {
     auto imports = get_section<Wasm::ImportSection>()->imports();
     auto type_section = get_section<Wasm::TypeSection>();
 
-    Payload blank = Payload();
     for (const auto &import : imports) {
         if (import.second.import_type() == ExternalKind::FUNCTION) {
-            functions_.insert({import.first, Function(false, import.first, type_section->get_type(import.second.type_index()), blank)});
+            functions_.insert({import.first, Function(false, import.first,
+                                                      type_section->get_type(import.second.type_index()), std::make_shared<Payload>())});
         }
     }
 

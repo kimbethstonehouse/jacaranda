@@ -6,8 +6,9 @@
 
 int main() {
     // Define ourselves as a client so that we can request code from the code repository (assumes the repository is up and running)
-    CompilerEnvoyClient *compiler_envoy_client = new CompilerEnvoyClient(grpc::CreateChannel(repository_address, grpc::InsecureChannelCredentials()));
-    Compiler *compiler = new Compiler(compiler_envoy_client);
+    std::shared_ptr<CompilerEnvoyClient> compiler_envoy_client = std::make_shared<CompilerEnvoyClient>
+            (CompilerEnvoyClient(grpc::CreateChannel(repository_address, grpc::InsecureChannelCredentials())));
+    std::shared_ptr<Compiler> compiler = std::make_shared<Compiler>(compiler_envoy_client);
     // Define ourselves as a server so that the local runtimes can request code from us
     CompilerEnvoyServer compiler_envoy_server(compiler);
 

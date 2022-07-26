@@ -12,7 +12,7 @@ class Decoder {
     static std::map<unsigned char, llvm::Type *> llvm_types;
 
 public:
-    void createLLVMIR(const CompilationRequest *request, const WasmFunction *function);
+    void createLLVMIR(const CompilationRequest *request, WasmFunction function);
 
     PhiVector createPhis(llvm::BasicBlock *basic_block, llvm::IRBuilder<> &ir_builder, llvm::Type *type);
 
