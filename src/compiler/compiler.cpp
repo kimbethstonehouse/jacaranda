@@ -10,8 +10,8 @@ extern "C" unsigned long __stub_atoi_size;
 
 void Compiler::compile(const CompilationRequest *request, NativeBinary *native) {
     // todo: check cache
-//    WasmFunction function = envoy_->request_code(request->module_name(), request->func_idx());
-//    Wasm::FunctionBody body(Payload(function.func_body().data(), function.func_body().size()));
+    WasmFunction function = envoy_->request_code(request->module_name(), request->func_idx());
+    Wasm::FunctionBody body(Payload(function.func_body().data(), function.func_body().size()));
 
     if (request->func_idx() == 1) {
         native->set_data_bytes(&__stub_main, __stub_main_size);
