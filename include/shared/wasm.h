@@ -37,6 +37,10 @@
 // COMPARISON OPERATORS
 #define I32_EQZ_OPCODE 0x45
 
+// NUMERIC OPERATORS
+#define I32_ADD_OPCODE 0x6a
+#define I32_SUB_OPCODE 0x6b
+
 namespace LanguageTypes {
     // Technically negative, but we use the
     // positive representation for simplicity

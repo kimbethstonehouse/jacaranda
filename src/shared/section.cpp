@@ -145,14 +145,14 @@ void Wasm::FunctionBody::parse_body() {
                 instructions_.push_back(std::make_shared<Instruction>(SetLocalInstruction(
                         payload_.read_uleb128(VARUINT32))));
                 break;
-            case (0x28): //todo: what?
-                instructions_.push_back(std::make_shared<Instruction>(I32Load8_sInstruction(
-                        payload_.read_uleb128(VARUINT32), payload_.read_uleb128(VARUINT32))));
-                break;
-            case (I32_LOAD8_S_OPCODE):
-                instructions_.push_back(std::make_shared<Instruction>(I32Load8_sInstruction(
-                        payload_.read_uleb128(VARUINT32), payload_.read_uleb128(VARUINT32))));
-                break;
+//            case (0x28): //todo: what?
+//                instructions_.push_back(std::make_shared<Instruction>(I32Load8_sInstruction(
+//                        payload_.read_uleb128(VARUINT32), payload_.read_uleb128(VARUINT32))));
+//                break;
+//            case I32_LOAD8_S_OPCODE:
+//                instructions_.push_back(std::make_shared<Instruction>(I32Load8_sInstruction(
+//                        payload_.read_uleb128(VARUINT32), payload_.read_uleb128(VARUINT32))));
+//                break;
             case I32_CONST_OPCODE:
                 instructions_.push_back(std::make_shared<Instruction>(I32ConstInstruction(
                         payload_.read_leb128(VARINT32))));
@@ -160,14 +160,19 @@ void Wasm::FunctionBody::parse_body() {
             case I32_EQZ_OPCODE:
                 instructions_.push_back(std::make_shared<Instruction>(I32EqzInstruction()));
                 break;
-                // todo: go back through binary and add more
+            case I32_ADD_OPCODE:
+                instructions_.push_back(std::make_shared<Instruction>(I32AddInstruction()));
+                break;
+            case I32_SUB_OPCODE:
+                instructions_.push_back(std::make_shared<Instruction>(I32SubInstruction()));
+                break;
             default:
                 throw new decode_exception("unsupported instruction with opcode " + std::to_string(opcode) + " encountered");
         }
     }
 
     // Sanity check
-    if (*payload_.at() != END_OPCODE) {
+    if (*(payload_.at()-1) != END_OPCODE) {
         throw decode_exception("error during function body decoding, expected end byte to be 0x0b, but was " + std::to_string(*payload_.at()));
     }
 }

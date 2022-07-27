@@ -22,6 +22,7 @@ namespace Wasm {
     class Instruction {
     public:
         Instruction(char opcode) :opcode_(opcode) {}
+//        virtual llvm::Value *generate_code() = 0;
 
     private:
         // todo: do we actually need this?
@@ -109,5 +110,15 @@ namespace Wasm {
     class I32EqzInstruction : public Instruction {
     public:
         I32EqzInstruction() : Instruction(I32_EQZ_OPCODE) {}
+    };
+
+    class I32AddInstruction : public Instruction {
+    public:
+        I32AddInstruction() : Instruction(I32_ADD_OPCODE) {}
+    };
+
+    class I32SubInstruction : public Instruction {
+    public:
+        I32SubInstruction() : Instruction(I32_SUB_OPCODE) {}
     };
 }

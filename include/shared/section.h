@@ -292,6 +292,7 @@ namespace Wasm {
         FunctionBody(Payload payload) : payload_(payload) { parse_body(); }
 
         Wasm::LocalEntry local(int idx) { return local_variables_.at(idx); }
+        std::vector<std::shared_ptr<Instruction>> &instructions() { return instructions_; }
         unsigned int local_count() { return local_count_; }
     private:
         void parse_body();

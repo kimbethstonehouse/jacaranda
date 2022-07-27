@@ -19,6 +19,10 @@ find_package(Protobuf CONFIG REQUIRED)
 find_package(gRPC CONFIG REQUIRED)
 find_package(LLVM REQUIRED CONFIG)
 
+if(LLVM_VERSION_MAJOR LESS 6)
+    message(FATAL_ERROR "At least version 6.0 of LLVM required")
+endif()
+
 include_directories(${LLVM_INCLUDE_DIRS})
 separate_arguments(LLVM_DEFINITIONS_LIST NATIVE_COMMAND ${LLVM_DEFINITIONS})
 add_definitions(${LLVM_DEFINITIONS_LIST})
