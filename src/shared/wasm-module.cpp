@@ -16,8 +16,9 @@ WasmModule::WasmModule(const std::string &filename) {
     }
 
     // Stat the file to obtain the size
-    struct stat64 st;
-    if (fstat64(fd, &st) < 0) {
+    // todo: changed from stat64 to stat to allow compilation on arm, stat will not allow files less than 2GB
+    struct stat st;
+    if (fstat(fd, &st) < 0) {
         close(fd);
         throw parse_exception("unable to stat file '" + filename + "'");
     }
