@@ -42,9 +42,12 @@ namespace Wasm {
     // begin a sequence of expressions, yielding 0 or 1 values
     class BlockInstruction : public Instruction {
     public:
-        BlockInstruction(char signature) : Instruction(BLOCK_OPCODE), signature_(BlockType(signature)) {}
+        BlockInstruction(int index, char signature) : Instruction(BLOCK_OPCODE), index_(index), signature_(BlockType(signature)) {}
+        std::vector<std::shared_ptr<Instruction>> *instructions() { return &instructions_; }
     private:
+        int index_;
         BlockType signature_;
+        std::vector<std::shared_ptr<Instruction>> instructions_;
     };
 
     // end a block, loop, or if
@@ -120,5 +123,29 @@ namespace Wasm {
     class I32SubInstruction : public Instruction {
     public:
         I32SubInstruction() : Instruction(I32_SUB_OPCODE) {}
+    };
+
+    /* A sequence of local variable declarations followed by bytecode
+     * instructions. Instructions are encoded as an opcode followed by
+     * zero or mode immediates. Each function body must end with the end opcode.
+     * body_size varuint32: indicating the size in bytes of the function body to follow
+     * local_count varuint32: indicating the number of local entries
+     * locals local_entry*: repeated LocalEntries
+     * code byte*: bytecode of the function
+     * end byte: 0x0b to indicate the end of the body */
+    class FunctionBody {
+    public:
+        FunctionBody(Payload payload) : payload_(payload) { parse_body(); }
+
+        LocalEntry local(int idx) { return local_variables_.at(idx); }
+        std::vector<std::shared_ptr<Instruction>> &instructions() { return instructions_; }
+        unsigned int local_count() { return local_count_; }
+    private:
+        void parse_body();
+        std::vector<std::shared_ptr<Instruction>> instructions_;
+        Payload payload_;
+        unsigned int body_size_;
+        unsigned int local_count_;
+        std::vector<Wasm::LocalEntry> local_variables_;
     };
 }

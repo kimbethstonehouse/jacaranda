@@ -8,16 +8,17 @@
 #include <memory>
 #include <wasm.h>
 #include <payload.h>
-#include <instruction.h>
 
 namespace Wasm {
     class ValueType {
     public:
         ValueType(unsigned char type) : type_(type) { validate(); }
+
         unsigned char type() const { return type_; }
 
     private:
         unsigned char type_;
+
         void validate() {
             if (type_ != LanguageTypes::I32 && type_ != LanguageTypes::I64 &&
                 type_ != LanguageTypes::F32 && type_ != LanguageTypes::F64) {
@@ -28,7 +29,9 @@ namespace Wasm {
 
     class GlobalType {
     public:
-        GlobalType(ValueType content_type, unsigned char mutability) : content_type_(content_type), mutability_(mutability) {}
+        GlobalType(ValueType content_type, unsigned char mutability) : content_type_(content_type),
+                                                                       mutability_(mutability) {}
+
     private:
         ValueType content_type_;
         unsigned char mutability_; // 0 if immutable, 1 if mutable
@@ -48,8 +51,11 @@ namespace Wasm {
                 return_count_(return_count), return_type_(return_type) {}
 
         unsigned int param_count() const { return param_count_; }
+
         std::vector<ValueType> param_types() const { return param_types_; }
+
         unsigned char return_count() const { return return_count_; }
+
         std::optional<ValueType> return_type() const { return return_type_; }
 
     private:
@@ -61,10 +67,15 @@ namespace Wasm {
 
     class ImportEntry {
     public:
-        ImportEntry(std::string module_name, std::string import_name, unsigned char import_type, unsigned int type_index) :
-                module_name_(module_name), import_name_(import_name), import_type_(import_type), type_index_(type_index) {}
+        ImportEntry(std::string module_name, std::string import_name, unsigned char import_type,
+                    unsigned int type_index) :
+                module_name_(module_name), import_name_(import_name), import_type_(import_type),
+                type_index_(type_index) {}
+
         unsigned char import_type() const { return import_type_; }
+
         unsigned int type_index() const { return type_index_; }
+
     private:
         std::string module_name_; // aka module_str
         std::string import_name_; // aka field_str
@@ -77,7 +88,9 @@ namespace Wasm {
     class FunctionEntry {
     public:
         FunctionEntry(unsigned int type_index) : type_index_(type_index) {}
+
         int type_index() const { return type_index_; }
+
     private:
         unsigned int type_index_;
     };
@@ -98,9 +111,13 @@ namespace Wasm {
     public:
         ExportEntry(std::string export_name, unsigned char export_type, unsigned int index) :
                 export_name_(export_name), export_type_(export_type), index_(index) {}
+
         std::string export_name() const { return export_name_; }
+
         unsigned char export_type() const { return export_type_; }
+
         unsigned int index() const { return index_; }
+
     private:
         std::string export_name_; // aka field_str
         unsigned char export_type_; // aka kind
@@ -114,7 +131,9 @@ namespace Wasm {
     class LocalEntry {
     public:
         LocalEntry(unsigned int count, ValueType type) : count_(count), type_(type) {}
+
         unsigned char type() const { return type_.type(); }
+
     private:
         unsigned int count_;
         ValueType type_;
@@ -123,9 +142,12 @@ namespace Wasm {
     class Section {
     public:
         Section(Payload payload) : payload_(payload) {}
+
         Payload get_data() const { return payload_; }
+
     protected:
         virtual void parse_section() {}
+
     private:
         Payload payload_;
     };
@@ -133,9 +155,12 @@ namespace Wasm {
     class CustomSection : public Section {
     public:
         static constexpr int id = CUSTOM_SECTION_ID;
+
         CustomSection(Payload payload) : Section(payload) { parse_section(); }
+
     private:
         std::string name_;
+
         void parse_section() override;
     };
 
@@ -145,12 +170,16 @@ namespace Wasm {
     class TypeSection : public Section {
     public:
         static constexpr int id = TYPE_SECTION_ID;
+
         TypeSection(Payload payload) : Section(payload) { parse_section(); }
+
         std::shared_ptr<FunctionType> get_type(const int &idx) const { return types_.at(idx); }
+
     private:
         unsigned int count_;
         // Map from function index to signature
         std::map<int, std::shared_ptr<FunctionType>> types_;
+
         void parse_section() override;
     };
 
@@ -160,11 +189,15 @@ namespace Wasm {
     class ImportSection : public Section {
     public:
         static constexpr int id = IMPORT_SECTION_ID;
+
         ImportSection(Payload payload) : Section(payload) { parse_section(); }
+
         const std::map<int, ImportEntry> &imports() const { return imports_; }
+
     private:
         unsigned int count_;
         std::map<int, ImportEntry> imports_;
+
         void parse_section() override;
     };
 
@@ -174,14 +207,18 @@ namespace Wasm {
     class FunctionSection : public Section {
     public:
         static constexpr int id = FUNCTION_SECTION_ID;
+
         FunctionSection(Payload payload) : Section(payload) { parse_section(); }
 
         const std::map<int, FunctionEntry> &functions() const { return functions_; }
+
         const FunctionEntry &get_function(int index) const { return functions_.at(index); }
+
     private:
         unsigned int count_;
         // Map from function index to type index
         std::map<int, FunctionEntry> functions_;
+
         void parse_section() override;
     };
 
@@ -191,6 +228,7 @@ namespace Wasm {
     class TableSection : public Section {
     public:
         static constexpr int id = TABLE_SECTION_ID;
+
         TableSection(Payload payload) : Section(payload) {}
     };
 
@@ -200,6 +238,7 @@ namespace Wasm {
     class MemorySection : public Section {
     public:
         static constexpr int id = MEMORY_SECTION_ID;
+
         MemorySection(Payload payload) : Section(payload) {}
     };
 
@@ -209,10 +248,13 @@ namespace Wasm {
     class GlobalSection : public Section {
     public:
         static constexpr int id = GLOBAL_SECTION_ID;
+
         GlobalSection(Payload payload) : Section(payload) { parse_section(); }
+
     private:
         unsigned int count_;
         std::map<int, GlobalEntry> globals_;
+
         void parse_section() override;
     };
 
@@ -222,22 +264,28 @@ namespace Wasm {
     class ExportSection : public Section {
     public:
         static constexpr int id = EXPORT_SECTION_ID;
+
         ExportSection(Payload payload) : Section(payload) { parse_section(); }
 
         const std::map<int, ExportEntry> &exports() const { return exports_; }
+
         const ExportEntry &get_export(int index) const { return exports_.at(index); }
 
     private:
         unsigned int count_;
         std::map<int, ExportEntry> exports_;
+
         void parse_section() override;
     };
 
     class StartSection : public Section {
     public:
         static constexpr int id = START_SECTION_ID;
+
         StartSection(Payload payload) : Section(payload) { idx_ = get_data().read_uleb128(VARUINT32); }
+
         unsigned int get_idx() const { return idx_; }
+
     private:
         unsigned int idx_;
     };
@@ -247,6 +295,7 @@ namespace Wasm {
     class ElementSection : public Section {
     public:
         static constexpr int id = ELEMENT_SECTION_ID;
+
         ElementSection(Payload payload) : Section(payload) {}
     };
 
@@ -257,15 +306,19 @@ namespace Wasm {
     class CodeSection : public Section {
     public:
         static constexpr int id = CODE_SECTION_ID;
+
         CodeSection(Payload payload) : Section(payload) { parse_section(); }
 //        ~CodeSection() { for (auto entry : bodies_) { delete entry.second; } }
 
         std::shared_ptr<Payload> get_body(int index) const { return bodies_.at(index); }
+
         std::map<int, std::shared_ptr<Payload>> bodies() const { return bodies_; }
+
     private:
         unsigned int count_;
         // We parse the bodies themselves lazily. Leave as buffers in the meantime.
         std::map<int, std::shared_ptr<Payload>> bodies_;
+
         void parse_section() override;
     };
 
@@ -275,31 +328,7 @@ namespace Wasm {
     class DataSection : public Section {
     public:
         static constexpr int id = DATA_SECTION_ID;
+
         DataSection(Payload payload) : Section(payload) {}
-    };
-
-/* A sequence of local variable declarations followed by bytecode
- * instructions. Instructions are encoded as an opcode followed by
- * zero or mode immediates. Each function body must end with the end opcode.
- * body_size varuint32: indicating the size in bytes of the function body to follow
- * local_count varuint32: indicating the number of local entries
- * locals local_entry*: repeated LocalEntries
- * code byte*: bytecode of the function
- * end byte: 0x0b to indicate the end of the body */
-// todo: move to instruction.h
-    class FunctionBody {
-    public:
-        FunctionBody(Payload payload) : payload_(payload) { parse_body(); }
-
-        Wasm::LocalEntry local(int idx) { return local_variables_.at(idx); }
-        std::vector<std::shared_ptr<Instruction>> &instructions() { return instructions_; }
-        unsigned int local_count() { return local_count_; }
-    private:
-        void parse_body();
-        std::vector<std::shared_ptr<Instruction>> instructions_;
-        Payload payload_;
-        unsigned int body_size_;
-        unsigned int local_count_;
-        std::vector<Wasm::LocalEntry> local_variables_;
     };
 }

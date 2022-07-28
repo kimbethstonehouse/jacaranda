@@ -13,6 +13,10 @@ void Compiler::compile(const CompilationRequest *request, NativeBinary *native) 
     WasmFunction function = envoy_->request_code(request->module_name(), request->func_idx());
     Wasm::FunctionBody body(Payload(function.func_body().data(), function.func_body().size()));
 
+    llvm::LLVMContext llvm_context;
+    llvm::Module llvm_module("", llvm_context);
+    llvm::IRBuilder<> ir_builder(llvm_context);
+
     if (request->func_idx() == 1) {
         native->set_data_bytes(&__stub_main, __stub_main_size);
         native->set_data_length(__stub_main_size);
