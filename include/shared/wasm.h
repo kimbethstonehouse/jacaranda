@@ -41,9 +41,11 @@
 #define I32_ADD_OPCODE 0x6a
 #define I32_SUB_OPCODE 0x6b
 
+// Technically negative, but we use the
+// positive representation for simplicity
 namespace LanguageTypes {
-    // Technically negative, but we use the
-    // positive representation for simplicity
+    // The value types I32 and I64 are not inherently signed or unsigned
+    // They can be interpreted either way by an operator
     unsigned char const I32 = 0x7f;
     unsigned char const I64 = 0x7e;
     unsigned char const F32 = 0x7d;

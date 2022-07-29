@@ -1,5 +1,7 @@
 #include <section.h>
 #include <ast.h>
+#include <llvm/IR/Module.h>
+#include <llvm/IR/IRBuilder.h>
 
 void Wasm::CustomSection::parse_section() {
     name_ = get_data().read_name(VARUINT32);
@@ -103,84 +105,5 @@ void Wasm::ExportSection::parse_section() {
         unsigned int index = payload.read_uleb128(VARUINT32);
 
         exports_.insert({i, ExportEntry(name, type, index)});
-    }
-}
-
-void Wasm::FunctionBody::parse_body() {
-    local_count_ = payload_.read_uleb128(VARUINT32);
-
-    for (int i = 0; i < local_count_; i++) {
-        local_variables_.push_back(LocalEntry(payload_.read_uleb128(VARUINT32),
-                                              ValueType(payload_.read_uleb128(VARUINT7))));
-    }
-
-    int block_idx = 0;
-    std::vector<std::shared_ptr<BlockInstruction>> block_stack;
-    // A pointer so that we can modify the underlying list
-    std::vector<std::shared_ptr<Instruction>> *instructions_list = &instructions_;
-
-    while(payload_.at() != payload_.data_end()) {
-        // TODO: account for the prefix bytes
-        char opcode = payload_.read_u8();
-
-        switch(opcode) {
-            case CALL_OPCODE:
-                instructions_list->push_back(std::make_shared<CallInstruction>(CallInstruction(
-                        payload_.read_uleb128(VARUINT32))));
-                break;
-            case BLOCK_OPCODE:
-                // uint7 is not a mistake as we look for 0x40 rather than -0x40
-                block_stack.push_back(std::make_shared<BlockInstruction>(block_idx,payload_.read_uleb128(VARUINT7)));
-                instructions_list->push_back(block_stack.back());
-                instructions_list = block_stack.back()->instructions();
-                block_idx++;
-                break;
-            case END_OPCODE:
-                instructions_list->push_back(std::make_shared<EndInstruction>(EndInstruction()));
-                break;
-            case BR_IF_OPCODE:
-                instructions_list->push_back(std::make_shared<BrIfInstruction>(BrIfInstruction(
-                        payload_.read_uleb128(VARUINT32))));
-                break;
-            case RETURN_OPCODE:
-                instructions_list->push_back(std::make_shared<ReturnInstruction>(ReturnInstruction()));
-                break;
-            case GET_LOCAL_OPCODE:
-                instructions_list->push_back(std::make_shared<GetLocalInstruction>(GetLocalInstruction(
-                        payload_.read_uleb128(VARUINT32))));
-                break;
-            case SET_LOCAL_OPCODE:
-                instructions_list->push_back(std::make_shared<SetLocalInstruction>(SetLocalInstruction(
-                        payload_.read_uleb128(VARUINT32))));
-                break;
-//            case (0x28): //todo: what?
-//                instructions_.push_back(std::make_shared<Instction>(I32Load8_sInstruction(
-//                        payload_.read_uleb128(VARUINT32), payload_.read_uleb128(VARUINT32))));
-//                break;
-//            case I32_LOAD8_S_OPCODE:
-//                instructions_.push_back(std::make_sharedruction>(I32Load8_sInstruction(
-//                        payload_.read_uleb128(VARUINT32), payload_.read_uleb128(VARUINT32))));
-//                break;
-            case I32_CONST_OPCODE:
-                instructions_list->push_back(std::make_shared<I32ConstInstruction>(I32ConstInstruction(
-                        payload_.read_leb128(VARINT32))));
-                break;
-            case I32_EQZ_OPCODE:
-                instructions_list->push_back(std::make_shared<I32EqzInstruction>(I32EqzInstruction()));
-                break;
-            case I32_ADD_OPCODE:
-                instructions_list->push_back(std::make_shared<I32AddInstruction>(I32AddInstruction()));
-                break;
-            case I32_SUB_OPCODE:
-                instructions_list->push_back(std::make_shared<I32SubInstruction>(I32SubInstruction()));
-                break;
-            default:
-                throw new decode_exception("unsupported instruction with opcode " + std::to_string(opcode) + " encountered");
-        }
-    }
-
-    // Sanity check
-    if (*(payload_.at()-1) != END_OPCODE) {
-        throw decode_exception("error during function body decoding, expected end byte to be 0x0b, but was " + std::to_string(*payload_.at()));
     }
 }
