@@ -17,8 +17,11 @@ public:
 
     template <class T> T *get_section() { return (T *)section_map_[T::id]; }
 
-    std::map<int, Function> &functions() { return functions_; }
+    std::map<int, std::shared_ptr<WasmFunction>> &functions() { return functions_; }
     int function_count() { return function_count_; }
+    int main_idx() { return main_idx_; }
+    bool has_start_idx() { return start_idx_.has_value(); }
+    int start_idx() { return start_idx_.value(); }
 
 private:
     const char *buffer_, *buffer_end_;
@@ -27,8 +30,10 @@ private:
     std::map<int, void *> section_map_;
     std::vector<void *> custom_sections_;
 
-    std::map<int, Function> functions_;
+    std::map<int, std::shared_ptr<WasmFunction>> functions_;
     int function_count_;
+    std::optional<int> start_idx_;
+    int main_idx_;
 
     template <class T> void add_section(T *section) { section_map_[T::id] = section; }
 

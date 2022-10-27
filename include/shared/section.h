@@ -8,61 +8,24 @@
 #include <memory>
 #include <wasm.h>
 #include <payload.h>
+#include <jacaranda.pb.h>
 
 namespace Wasm {
-    class ValueType {
-    public:
-        ValueType(unsigned char type) : type_(type) { validate(); }
-
-        unsigned char type() const { return type_; }
-
-    private:
-        unsigned char type_;
-
-        void validate() {
-            if (type_ != LanguageTypes::I32 && type_ != LanguageTypes::I64 &&
-                type_ != LanguageTypes::F32 && type_ != LanguageTypes::F64) {
-                throw parse_exception("invalid value type form");
-            }
+    static void validate_type(unsigned char type) {
+        if (type != LanguageTypes::I32 && type != LanguageTypes::I64 &&
+                type != LanguageTypes::F32 && type != LanguageTypes::F64) {
+            throw parse_exception("invalid value type form");
         }
-    };
+    }
 
     class GlobalType {
     public:
-        GlobalType(ValueType content_type, unsigned char mutability) : content_type_(content_type),
-                                                                       mutability_(mutability) {}
+        GlobalType(unsigned char content_type, unsigned char mutability) : content_type_(content_type),
+                                                                       mutability_(mutability) { validate_type(content_type_); }
 
     private:
-        ValueType content_type_;
+        unsigned char content_type_;
         unsigned char mutability_; // 0 if immutable, 1 if mutable
-    };
-
-/* The func_type is the description of a function signature.
- * form varint7: the value for the func type constructor (-0x20, i.e. 0x60)
- * param_count varuint32: the number of parameters to the function
- * param_types value_type*: the parameter types of the function
- * return_count varuint1: the number of results from the function
- * return_type value_type?: the result type of the function (if return_count is 1) */
-    class FunctionType {
-    public:
-        FunctionType(unsigned int param_count, std::vector<ValueType> param_types,
-                     unsigned char return_count, std::optional<ValueType> return_type) :
-                param_count_(param_count), param_types_(param_types),
-                return_count_(return_count), return_type_(return_type) {}
-
-        unsigned int param_count() const { return param_count_; }
-
-        std::vector<ValueType> param_types() const { return param_types_; }
-
-        unsigned char return_count() const { return return_count_; }
-
-        std::optional<ValueType> return_type() const { return return_type_; }
-
-    private:
-        unsigned int param_count_;
-        std::vector<ValueType> param_types_;
-        unsigned char return_count_;
-        std::optional<ValueType> return_type_;
     };
 
     class ImportEntry {
@@ -85,19 +48,9 @@ namespace Wasm {
         unsigned int type_index_; // aka type
     };
 
-    class FunctionEntry {
-    public:
-        FunctionEntry(unsigned int type_index) : type_index_(type_index) {}
-
-        int type_index() const { return type_index_; }
-
-    private:
-        unsigned int type_index_;
-    };
-
     class GlobalEntry {
     public:
-        GlobalEntry(ValueType content_type, unsigned char mutability) : type_(content_type, mutability) {}
+        GlobalEntry(unsigned char content_type, unsigned char mutability) : type_(content_type, mutability) { validate_type(content_type); }
 
     private:
         GlobalType type_;
@@ -112,12 +65,6 @@ namespace Wasm {
         ExportEntry(std::string export_name, unsigned char export_type, unsigned int index) :
                 export_name_(export_name), export_type_(export_type), index_(index) {}
 
-        std::string export_name() const { return export_name_; }
-
-        unsigned char export_type() const { return export_type_; }
-
-        unsigned int index() const { return index_; }
-
     private:
         std::string export_name_; // aka field_str
         unsigned char export_type_; // aka kind
@@ -130,13 +77,13 @@ namespace Wasm {
 // It is legal to have several entries with the same type.
     class LocalEntry {
     public:
-        LocalEntry(unsigned int count, ValueType type) : count_(count), type_(type) {}
+        LocalEntry(unsigned int count, unsigned char type) : count_(count), type_(type) { validate_type(type_); }
 
-        unsigned char type() const { return type_.type(); }
+        unsigned char type() const { return type_; }
 
     private:
         unsigned int count_;
-        ValueType type_;
+        unsigned char type_;
     };
 
     class Section {
@@ -173,12 +120,12 @@ namespace Wasm {
 
         TypeSection(Payload payload) : Section(payload) { parse_section(); }
 
-        std::shared_ptr<FunctionType> get_type(const int &idx) const { return types_.at(idx); }
+        std::shared_ptr<WasmFunctionType> get_type(const int &idx) const { return types_.at(idx); }
 
     private:
         unsigned int count_;
         // Map from function index to signature
-        std::map<int, std::shared_ptr<FunctionType>> types_;
+        std::map<int, std::shared_ptr<WasmFunctionType>> types_;
 
         void parse_section() override;
     };
@@ -210,14 +157,12 @@ namespace Wasm {
 
         FunctionSection(Payload payload) : Section(payload) { parse_section(); }
 
-        const std::map<int, FunctionEntry> &functions() const { return functions_; }
-
-        const FunctionEntry &get_function(int index) const { return functions_.at(index); }
+        const std::map<int, int> &functions() const { return functions_; }
 
     private:
         unsigned int count_;
         // Map from function index to type index
-        std::map<int, FunctionEntry> functions_;
+        std::map<int, int> functions_;
 
         void parse_section() override;
     };
@@ -233,7 +178,7 @@ namespace Wasm {
     };
 
 /* The encoding of a memory section. TODO: Not currently parsed.
- * count varuint32: indicating the number of memories defined by the module
+ * count varuint32: indicating the number of memories defined by the module (currently only one is allowed by the specification)
  * types memory_type*: repeated memory_type entries */
     class MemorySection : public Section {
     public:
@@ -267,12 +212,14 @@ namespace Wasm {
 
         ExportSection(Payload payload) : Section(payload) { parse_section(); }
 
+        const int main_idx() { return main_idx_; }
         const std::map<int, ExportEntry> &exports() const { return exports_; }
-
         const ExportEntry &get_export(int index) const { return exports_.at(index); }
 
     private:
         unsigned int count_;
+        // todo: don't think this accounts for the import function offset
+        unsigned int main_idx_;
         std::map<int, ExportEntry> exports_;
 
         void parse_section() override;

@@ -87,3 +87,28 @@ trampoline_to_compile:
         // Return value is the function pointer, so this transfers control to the compiled code
         jmp *%rax
 .size trampoline_to_compile,.-trampoline_to_compile
+
+
+
+/*
+.text
+
+.align 16
+.globl invoke_function
+invoke_function:
+    push %rbp
+    push %r12
+    push %r13
+    push %r14
+    push %r15
+
+    call *(%rdi, %rsi, 8)
+
+    pop %r15
+    pop %r14
+    pop %r13
+    pop %r12
+    pop %rbp
+
+    ret
+*/

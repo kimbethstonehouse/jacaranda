@@ -70,13 +70,20 @@ void *Runtime::request_compilation(int function_index) {
     return jump_table_[function_index];
 }
 
+//extern "C" void invoke_function(void *state, int fn_idx, void *args, int nr_args);
+
 void Runtime::run(const std::string &filename, int argc, char **argv) {
     set_module_name(filename);
     request_function_indices();
     init_execution_state();
 
+    // Todo: match imports to exports from another module
+    // Note that imports can be reexported, so the function index may correspond to an import from another module
+
     // The start index refers to an optional start section in the WebAssembly module, intended for initialising the state of a module
     if (start_idx_.has_value()) {
+        // jump_table_[start_idx_.value()]
+
         if (jump_table_[start_idx_.value()] == &trampoline_to_compile) request_compilation(start_idx_.value());
         trampoline_to_execute(start_idx_.value(), jump_table_, argc, argv, this);
     }

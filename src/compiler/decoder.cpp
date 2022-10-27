@@ -79,31 +79,31 @@ void Decoder::createLLVMIR(const CompilationRequest *request, WasmFunction funct
 
     // Parsing is done lazily, so the WebAssembly function body will need to be parsed now.
     Payload payload(function.func_body().data(), function.func_body().length());
-    Wasm::FunctionBody function_body(payload);
+//    Wasm::FunctionBody function_body(payload);
     // todo: for each instruction in vector, convert to llvm ir
 
     // Create and initialize allocas for all the local variables.
-    for(uintptr_t local_idx = 0; local_idx < function_body.local_count(); ++local_idx) {
-        auto local_type = function_body.local(local_idx).type();
-        auto local_pointer = ir_builder.CreateAlloca(asLLVMType(llvm_context, local_type), nullptr, "");
-
-        // Initialise the local variable to zero.
-        llvm::Value *value;
-        if (local_type == LanguageTypes::I32) {
-            value = llvm::ConstantInt::get(llvm_context,llvm::APInt(32, 0, false));
-        } else if (local_type == LanguageTypes::I64) {
-            value = llvm::ConstantInt::get(llvm_context, llvm::APInt(64, 0, false));
-        } else if (local_type == LanguageTypes::F32) {
-            value = llvm::ConstantFP::get(llvm_context, llvm::APFloat(0.0f));
-        } else if (local_type == LanguageTypes::F64) {
-            value = llvm::ConstantFP::get(llvm_context, llvm::APFloat(0.0));
-        } else {
-            throw compile_exception("type of local variable is invalid: " + std::to_string(local_type));
-        }
-
-        ir_builder.CreateStore(value, local_pointer);
-        ++llvm_arg_iterator;
-    }
+//    for(uintptr_t local_idx = 0; local_idx < function_body.local_count(); ++local_idx) {
+//        auto local_type = function_body.local(local_idx).type();
+//        auto local_pointer = ir_builder.CreateAlloca(asLLVMType(llvm_context, local_type), nullptr, "");
+//
+//        // Initialise the local variable to zero.
+//        llvm::Value *value;
+//        if (local_type == LanguageTypes::I32) {
+//            value = llvm::ConstantInt::get(llvm_context,llvm::APInt(32, 0, false));
+//        } else if (local_type == LanguageTypes::I64) {
+//            value = llvm::ConstantInt::get(llvm_context, llvm::APInt(64, 0, false));
+//        } else if (local_type == LanguageTypes::F32) {
+//            value = llvm::ConstantFP::get(llvm_context, llvm::APFloat(0.0f));
+//        } else if (local_type == LanguageTypes::F64) {
+//            value = llvm::ConstantFP::get(llvm_context, llvm::APFloat(0.0));
+//        } else {
+//            throw compile_exception("type of local variable is invalid: " + std::to_string(local_type));
+//        }
+//
+//        ir_builder.CreateStore(value, local_pointer);
+//        ++llvm_arg_iterator;
+//    }
 
     // todo: parse the bytecode and create an llvm module from that information
     // todo: if encounter a call, ask for function type info and add that to the globals list

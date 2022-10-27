@@ -1,0 +1,2 @@
+/usr/bin/ar qc libjacaranda_grpc_proto.a  CMakeFiles/jacaranda_grpc_proto.dir/__/__/include/proto/jacaranda.grpc.pb.cc.o CMakeFiles/jacaranda_grpc_proto.dir/__/__/include/proto/jacaranda.pb.cc.o
+/usr/bin/ranlib libjacaranda_grpc_proto.a

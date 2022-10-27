@@ -102,9 +102,11 @@ void WasmModule::parse_sections() {
                 break;
             case 7:
                 add_section(new Wasm::ExportSection(payload));
+                main_idx_ = get_section<Wasm::ExportSection>()->main_idx();
                 break;
             case 8:
                 add_section(new Wasm::StartSection(payload));
+                start_idx_ = get_section<Wasm::StartSection>()->get_idx();
                 break;
             case 9:
                 add_section(new Wasm::ElementSection(payload));
@@ -133,17 +135,20 @@ void WasmModule::load_functions() {
     auto imports = get_section<Wasm::ImportSection>()->imports();
     auto type_section = get_section<Wasm::TypeSection>();
 
-    for (const auto &import : imports) {
-        if (import.second.import_type() == ExternalKind::FUNCTION) {
-            functions_.insert({import.first, Function(false, import.first,
-                                                      type_section->get_type(import.second.type_index()), std::make_shared<Payload>())});
+    for (const auto &import_entry : imports) {
+        if (import_entry.second.import_type() == ExternalKind::FUNCTION) {
+//            WasmFunction *import;
+//            import->set_func_idx(import_entry.first);
+//            import->set_is_imported(true);
+//            import->set_allocated_func_type(type_section->get_type(import_entry.second.type_index()));
+//            functions_.insert({import_entry.first, import});
         }
     }
 
-    auto functions = get_section<Wasm::FunctionSection>()->functions();
-    auto code = get_section<Wasm::CodeSection>()->bodies();
+    auto function_entries = get_section<Wasm::FunctionSection>()->functions();
+    auto code_bodies = get_section<Wasm::CodeSection>()->bodies();
 
-    if (functions.size() != code.size()) {
+    if (function_entries.size() != code_bodies.size()) {
         throw execute_exception("number of function declarations in function section "
                                 "does not match number of function definitions in code section");
     }
@@ -151,11 +156,18 @@ void WasmModule::load_functions() {
     int index;
     int index_offset = imports.size();
 
-    for (const auto &function : functions) {
-        index = function.first + index_offset;
-        functions_.insert({index, Function(true, index, type_section->get_type(function.second.type_index()), code.find(function.first)->second)});
+    for (const auto &function_entry : function_entries) {
+        index = function_entry.first + index_offset;
+
+        std::shared_ptr<WasmFunction> function = std::make_shared<WasmFunction>(); // Despite how it looks, this is not a local variable
+        function->set_func_idx(index);
+        function->set_is_imported(false);
+        std::shared_ptr<Payload> function_body = code_bodies.find(function_entry.first)->second;
+        function->set_func_body(function_body->at(), function_body->size());
+        function->mutable_func_type()->CopyFrom(*type_section->get_type(function_entry.second));
+
+        functions_.insert({index, function});
     }
 
     function_count_ = index + 1; // The count is the last zero-based index plus one
 }
-
