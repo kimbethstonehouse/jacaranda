@@ -7,3 +7,8 @@ a.out
 .vscode
 build
 exe
+CMakeFiles
+CMakeCache.txt
+Makefile
+.cmake
+cmake_install.cmake

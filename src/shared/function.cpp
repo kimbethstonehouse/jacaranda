@@ -179,10 +179,15 @@ std::shared_ptr<llvm::Module> Wasm::FunctionBody::parse_body() {
     local_count_ = payload_.read_uleb128(VARUINT32);
 
     std::vector<llvm::Type *> llvm_param_types;
-    for (auto param : function_type_.param_types()) {
+    /*for (auto param : function_type_.param_types()) {
         llvm::Type *type = get_llvm_type(param);
         llvm_param_types.push_back(type);
-    }
+    }*/
+
+    llvm_param_types.push_back(llvm::Type::getInt32PtrTy(*llvm_context_));
+    llvm_param_types.push_back(llvm::Type::getInt32Ty(*llvm_context_));
+    llvm_param_types.push_back(llvm::Type::getInt32PtrTy(*llvm_context_));
+    llvm_param_types.push_back(llvm::Type::getInt32Ty(*llvm_context_));
 
     llvm::FunctionType *llvm_function_type = llvm::FunctionType::get(
             get_llvm_type(function_type_.return_type()), llvm_param_types, false);
@@ -299,7 +304,7 @@ std::shared_ptr<llvm::Module> Wasm::FunctionBody::parse_body() {
     llvm::ModulePassManager MPM = PB.buildPerModuleDefaultPipeline(llvm::PassBuilder::OptimizationLevel::O2);
 
     // Optimize the IR!
-//    MPM.run(*llvm_module_, MAM);
+    MPM.run(*llvm_module_, MAM);
 
     llvm_module_->print(llvm::outs(), nullptr);
 
