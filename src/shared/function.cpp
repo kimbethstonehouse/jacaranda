@@ -101,6 +101,20 @@ void Wasm::FunctionBody::emit_set_local() {
 }
 
 // Note: uninterpreted integers are encoded as signed integers
+void Wasm::FunctionBody::emit_i32_load() {
+    // todo: ???
+    payload_.read_uleb128(VARUINT32);
+    payload_.read_uleb128(VARUINT32);
+}
+
+// Note: uninterpreted integers are encoded as signed integers
+void Wasm::FunctionBody::emit_i32_load_8_s() {
+    // todo: ???
+    payload_.read_uleb128(VARUINT32);
+    payload_.read_uleb128(VARUINT32);
+}
+
+// Note: uninterpreted integers are encoded as signed integers
 void Wasm::FunctionBody::emit_i32_const() {
     push_alloca(llvm_ir_builder_->CreateAlloca(get_llvm_type(LanguageTypes::I32)));
     llvm_ir_builder_->CreateStore(
@@ -179,10 +193,10 @@ std::shared_ptr<llvm::Module> Wasm::FunctionBody::parse_body() {
     local_count_ = payload_.read_uleb128(VARUINT32);
 
     std::vector<llvm::Type *> llvm_param_types;
-    /*for (auto param : function_type_.param_types()) {
+    for (auto param : function_type_.param_types()) {
         llvm::Type *type = get_llvm_type(param);
         llvm_param_types.push_back(type);
-    }*/
+    }
 
     llvm_param_types.push_back(llvm::Type::getInt32PtrTy(*llvm_context_));
     llvm_param_types.push_back(llvm::Type::getInt32Ty(*llvm_context_));
@@ -258,6 +272,12 @@ std::shared_ptr<llvm::Module> Wasm::FunctionBody::parse_body() {
             case SET_LOCAL_OPCODE:
                 emit_set_local();
                 break;
+            case I32_LOAD_OPCODE:
+                emit_i32_load();
+                break;
+            case I32_LOAD8_S_OPCODE:
+                emit_i32_load_8_s();
+                break;
             case I32_CONST_OPCODE:
                 emit_i32_const();
                 break;
@@ -304,7 +324,7 @@ std::shared_ptr<llvm::Module> Wasm::FunctionBody::parse_body() {
     llvm::ModulePassManager MPM = PB.buildPerModuleDefaultPipeline(llvm::PassBuilder::OptimizationLevel::O2);
 
     // Optimize the IR!
-    MPM.run(*llvm_module_, MAM);
+//    MPM.run(*llvm_module_, MAM);
 
     llvm_module_->print(llvm::outs(), nullptr);
 

@@ -53,6 +53,9 @@ namespace Wasm {
         void emit_get_local();
         void emit_set_local();
 
+        void emit_i32_load();
+        void emit_i32_load_8_s();
+
         void emit_i32_const();
         void emit_i32_eqz();
         void emit_i32_add();

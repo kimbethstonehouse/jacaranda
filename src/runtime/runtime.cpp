@@ -88,9 +88,9 @@ void Runtime::run(const std::string &filename, int argc, char **argv) {
     // The main index refers to the first function to be executed, and is NOT optional
     invoke_function(&runtime_state_, main_idx_, argv, argc);
 
-    /*if (jump_table_[main_idx_] == &trampoline_to_compile) request_compilation(main_idx_);
-    int res = trampoline_to_execute(main_idx_, jump_table_, argc, argv, this);
-    std::cout << "Result: " << res << std::endl;*/
+//    if (jump_table_[main_idx_] == &trampoline_to_compile) request_compilation(main_idx_);
+//    int res = trampoline_to_execute(main_idx_, jump_table_, argc, argv, this);
+//    std::cout << "Result: " << res << std::endl;
 }
 
 // The runtime needs to know how many functions are in the WebAssembly module, and what the starting function index is
@@ -102,8 +102,7 @@ void Runtime::request_function_indices() {
     main_idx_ = indices.main_idx();
 }
 
-static void function_stub(runtime_state *rt, int fn_idx, void *argv, int argc)
-{
+static void function_stub(runtime_state *rt, int fn_idx, void *argv, int argc) {
     std::cout << "function stub" << std::endl;
     rt->rt->request_compilation(fn_idx);
     invoke_function(rt, fn_idx, argv, argc);
