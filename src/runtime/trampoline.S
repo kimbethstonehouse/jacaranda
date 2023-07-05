@@ -4,23 +4,23 @@
 .globl invoke_function
 invoke_function:
     push %rbp
-    push %rbx
-    push %r12
-    push %r13
-    push %r14
-    push %r15
-    push %r15
+    mov %rsp, %rbp
 
-    mov 8(%rdi), %r15
-    // todo: ????
-    call *(%r15, %rsi, 8)
+    mov 8(%rdi), %rax
 
-    pop %r15
-    pop %r15
-    pop %r14
-    pop %r13
-    pop %r12
-    push %rbx
+    push %rdi
+    push %rsi
+    push %rdx
+    push %rcx
+
+    call *(%rax, %rsi, 8)
+
+    pop %rcx
+    pop %rdx
+    pop %rsi
+    pop %rdi
+
+    mov %rbp, %rsp
     pop %rbp
 
     ret
