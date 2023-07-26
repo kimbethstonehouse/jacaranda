@@ -33,6 +33,7 @@ __stub_atoi_size: .quad .-__stub_atoi
 // rcx is argc
 __stub_main:
     push %rbp
+    push %rbx
     mov %rsp, %rbp
 
     mov 8(%rdi), %rax
@@ -43,20 +44,36 @@ __stub_main:
     xor %rsi, %rsi
 
     // argv[0]
-    push 24(%rbp)
+    push %rdi
+    push %rsi
+    push %rdx
+    push %rcx
+
+    mov (%rdx), %rbx
+    // argv[1]
+    mov (%rbx), %ebx
+    push %rbx
     call *(%rax)
 
     pop %rax
     xor %rsi, %rsi
 
     // argv[1]
-    push 16(%rbp)
+    mov (%rdx), %rbx
+    // Four byte char
+    mov 4(%rbx), %ebx
+    push %rbx
     call *(%rax)
 
+    pop %rcx
+    pop %rdx
+    pop %rsi
+    pop %rdi
+
     mov %rbp, %rsp
+    pop %rbx
     pop %rbp
 
-    //leave
     ret
 .size __stub_main,.-__stub_main
 

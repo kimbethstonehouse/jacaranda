@@ -15,6 +15,9 @@ void Compiler::compile(const CompilationRequest *request, NativeBinary *native) 
     WasmFunction function = envoy_->request_code(request->module_name(), request->func_idx());
     Wasm::FunctionBody body(request->func_idx(), Payload(function.func_body().data(), function.func_body().size()), function.func_type());
     std::shared_ptr<llvm::Module> module = body.parse_body();
+
+    Visitor V;
+    V.visit(module.get());
 //    module->dump();
 
     if (request->func_idx() == 1) {
