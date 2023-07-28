@@ -1,12 +1,16 @@
 #include <section.h>
-#include <ast.h>
 #include <llvm/IR/Module.h>
-#include <llvm/IR/IRBuilder.h>
 
 void Wasm::CustomSection::parse_section() {
     name_ = get_data().read_name(VARUINT32);
 }
 
+/* The func_type is the description of a function signature.
+ * form varint7: the value for the func type constructor (-0x20, i.e. 0x60)
+ * param_count varuint32: the number of parameters to the function
+ * param_types value_type*: the parameter types of the function
+ * return_count varuint1: the number of results from the function
+ * return_type value_type?: the result type of the function (if return_count is 1) */
 void Wasm::TypeSection::parse_section() {
     Payload payload = get_data();
     count_ = payload.read_uleb128(VARUINT32);
@@ -18,22 +22,22 @@ void Wasm::TypeSection::parse_section() {
                                   ", should be " + std::to_string(LanguageTypes::FUNC));
         }
 
+        std::shared_ptr<WasmFunctionType> function_type = std::make_shared<WasmFunctionType>();
+
         // Parse the function type
-        unsigned int param_count = payload.read_uleb128(VARUINT32);
-        std::vector<ValueType> param_types;
-
-        for (int j = 0; j < param_count; j++) {
-            param_types.push_back(ValueType(payload.read_uleb128(VARUINT7)));
+        function_type->set_param_count(payload.read_uleb128(VARUINT32));
+        for (int j = 0; j < function_type->param_count(); j++) {
+            unsigned char param_type = payload.read_uleb128(VARUINT7);
+            Wasm::validate_type(param_type);
+            function_type->add_param_types(param_type);
         }
 
-        unsigned char return_count = payload.read_uleb128(VARUINT1);
-        std::optional<ValueType> return_type;
-
-        if (return_count == 1) {
-            return_type = ValueType(payload.read_uleb128(VARUINT7));
+        function_type->set_return_count(payload.read_uleb128(VARUINT1));
+        if (function_type->return_count() == 1) {
+            function_type->set_return_type(payload.read_uleb128(VARUINT7));
         }
 
-        types_.insert({i, std::make_shared<FunctionType>(FunctionType(param_count, param_types, return_count, return_type))});
+        types_.insert({i, function_type});
     }
 }
 
@@ -74,14 +78,14 @@ void Wasm::FunctionSection::parse_section() {
 
     for (int i = 0; i < count_; i++) {
         unsigned int type_index = payload.read_uleb128(VARUINT32);
-        functions_.insert({i, FunctionEntry(type_index)});
+        functions_.insert({i, type_index});
     }
 }
 
 void Wasm::GlobalSection::parse_section() {
     Payload payload = get_data();
     count_ = payload.read_uleb128(VARUINT32);
-    // TODO: Parse global entries.
+    // TODO: Parse global entries. May be mutable or immutable, and must contain constant initialiser expression.
 }
 
 void Wasm::CodeSection::parse_section() {
@@ -99,11 +103,23 @@ void Wasm::ExportSection::parse_section() {
     Payload payload = get_data();
     count_ = payload.read_uleb128(VARUINT32);
 
+    bool found_main = false;
     for (int i = 0; i < count_; i++) {
         std::string name = payload.read_name(VARUINT32);
         unsigned char type = payload.read_uleb128(VARUINT7);
         unsigned int index = payload.read_uleb128(VARUINT32);
 
+        // The main function may be called something else, but let's ignore that for now
+        // Either way, the first function to be executed MUST be imported as per the specification
+        if (name == "__main_argc_argv" && type == ExternalKind::FUNCTION) {
+            found_main = true;
+            main_idx_ = index;
+        }
         exports_.insert({i, ExportEntry(name, type, index)});
+    }
+
+    // A WebAssembly module must export a start function
+    if (!found_main) {
+        throw repository_exception("module did not export _start function");
     }
 }

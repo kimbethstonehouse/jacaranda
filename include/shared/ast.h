@@ -6,17 +6,11 @@
 namespace Wasm {
     class BlockType {
     public:
-        BlockType(unsigned char type) : type_(type) { validate(); }
+        BlockType(unsigned char type) : type_(type) { Wasm::validate_type(type_); }
         unsigned char type() const { return type_; }
 
     private:
         unsigned char type_;
-        void validate() {
-            if (type_ != LanguageTypes::I32 && type_ != LanguageTypes::I64 &&
-                type_ != LanguageTypes::F32 && type_ != LanguageTypes::F64 && type_ != LanguageTypes::NO_RET) {
-                throw parse_exception("invalid block type form");
-            }
-        }
     };
 
     class Instruction {

@@ -20,11 +20,12 @@ message FunctionIndices {
   optional uint32 start_idx = 3;
 }
 
-message FunctionType {
+message WasmFunctionType {
   uint32 param_count = 1;
   // Will be of type char, see LanguageTypes in wasm.h
   // Encoded as varint size so four byte width doesn't matter
   repeated uint32 param_types = 2;
+  // We currently only support 0 or 1 return values, but the specification may change to allow more.
   uint32 return_count = 3;
   // Defaults to 0 if not present
   optional uint32 return_type = 4;
@@ -44,10 +45,11 @@ message CodeRequest {
 }
 
 message WasmFunction {
-  bool is_imported = 1;
-  bytes func_body = 2;
-  uint32 body_length = 3;
-  FunctionType func_type = 4;
+  uint32 func_idx = 1;
+  bool is_imported = 2;
+  bytes func_body = 3;
+  uint32 body_length = 4;
+  WasmFunctionType func_type = 5;
 }
 
 message NativeBinary {

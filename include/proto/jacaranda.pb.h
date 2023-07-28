@@ -62,9 +62,6 @@ extern CompilationRequestDefaultTypeInternal _CompilationRequest_default_instanc
 class FunctionIndices;
 struct FunctionIndicesDefaultTypeInternal;
 extern FunctionIndicesDefaultTypeInternal _FunctionIndices_default_instance_;
-class FunctionType;
-struct FunctionTypeDefaultTypeInternal;
-extern FunctionTypeDefaultTypeInternal _FunctionType_default_instance_;
 class IndicesRequest;
 struct IndicesRequestDefaultTypeInternal;
 extern IndicesRequestDefaultTypeInternal _IndicesRequest_default_instance_;
@@ -74,14 +71,17 @@ extern NativeBinaryDefaultTypeInternal _NativeBinary_default_instance_;
 class WasmFunction;
 struct WasmFunctionDefaultTypeInternal;
 extern WasmFunctionDefaultTypeInternal _WasmFunction_default_instance_;
+class WasmFunctionType;
+struct WasmFunctionTypeDefaultTypeInternal;
+extern WasmFunctionTypeDefaultTypeInternal _WasmFunctionType_default_instance_;
 PROTOBUF_NAMESPACE_OPEN
 template<> ::CodeRequest* Arena::CreateMaybeMessage<::CodeRequest>(Arena*);
 template<> ::CompilationRequest* Arena::CreateMaybeMessage<::CompilationRequest>(Arena*);
 template<> ::FunctionIndices* Arena::CreateMaybeMessage<::FunctionIndices>(Arena*);
-template<> ::FunctionType* Arena::CreateMaybeMessage<::FunctionType>(Arena*);
 template<> ::IndicesRequest* Arena::CreateMaybeMessage<::IndicesRequest>(Arena*);
 template<> ::NativeBinary* Arena::CreateMaybeMessage<::NativeBinary>(Arena*);
 template<> ::WasmFunction* Arena::CreateMaybeMessage<::WasmFunction>(Arena*);
+template<> ::WasmFunctionType* Arena::CreateMaybeMessage<::WasmFunctionType>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 
 // ===================================================================
@@ -410,24 +410,24 @@ class FunctionIndices final :
 };
 // -------------------------------------------------------------------
 
-class FunctionType final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:FunctionType) */ {
+class WasmFunctionType final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:WasmFunctionType) */ {
  public:
-  inline FunctionType() : FunctionType(nullptr) {}
-  ~FunctionType() override;
-  explicit constexpr FunctionType(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline WasmFunctionType() : WasmFunctionType(nullptr) {}
+  ~WasmFunctionType() override;
+  explicit constexpr WasmFunctionType(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  FunctionType(const FunctionType& from);
-  FunctionType(FunctionType&& from) noexcept
-    : FunctionType() {
+  WasmFunctionType(const WasmFunctionType& from);
+  WasmFunctionType(WasmFunctionType&& from) noexcept
+    : WasmFunctionType() {
     *this = ::std::move(from);
   }
 
-  inline FunctionType& operator=(const FunctionType& from) {
+  inline WasmFunctionType& operator=(const WasmFunctionType& from) {
     CopyFrom(from);
     return *this;
   }
-  inline FunctionType& operator=(FunctionType&& from) noexcept {
+  inline WasmFunctionType& operator=(WasmFunctionType&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -450,20 +450,20 @@ class FunctionType final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const FunctionType& default_instance() {
+  static const WasmFunctionType& default_instance() {
     return *internal_default_instance();
   }
-  static inline const FunctionType* internal_default_instance() {
-    return reinterpret_cast<const FunctionType*>(
-               &_FunctionType_default_instance_);
+  static inline const WasmFunctionType* internal_default_instance() {
+    return reinterpret_cast<const WasmFunctionType*>(
+               &_WasmFunctionType_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     2;
 
-  friend void swap(FunctionType& a, FunctionType& b) {
+  friend void swap(WasmFunctionType& a, WasmFunctionType& b) {
     a.Swap(&b);
   }
-  inline void Swap(FunctionType* other) {
+  inline void Swap(WasmFunctionType* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -476,7 +476,7 @@ class FunctionType final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(FunctionType* other) {
+  void UnsafeArenaSwap(WasmFunctionType* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -484,13 +484,13 @@ class FunctionType final :
 
   // implements Message ----------------------------------------------
 
-  FunctionType* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<FunctionType>(arena);
+  WasmFunctionType* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<WasmFunctionType>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const FunctionType& from);
+  void CopyFrom(const WasmFunctionType& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom(const FunctionType& from);
+  void MergeFrom(const WasmFunctionType& from);
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
   public:
@@ -507,15 +507,15 @@ class FunctionType final :
   void SharedCtor();
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(FunctionType* other);
+  void InternalSwap(WasmFunctionType* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "FunctionType";
+    return "WasmFunctionType";
   }
   protected:
-  explicit FunctionType(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit WasmFunctionType(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   private:
   static void ArenaDtor(void* object);
@@ -590,7 +590,7 @@ class FunctionType final :
   void _internal_set_return_type(uint32_t value);
   public:
 
-  // @@protoc_insertion_point(class_scope:FunctionType)
+  // @@protoc_insertion_point(class_scope:WasmFunctionType)
  private:
   class _Internal;
 
@@ -1097,12 +1097,13 @@ class WasmFunction final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kFuncBodyFieldNumber = 2,
-    kFuncTypeFieldNumber = 4,
-    kIsImportedFieldNumber = 1,
-    kBodyLengthFieldNumber = 3,
+    kFuncBodyFieldNumber = 3,
+    kFuncTypeFieldNumber = 5,
+    kFuncIdxFieldNumber = 1,
+    kIsImportedFieldNumber = 2,
+    kBodyLengthFieldNumber = 4,
   };
-  // bytes func_body = 2;
+  // bytes func_body = 3;
   void clear_func_body();
   const std::string& func_body() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -1116,25 +1117,34 @@ class WasmFunction final :
   std::string* _internal_mutable_func_body();
   public:
 
-  // .FunctionType func_type = 4;
+  // .WasmFunctionType func_type = 5;
   bool has_func_type() const;
   private:
   bool _internal_has_func_type() const;
   public:
   void clear_func_type();
-  const ::FunctionType& func_type() const;
-  PROTOBUF_NODISCARD ::FunctionType* release_func_type();
-  ::FunctionType* mutable_func_type();
-  void set_allocated_func_type(::FunctionType* func_type);
+  const ::WasmFunctionType& func_type() const;
+  PROTOBUF_NODISCARD ::WasmFunctionType* release_func_type();
+  ::WasmFunctionType* mutable_func_type();
+  void set_allocated_func_type(::WasmFunctionType* func_type);
   private:
-  const ::FunctionType& _internal_func_type() const;
-  ::FunctionType* _internal_mutable_func_type();
+  const ::WasmFunctionType& _internal_func_type() const;
+  ::WasmFunctionType* _internal_mutable_func_type();
   public:
   void unsafe_arena_set_allocated_func_type(
-      ::FunctionType* func_type);
-  ::FunctionType* unsafe_arena_release_func_type();
+      ::WasmFunctionType* func_type);
+  ::WasmFunctionType* unsafe_arena_release_func_type();
 
-  // bool is_imported = 1;
+  // uint32 func_idx = 1;
+  void clear_func_idx();
+  uint32_t func_idx() const;
+  void set_func_idx(uint32_t value);
+  private:
+  uint32_t _internal_func_idx() const;
+  void _internal_set_func_idx(uint32_t value);
+  public:
+
+  // bool is_imported = 2;
   void clear_is_imported();
   bool is_imported() const;
   void set_is_imported(bool value);
@@ -1143,7 +1153,7 @@ class WasmFunction final :
   void _internal_set_is_imported(bool value);
   public:
 
-  // uint32 body_length = 3;
+  // uint32 body_length = 4;
   void clear_body_length();
   uint32_t body_length() const;
   void set_body_length(uint32_t value);
@@ -1160,7 +1170,8 @@ class WasmFunction final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr func_body_;
-  ::FunctionType* func_type_;
+  ::WasmFunctionType* func_type_;
+  uint32_t func_idx_;
   bool is_imported_;
   uint32_t body_length_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
@@ -1464,121 +1475,121 @@ inline void FunctionIndices::set_start_idx(uint32_t value) {
 
 // -------------------------------------------------------------------
 
-// FunctionType
+// WasmFunctionType
 
 // uint32 param_count = 1;
-inline void FunctionType::clear_param_count() {
+inline void WasmFunctionType::clear_param_count() {
   param_count_ = 0u;
 }
-inline uint32_t FunctionType::_internal_param_count() const {
+inline uint32_t WasmFunctionType::_internal_param_count() const {
   return param_count_;
 }
-inline uint32_t FunctionType::param_count() const {
-  // @@protoc_insertion_point(field_get:FunctionType.param_count)
+inline uint32_t WasmFunctionType::param_count() const {
+  // @@protoc_insertion_point(field_get:WasmFunctionType.param_count)
   return _internal_param_count();
 }
-inline void FunctionType::_internal_set_param_count(uint32_t value) {
+inline void WasmFunctionType::_internal_set_param_count(uint32_t value) {
   
   param_count_ = value;
 }
-inline void FunctionType::set_param_count(uint32_t value) {
+inline void WasmFunctionType::set_param_count(uint32_t value) {
   _internal_set_param_count(value);
-  // @@protoc_insertion_point(field_set:FunctionType.param_count)
+  // @@protoc_insertion_point(field_set:WasmFunctionType.param_count)
 }
 
 // repeated uint32 param_types = 2;
-inline int FunctionType::_internal_param_types_size() const {
+inline int WasmFunctionType::_internal_param_types_size() const {
   return param_types_.size();
 }
-inline int FunctionType::param_types_size() const {
+inline int WasmFunctionType::param_types_size() const {
   return _internal_param_types_size();
 }
-inline void FunctionType::clear_param_types() {
+inline void WasmFunctionType::clear_param_types() {
   param_types_.Clear();
 }
-inline uint32_t FunctionType::_internal_param_types(int index) const {
+inline uint32_t WasmFunctionType::_internal_param_types(int index) const {
   return param_types_.Get(index);
 }
-inline uint32_t FunctionType::param_types(int index) const {
-  // @@protoc_insertion_point(field_get:FunctionType.param_types)
+inline uint32_t WasmFunctionType::param_types(int index) const {
+  // @@protoc_insertion_point(field_get:WasmFunctionType.param_types)
   return _internal_param_types(index);
 }
-inline void FunctionType::set_param_types(int index, uint32_t value) {
+inline void WasmFunctionType::set_param_types(int index, uint32_t value) {
   param_types_.Set(index, value);
-  // @@protoc_insertion_point(field_set:FunctionType.param_types)
+  // @@protoc_insertion_point(field_set:WasmFunctionType.param_types)
 }
-inline void FunctionType::_internal_add_param_types(uint32_t value) {
+inline void WasmFunctionType::_internal_add_param_types(uint32_t value) {
   param_types_.Add(value);
 }
-inline void FunctionType::add_param_types(uint32_t value) {
+inline void WasmFunctionType::add_param_types(uint32_t value) {
   _internal_add_param_types(value);
-  // @@protoc_insertion_point(field_add:FunctionType.param_types)
+  // @@protoc_insertion_point(field_add:WasmFunctionType.param_types)
 }
 inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
-FunctionType::_internal_param_types() const {
+WasmFunctionType::_internal_param_types() const {
   return param_types_;
 }
 inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
-FunctionType::param_types() const {
-  // @@protoc_insertion_point(field_list:FunctionType.param_types)
+WasmFunctionType::param_types() const {
+  // @@protoc_insertion_point(field_list:WasmFunctionType.param_types)
   return _internal_param_types();
 }
 inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
-FunctionType::_internal_mutable_param_types() {
+WasmFunctionType::_internal_mutable_param_types() {
   return &param_types_;
 }
 inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
-FunctionType::mutable_param_types() {
-  // @@protoc_insertion_point(field_mutable_list:FunctionType.param_types)
+WasmFunctionType::mutable_param_types() {
+  // @@protoc_insertion_point(field_mutable_list:WasmFunctionType.param_types)
   return _internal_mutable_param_types();
 }
 
 // uint32 return_count = 3;
-inline void FunctionType::clear_return_count() {
+inline void WasmFunctionType::clear_return_count() {
   return_count_ = 0u;
 }
-inline uint32_t FunctionType::_internal_return_count() const {
+inline uint32_t WasmFunctionType::_internal_return_count() const {
   return return_count_;
 }
-inline uint32_t FunctionType::return_count() const {
-  // @@protoc_insertion_point(field_get:FunctionType.return_count)
+inline uint32_t WasmFunctionType::return_count() const {
+  // @@protoc_insertion_point(field_get:WasmFunctionType.return_count)
   return _internal_return_count();
 }
-inline void FunctionType::_internal_set_return_count(uint32_t value) {
+inline void WasmFunctionType::_internal_set_return_count(uint32_t value) {
   
   return_count_ = value;
 }
-inline void FunctionType::set_return_count(uint32_t value) {
+inline void WasmFunctionType::set_return_count(uint32_t value) {
   _internal_set_return_count(value);
-  // @@protoc_insertion_point(field_set:FunctionType.return_count)
+  // @@protoc_insertion_point(field_set:WasmFunctionType.return_count)
 }
 
 // optional uint32 return_type = 4;
-inline bool FunctionType::_internal_has_return_type() const {
+inline bool WasmFunctionType::_internal_has_return_type() const {
   bool value = (_has_bits_[0] & 0x00000001u) != 0;
   return value;
 }
-inline bool FunctionType::has_return_type() const {
+inline bool WasmFunctionType::has_return_type() const {
   return _internal_has_return_type();
 }
-inline void FunctionType::clear_return_type() {
+inline void WasmFunctionType::clear_return_type() {
   return_type_ = 0u;
   _has_bits_[0] &= ~0x00000001u;
 }
-inline uint32_t FunctionType::_internal_return_type() const {
+inline uint32_t WasmFunctionType::_internal_return_type() const {
   return return_type_;
 }
-inline uint32_t FunctionType::return_type() const {
-  // @@protoc_insertion_point(field_get:FunctionType.return_type)
+inline uint32_t WasmFunctionType::return_type() const {
+  // @@protoc_insertion_point(field_get:WasmFunctionType.return_type)
   return _internal_return_type();
 }
-inline void FunctionType::_internal_set_return_type(uint32_t value) {
+inline void WasmFunctionType::_internal_set_return_type(uint32_t value) {
   _has_bits_[0] |= 0x00000001u;
   return_type_ = value;
 }
-inline void FunctionType::set_return_type(uint32_t value) {
+inline void WasmFunctionType::set_return_type(uint32_t value) {
   _internal_set_return_type(value);
-  // @@protoc_insertion_point(field_set:FunctionType.return_type)
+  // @@protoc_insertion_point(field_set:WasmFunctionType.return_type)
 }
 
 // -------------------------------------------------------------------
@@ -1857,7 +1868,27 @@ inline void CodeRequest::set_func_idx(uint32_t value) {
 
 // WasmFunction
 
-// bool is_imported = 1;
+// uint32 func_idx = 1;
+inline void WasmFunction::clear_func_idx() {
+  func_idx_ = 0u;
+}
+inline uint32_t WasmFunction::_internal_func_idx() const {
+  return func_idx_;
+}
+inline uint32_t WasmFunction::func_idx() const {
+  // @@protoc_insertion_point(field_get:WasmFunction.func_idx)
+  return _internal_func_idx();
+}
+inline void WasmFunction::_internal_set_func_idx(uint32_t value) {
+  
+  func_idx_ = value;
+}
+inline void WasmFunction::set_func_idx(uint32_t value) {
+  _internal_set_func_idx(value);
+  // @@protoc_insertion_point(field_set:WasmFunction.func_idx)
+}
+
+// bool is_imported = 2;
 inline void WasmFunction::clear_is_imported() {
   is_imported_ = false;
 }
@@ -1877,7 +1908,7 @@ inline void WasmFunction::set_is_imported(bool value) {
   // @@protoc_insertion_point(field_set:WasmFunction.is_imported)
 }
 
-// bytes func_body = 2;
+// bytes func_body = 3;
 inline void WasmFunction::clear_func_body() {
   func_body_.ClearToEmpty();
 }
@@ -1928,7 +1959,7 @@ inline void WasmFunction::set_allocated_func_body(std::string* func_body) {
   // @@protoc_insertion_point(field_set_allocated:WasmFunction.func_body)
 }
 
-// uint32 body_length = 3;
+// uint32 body_length = 4;
 inline void WasmFunction::clear_body_length() {
   body_length_ = 0u;
 }
@@ -1948,7 +1979,7 @@ inline void WasmFunction::set_body_length(uint32_t value) {
   // @@protoc_insertion_point(field_set:WasmFunction.body_length)
 }
 
-// .FunctionType func_type = 4;
+// .WasmFunctionType func_type = 5;
 inline bool WasmFunction::_internal_has_func_type() const {
   return this != internal_default_instance() && func_type_ != nullptr;
 }
@@ -1961,17 +1992,17 @@ inline void WasmFunction::clear_func_type() {
   }
   func_type_ = nullptr;
 }
-inline const ::FunctionType& WasmFunction::_internal_func_type() const {
-  const ::FunctionType* p = func_type_;
-  return p != nullptr ? *p : reinterpret_cast<const ::FunctionType&>(
-      ::_FunctionType_default_instance_);
+inline const ::WasmFunctionType& WasmFunction::_internal_func_type() const {
+  const ::WasmFunctionType* p = func_type_;
+  return p != nullptr ? *p : reinterpret_cast<const ::WasmFunctionType&>(
+      ::_WasmFunctionType_default_instance_);
 }
-inline const ::FunctionType& WasmFunction::func_type() const {
+inline const ::WasmFunctionType& WasmFunction::func_type() const {
   // @@protoc_insertion_point(field_get:WasmFunction.func_type)
   return _internal_func_type();
 }
 inline void WasmFunction::unsafe_arena_set_allocated_func_type(
-    ::FunctionType* func_type) {
+    ::WasmFunctionType* func_type) {
   if (GetArenaForAllocation() == nullptr) {
     delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(func_type_);
   }
@@ -1983,9 +2014,9 @@ inline void WasmFunction::unsafe_arena_set_allocated_func_type(
   }
   // @@protoc_insertion_point(field_unsafe_arena_set_allocated:WasmFunction.func_type)
 }
-inline ::FunctionType* WasmFunction::release_func_type() {
+inline ::WasmFunctionType* WasmFunction::release_func_type() {
   
-  ::FunctionType* temp = func_type_;
+  ::WasmFunctionType* temp = func_type_;
   func_type_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
   auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
@@ -1998,34 +2029,34 @@ inline ::FunctionType* WasmFunction::release_func_type() {
 #endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
   return temp;
 }
-inline ::FunctionType* WasmFunction::unsafe_arena_release_func_type() {
+inline ::WasmFunctionType* WasmFunction::unsafe_arena_release_func_type() {
   // @@protoc_insertion_point(field_release:WasmFunction.func_type)
   
-  ::FunctionType* temp = func_type_;
+  ::WasmFunctionType* temp = func_type_;
   func_type_ = nullptr;
   return temp;
 }
-inline ::FunctionType* WasmFunction::_internal_mutable_func_type() {
+inline ::WasmFunctionType* WasmFunction::_internal_mutable_func_type() {
   
   if (func_type_ == nullptr) {
-    auto* p = CreateMaybeMessage<::FunctionType>(GetArenaForAllocation());
+    auto* p = CreateMaybeMessage<::WasmFunctionType>(GetArenaForAllocation());
     func_type_ = p;
   }
   return func_type_;
 }
-inline ::FunctionType* WasmFunction::mutable_func_type() {
-  ::FunctionType* _msg = _internal_mutable_func_type();
+inline ::WasmFunctionType* WasmFunction::mutable_func_type() {
+  ::WasmFunctionType* _msg = _internal_mutable_func_type();
   // @@protoc_insertion_point(field_mutable:WasmFunction.func_type)
   return _msg;
 }
-inline void WasmFunction::set_allocated_func_type(::FunctionType* func_type) {
+inline void WasmFunction::set_allocated_func_type(::WasmFunctionType* func_type) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
     delete func_type_;
   }
   if (func_type) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-        ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::FunctionType>::GetOwningArena(func_type);
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::WasmFunctionType>::GetOwningArena(func_type);
     if (message_arena != submessage_arena) {
       func_type = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
           message_arena, func_type, submessage_arena);

@@ -41,6 +41,7 @@ public:
     char consume() { return *ptr_++; }
     void skip(unsigned int length) { ptr_ += length; }
 
+    void previous_byte() { ptr_ = ptr_ - 8; }
     unsigned char read_u8() { return consume(); }
 
     // Read one number encoded in signed little endian base

@@ -50,7 +50,7 @@ private:
     }
 
     // Converts a WebAssembly function type to an LLVM type.
-    inline llvm::FunctionType *asLLVMType(llvm::LLVMContext &llvm_context, const FunctionType &function_type) {
+    inline llvm::FunctionType *asLLVMType(llvm::LLVMContext &llvm_context, const WasmFunctionType &function_type) {
         llvm::Type **llvm_param_types = (llvm::Type **) alloca(sizeof(llvm::Type *) * function_type.param_count());
 
         for (uintptr_t param_idx = 0; param_idx < function_type.param_count(); ++param_idx) {

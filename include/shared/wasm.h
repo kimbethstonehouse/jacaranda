@@ -2,6 +2,8 @@
 
 #include <llvm/IR/Type.h>
 
+#define IMPLICIT_PARAM_COUNT 3
+
 #define CUSTOM_SECTION_ID 0
 #define TYPE_SECTION_ID 1
 #define IMPORT_SECTION_ID 2
