@@ -14,7 +14,10 @@ __stub_atoi:
     sub $0x30, %al
     movzx %al, %eax
 
-    leave
+    mov %rbp, %rsp
+    pop %rbp
+
+    //leave
     ret
 .size __stub_atoi,.-__stub_atoi
 
@@ -24,30 +27,53 @@ __stub_atoi_size: .quad .-__stub_atoi
 .align 16
 .globl __stub_main
 .type __stub_main,%function
-// rdi contains function index
-// rsi contains ptr to jump table base
+// rdi is *rt
+// rsi is fn_idx
+// rdx is *argv
+// rcx is argc
 __stub_main:
     push %rbp
+    push %rbx
     mov %rsp, %rbp
 
+    mov 8(%rdi), %rax
+    // not callee saved, will be needed again
+    push %rax
+
     // atoi has index 0
-    xor %edi, %edi
+    xor %rsi, %rsi
 
-    push 24(%rbp)
-    call *0(%rsi)
-    add $8, %rsp
+    // argv[0]
+    push %rdi
+    push %rsi
+    push %rdx
+    push %rcx
 
-    mov %rax, %rdx
+    mov (%rdx), %rbx
+    // argv[1]
+    mov (%rbx), %ebx
+    push %rbx
+    call *(%rax)
 
-    xor %edi, %edi
+    pop %rax
+    xor %rsi, %rsi
 
-    push 16(%rbp)
-    call *0(%rsi)
-    add $8, %rsp
+    // argv[1]
+    mov (%rdx), %rbx
+    // Four byte char
+    mov 4(%rbx), %ebx
+    push %rbx
+    call *(%rax)
 
-    add %rdx, %rax
+    pop %rcx
+    pop %rdx
+    pop %rsi
+    pop %rdi
 
-    leave
+    mov %rbp, %rsp
+    pop %rbx
+    pop %rbp
+
     ret
 .size __stub_main,.-__stub_main
 

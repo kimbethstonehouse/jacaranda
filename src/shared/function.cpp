@@ -12,6 +12,11 @@
 void Wasm::FunctionBody::emit_call() {
     int idx = payload_.read_uleb128(VARUINT32);
     // todo: get function type of call
+    // todo: do properly
+    llvm::Value *lhs = llvm_ir_builder_->CreateLoad(pop_alloca());
+    llvm::Value *rhs = llvm_ir_builder_->CreateLoad(peek_alloca());
+    llvm::Value *result = llvm_ir_builder_->CreateAdd(lhs, rhs);
+    llvm_ir_builder_->CreateStore(result, peek_alloca());
 }
 
 // todo: the third type index case is ignored for now
@@ -19,16 +24,17 @@ void Wasm::FunctionBody::emit_block() {
     // It is EITHER the single byte -0x40 to represent empty, or a valtype encoded as a single byte,
     // or a type index encoded as a +ve signed 32/33 (?) bit integer
     block_types_.insert({block_idx_, payload_.read_uleb128(VARUINT7)});
-
     push_block(llvm::BasicBlock::Create(*llvm_context_, "block" + std::to_string(block_idx_) + "end"));
+    stack_frames_.insert({block_idx_, allocas_.size()});
+
     block_idx_++;
     current_basic_block_ = llvm::BasicBlock::Create(*llvm_context_, "block" + std::to_string(block_idx_) + "start", llvm_function_);
     llvm_ir_builder_->CreateBr(current_basic_block_);
     llvm_ir_builder_->SetInsertPoint(current_basic_block_);
 
     // A label for the current block defining the current stack frame
-    push_alloca(llvm_ir_builder_->CreateAlloca(get_llvm_block_type()));
-    llvm_ir_builder_->CreateStore(current_basic_block_, allocas_.back());
+//    push_alloca(llvm_ir_builder_->CreateAlloca(get_llvm_block_type()));
+//    llvm_ir_builder_->CreateStore(current_basic_block_, allocas_.back());
 }
 
 void Wasm::FunctionBody::emit_br_if() {
@@ -47,9 +53,10 @@ void Wasm::FunctionBody::emit_end() {
 
     if (!llvm_ir_builder_->GetInsertBlock()->back().isTerminator()) llvm_ir_builder_->CreateBr(current_basic_block_);
     llvm_ir_builder_->SetInsertPoint(current_basic_block_);
+    block_idx_--; // Block_idx_ is the next free block idx, so the current index is -1
 
     llvm::Value *return_value = nullptr;
-    int block_type = block_types_.at(block_idx_-1); // Block_idx_ is the next free block idx, so the current index is -1
+    int block_type = block_types_.at(block_idx_);
     llvm::Type *llvm_type = get_llvm_type(block_type);
 
     // If the block has a return value, pop it
@@ -63,19 +70,14 @@ void Wasm::FunctionBody::emit_end() {
         }
     }
 
-    // Unwind the stack
-    llvm::Value *popped_value = llvm_ir_builder_->CreateLoad(pop_alloca());
-    while (popped_value->getType() != get_llvm_block_type()) { // Essentially a block label
-        popped_value = llvm_ir_builder_->CreateLoad(pop_alloca());
-    }
+    // Unwind the stack to where it was when we entered the block
+    while (allocas_.size() != stack_frames_.at(block_idx_)) pop_alloca();
 
     // Push the return value back onto the stack
     if (return_value) {
         allocas_.push_back(llvm_ir_builder_->CreateAlloca(return_value->getType()));
         llvm_ir_builder_->CreateStore(return_value, allocas_.back());
     }
-
-    block_idx_--;
 }
 
 void Wasm::FunctionBody::emit_return() {
@@ -96,6 +98,20 @@ void Wasm::FunctionBody::emit_get_local() {
 void Wasm::FunctionBody::emit_set_local() {
     llvm::Value *value = llvm_ir_builder_->CreateLoad(pop_alloca());
     llvm_ir_builder_->CreateStore(value, allocas_.at(payload_.read_uleb128(VARUINT32)+IMPLICIT_PARAM_COUNT));
+}
+
+// Note: uninterpreted integers are encoded as signed integers
+void Wasm::FunctionBody::emit_i32_load() {
+    // todo: ???
+    payload_.read_uleb128(VARUINT32);
+    payload_.read_uleb128(VARUINT32);
+}
+
+// Note: uninterpreted integers are encoded as signed integers
+void Wasm::FunctionBody::emit_i32_load_8_s() {
+    // todo: ???
+    payload_.read_uleb128(VARUINT32);
+    payload_.read_uleb128(VARUINT32);
 }
 
 // Note: uninterpreted integers are encoded as signed integers
@@ -136,10 +152,10 @@ llvm::Value *Wasm::FunctionBody::get_llvm_fp_value(unsigned char type, double va
             type == LanguageTypes::F32 ? (float) value : value));
 }
 
-llvm::Type *Wasm::FunctionBody::get_llvm_block_type() {
-    // todo: label type is unsized, loading unsized types is not allowed
-    return llvm::Type::getLabelTy(*llvm_context_);
-}
+//llvm::Type *Wasm::FunctionBody::get_llvm_block_type() {
+//    // todo: label type is unsized, loading unsized types is not allowed
+//    return llvm::Type::getPtr(*llvm_context_);
+//}
 
 llvm::Type *Wasm::FunctionBody::get_llvm_void_type() {
     return llvm::Type::getVoidTy(*llvm_context_);
@@ -181,6 +197,11 @@ std::shared_ptr<llvm::Module> Wasm::FunctionBody::parse_body() {
         llvm::Type *type = get_llvm_type(param);
         llvm_param_types.push_back(type);
     }
+
+    llvm_param_types.push_back(llvm::Type::getInt32PtrTy(*llvm_context_));
+    llvm_param_types.push_back(llvm::Type::getInt32Ty(*llvm_context_));
+    llvm_param_types.push_back(llvm::Type::getInt32PtrTy(*llvm_context_));
+    llvm_param_types.push_back(llvm::Type::getInt32Ty(*llvm_context_));
 
     llvm::FunctionType *llvm_function_type = llvm::FunctionType::get(
             get_llvm_type(function_type_.return_type()), llvm_param_types, false);
@@ -250,6 +271,12 @@ std::shared_ptr<llvm::Module> Wasm::FunctionBody::parse_body() {
                 break;
             case SET_LOCAL_OPCODE:
                 emit_set_local();
+                break;
+            case I32_LOAD_OPCODE:
+                emit_i32_load();
+                break;
+            case I32_LOAD8_S_OPCODE:
+                emit_i32_load_8_s();
                 break;
             case I32_CONST_OPCODE:
                 emit_i32_const();

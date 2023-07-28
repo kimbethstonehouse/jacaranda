@@ -10,6 +10,7 @@ service RepositoryService {
   rpc request_function_indices(IndicesRequest) returns (FunctionIndices) {}
 }
 
+
 message IndicesRequest {
   string module_name = 1;
 }

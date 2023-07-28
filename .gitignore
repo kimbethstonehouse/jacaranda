@@ -8,6 +8,8 @@ a.out
 build
 exe
 CMakeFiles
-Makefile
-*.cmake
 CMakeCache.txt
+Makefile
+.cmake
+cmake_install.cmake
+Testing

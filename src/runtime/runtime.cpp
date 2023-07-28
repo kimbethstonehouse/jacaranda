@@ -20,7 +20,7 @@ Runtime::Runtime(std::shared_ptr<RuntimeEnvoy> envoy) : envoy_(envoy) {
 
 Runtime::~Runtime() {
     munmap(code_section_, pow(2, 30));
-    munmap(jump_table_, function_count_ * PTR_SIZE);
+//    munmap(jump_table_, function_count_ * PTR_SIZE);
 }
 
 void Runtime::create_target_machine() {
@@ -63,12 +63,14 @@ void *Runtime::request_compilation(int function_index) {
 
     // Copy the result into executable memory and update the jump table pointer
     memcpy(next_function_, native.data_bytes().data(), native.data_length());
-    jump_table_[function_index] = next_function_;
+    runtime_state_.jump_table[function_index] = next_function_;
 
     // x86 optimisation: x86 CPUs can branch more efficiently when targets are 16-byte aligned
     next_function_ += align(native.data_length(), 16);
-    return jump_table_[function_index];
+    return runtime_state_.jump_table[function_index];
 }
+
+extern "C" void invoke_function(void *state, int fn_idx, void *args, int nr_args);
 
 void Runtime::run(const std::string &filename, int argc, char **argv) {
     set_module_name(filename);
@@ -80,14 +82,15 @@ void Runtime::run(const std::string &filename, int argc, char **argv) {
 
     // The start index refers to an optional start section in the WebAssembly module, intended for initialising the state of a module
     if (start_idx_.has_value()) {
-        if (jump_table_[start_idx_.value()] == &trampoline_to_compile) request_compilation(start_idx_.value());
-        trampoline_to_execute(start_idx_.value(), jump_table_, argc, argv, this);
+        invoke_function(&runtime_state_, start_idx_.has_value(), nullptr, 0);
     }
 
     // The main index refers to the first function to be executed, and is NOT optional
-    if (jump_table_[main_idx_] == &trampoline_to_compile) request_compilation(main_idx_);
-    int res = trampoline_to_execute(main_idx_, jump_table_, argc, argv, this);
-    std::cout << "Result: " << res << std::endl;
+    invoke_function(&runtime_state_, main_idx_, argv, argc);
+
+//    if (jump_table_[main_idx_] == &trampoline_to_compile) request_compilation(main_idx_);
+//    int res = trampoline_to_execute(main_idx_, jump_table_, argc, argv, this);
+//    std::cout << "Result: " << res << std::endl;
 }
 
 // The runtime needs to know how many functions are in the WebAssembly module, and what the starting function index is
@@ -99,11 +102,18 @@ void Runtime::request_function_indices() {
     main_idx_ = indices.main_idx();
 }
 
+static void function_stub(runtime_state *rt, int fn_idx, void *argv, int argc) {
+    std::cout << "function stub" << std::endl;
+    rt->rt->request_compilation(fn_idx);
+    invoke_function(rt, fn_idx, argv, argc);
+}
+
 // Initialise each function pointer to the address of the compile function
 void Runtime::init_execution_state() {
-    jump_table_ = (void **) mmap(nullptr, function_count_ * PTR_SIZE,
-                                PROT_EXEC | PROT_READ | PROT_WRITE,MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+    runtime_state_.rt = this;
+    runtime_state_.jump_table = (void **) mmap(nullptr, function_count_ * PTR_SIZE, PROT_READ | PROT_WRITE,MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+
     for (int i = 0; i < function_count_; i++) {
-        jump_table_[i] = (void *) &trampoline_to_compile;
+        runtime_state_.jump_table[i] = (void *) &function_stub;
     }
 }

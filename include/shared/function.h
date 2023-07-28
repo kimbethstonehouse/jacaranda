@@ -53,6 +53,9 @@ namespace Wasm {
         void emit_get_local();
         void emit_set_local();
 
+        void emit_i32_load();
+        void emit_i32_load_8_s();
+
         void emit_i32_const();
         void emit_i32_eqz();
         void emit_i32_add();
@@ -94,6 +97,8 @@ namespace Wasm {
         // Holds the end of each block, for jumping out to by index
         std::vector<llvm::BasicBlock *> block_stack_;
         std::map<int, int> block_types_;
+        // Holds the size of the stack when each block was entered, for easy unwinding
+        std::map<int, int> stack_frames_;
         std::shared_ptr<llvm::LLVMContext> llvm_context_;
         std::shared_ptr<llvm::IRBuilder<>> llvm_ir_builder_;
         std::shared_ptr<llvm::Module> llvm_module_;
