@@ -7,17 +7,13 @@ __stub_atoi:
     push %rbp
     mov %rsp, %rbp
 
-    mov 16(%rbp), %rax
-    mov (%rax), %al
-
     // Subtract 0x30 to convert ASCII to number
-    sub $0x30, %al
-    movzx %al, %eax
+    sub $0x30, %bl
+    movzx %bl, %eax
 
     mov %rbp, %rsp
     pop %rbp
 
-    //leave
     ret
 .size __stub_atoi,.-__stub_atoi
 
@@ -33,45 +29,37 @@ __stub_atoi_size: .quad .-__stub_atoi
 // rcx is argc
 __stub_main:
     push %rbp
-    push %rbx
     mov %rsp, %rbp
 
-    mov 8(%rdi), %rax
-    // not callee saved, will be needed again
-    push %rax
+    push %rbx
 
+    mov 8(%rdi), %r8
     // atoi has index 0
     xor %rsi, %rsi
 
-    // argv[0]
-    push %rdi
-    push %rsi
-    push %rdx
-    push %rcx
+    push %r8
 
     mov (%rdx), %rbx
-    // argv[1]
-    mov (%rbx), %ebx
-    push %rbx
-    call *(%rax)
+    mov (%rbx), %rbx
+    // argv[0]
+    call *(%r8, %rsi, 8)
 
-    pop %rax
+    pop %r8
     xor %rsi, %rsi
 
-    // argv[1]
-    mov (%rdx), %rbx
-    // Four byte char
-    mov 4(%rbx), %ebx
-    push %rbx
-    call *(%rax)
+    mov %rax, %r9
 
-    pop %rcx
-    pop %rdx
-    pop %rsi
-    pop %rdi
+    mov (%rdx), %rbx
+    mov 2(%rbx), %rbx
+
+    // argv[1]
+    call *(%r8, %rsi, 8)
+
+    add %r9, %rax
+
+    pop %rbx
 
     mov %rbp, %rsp
-    pop %rbx
     pop %rbp
 
     ret
