@@ -18,7 +18,7 @@ void Compiler::compile(const CompilationRequest *request, NativeBinary *native) 
 //    module->dump();
 
     Visitor V;
-    V.visit(module.get());
+    V.visit(*module.get());
 //    module->dump();
 
     if (request->func_idx() == 1) {

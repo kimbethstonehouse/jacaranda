@@ -20,67 +20,103 @@ private:
 //    std::map<std::string, llvm::Module *> module_architecture_pairs_;
 };
 
-struct Visitor : public InstVisitor<Visitor> {
-    Visitor() {
-        registers_.push_back("r8");
-        registers_.push_back("r9");
-        registers_.push_back("r10");
-        registers_.push_back("r11");
-        registers_.push_back("r12");
-        registers_.push_back("r13");
-        registers_.push_back("r14");
-        registers_.push_back("r15");
+struct Visitor : public InstVisitor<Visitor, Value *> {
+    Visitor() {}
+
+    // Generic visit method - Allow visitation to all instructions in a range
+    template<class Iterator>
+    Value *visit(Iterator Start, Iterator End) {
+        while (Start != End)
+            this->accept(*Start++);
+        return nullptr;
     }
 
-    void visitFunction(Function &F) {
+    // Define visitors for functions and basic blocks...
+    Value *visit(Module &M) {
+        this->visitModule(M);
+        visit(M.begin(), M.end());
+        return nullptr;
+    }
+    Value *visit(Function &F) {
+        this->visitFunction(F);
+        visit(F.begin(), F.end());
+        return nullptr;
+    }
+    Value *visit(BasicBlock &BB) {
+        this->visitBasicBlock(BB);
+        visit(BB.begin(), BB.end());
+        return nullptr;
+    }
+
+    Value *visitInstruction(Instruction &I) {
+        return nullptr;
+    }
+
+    Value *visitValue(Value &V) {
+        return nullptr;
+    }
+
+    Value *accept(Value &V) {
+        if (auto I = dyn_cast<Instruction>(&V)) return this->visit(I);
+        // todo: if argument, if global variable, etc
+        return this->visitValue(V);
+    }
+
+    Value *visitModule(Module &M) {
+        llvm::errs() << "Visiting module!" << "\n";
+        return nullptr;
+    }
+
+    Value *visitFunction(Function &F) {
         llvm::errs() << "\t.type\t" << F.getName() << ",@function" << "\n";
         llvm::errs() << F.getName() << ":" << "\n";
         llvm::errs() << "pushq\t%rbp" << "\n";
         llvm::errs() << "movq\t%rsp, %rbp" << "\n";
+        return nullptr;
         //        llvm::errs() << "Function: " << F.getName() << "\n";
     }
 
-    void visitBasicBlock(BasicBlock &B) {
+    Value *visitBasicBlock(BasicBlock &B) {
 //        llvm::errs() << "BasicBlock: " << B.getName() << "\n";
+        return nullptr;
+
     }
 
-    void visitBranchInst(BranchInst &I) {
+    Value *visitBranchInst(BranchInst &I) {
 //        I.getCondition();
         llvm::errs() << "BranchInst: " << I << "\n";
+        return nullptr;
     }
 
-    void visitAllocaInst(AllocaInst &I) {
+    Value *visitAllocaInst(AllocaInst &I) {
         llvm::errs() << "AllocaInst: " << I << "\n";
+        return nullptr;
     }
 
-    void visitLoadInst(LoadInst &I) {
+    Value *visitLoadInst(LoadInst &I) {
         llvm::errs() << "LoadInst: " << I << "\n";
+        return nullptr;
     }
 
-    void visitStoreInst(StoreInst &I) {
+    Value *visitStoreInst(StoreInst &I) {
         llvm::errs() << "StoreInst: " << I << "\n";
+        return nullptr;
     }
 
-    void visitICmpInst(ICmpInst &I) {
+    Value *visitICmpInst(ICmpInst &I) {
         llvm::errs() << "ICmpInst: " << I << "\n";
+        return nullptr;
     }
 
-    void visitBinaryOperator(BinaryOperator &I) {
+    Value *visitBinaryOperator(BinaryOperator &I) {
         llvm::errs() << "BinaryOperator: " << I << "\n";
+        return nullptr;
     }
 
-    void visitReturnInst(ReturnInst &I) {
+    Value *visitReturnInst(ReturnInst &I) {
         llvm::errs() << "ReturnInst: " << I << "\n";
+        return nullptr;
     }
 private:
-    std::vector<std::string> registers_;
-    std::string getRegister() {
-        std::string temp = registers_.front();
-        registers_.pop_back();
-        return temp;
-    }
 
-    void freeRegister(std::string reg) {
-        registers_.push_back(reg);
-    }
 };

@@ -38,4 +38,7 @@ llvm_map_components_to_libnames(llvm_libs
         AllTargetsAsmParsers
         ${LLVM_TARGETS_TO_BUILD})
 
+set(ASMJIT_BUILD_STATIC)
+
 add_subdirectory(src)
+add_subdirectory(asmjit)
