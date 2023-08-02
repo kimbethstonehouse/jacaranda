@@ -14,6 +14,7 @@ set(COMPILER_DIR "${SOURCE_DIR}/compiler")
 set(RUNTIME_DIR "${SOURCE_DIR}/runtime")
 set(SHARED_DIR "${SOURCE_DIR}/shared")
 set(PROTO_DIR "${SOURCE_DIR}/proto")
+set(ASMJIT_H "${CMAKE_CURRENT_SOURCE_DIR}/asmjit/src/asmjit")
 
 find_package(Protobuf CONFIG REQUIRED)
 find_package(gRPC CONFIG REQUIRED)
@@ -23,7 +24,7 @@ if(LLVM_VERSION_MAJOR LESS 6)
     message(FATAL_ERROR "At least version 6.0 of LLVM required")
 endif()
 
-include_directories(${LLVM_INCLUDE_DIRS})
+include_directories(${LLVM_INCLUDE_DIRS} ${ASMJIT_H})
 separate_arguments(LLVM_DEFINITIONS_LIST NATIVE_COMMAND ${LLVM_DEFINITIONS})
 add_definitions(${LLVM_DEFINITIONS_LIST})
 

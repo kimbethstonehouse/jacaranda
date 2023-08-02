@@ -5,8 +5,10 @@
 #include <compiler-envoy-client.h>
 #include <llvm/IR/InstVisitor.h>
 #include <llvm/Support/raw_ostream.h>
+#include <asmjit.h>
 
 using namespace llvm;
+using namespace asmjit;
 
 class Compiler {
 public:
@@ -21,43 +23,52 @@ private:
 };
 
 struct Visitor : public InstVisitor<Visitor, Value *> {
-    Visitor() {}
+    Visitor() {
+        code.init(rt.environment(), rt.cpuFeatures());
+    }
 
-    // Generic visit method - Allow visitation to all instructions in a range
     template<class Iterator>
-    Value *visit(Iterator Start, Iterator End) {
+    Value *accept(Iterator Start, Iterator End) {
         while (Start != End)
             this->accept(*Start++);
         return nullptr;
     }
 
-    // Define visitors for functions and basic blocks...
-    Value *visit(Module &M) {
+    Value *accept(Module &M, x86::Compiler cc) {
         this->visitModule(M);
-        visit(M.begin(), M.end());
+        accept(M.begin(), M.end());
         return nullptr;
     }
-    Value *visit(Function &F) {
+
+    Value *accept(Function &F) {
         this->visitFunction(F);
-        visit(F.begin(), F.end());
+        accept(F.begin(), F.end());
         return nullptr;
     }
-    Value *visit(BasicBlock &BB) {
+    Value *accept(BasicBlock &BB) {
         this->visitBasicBlock(BB);
-        visit(BB.begin(), BB.end());
+        accept(BB.begin(), BB.end());
         return nullptr;
     }
 
-    Value *visitInstruction(Instruction &I) {
-        return nullptr;
-    }
+    // visit - Finally, code to visit an instruction...
+    //
+    Value *visit(Instruction &I) {
+//        static_assert(std::is_base_of<InstVisitor, SubClass>::value,
+//                      "Must pass the derived type to this template!");
 
-    Value *visitValue(Value &V) {
-        return nullptr;
+        switch (I.getOpcode()) {
+            default: llvm_unreachable("Unknown instruction type encountered!");
+                // Build the switch statement using the Instruction.def file...
+#define HANDLE_INST(NUM, OPCODE, CLASS) \
+    case Instruction::OPCODE: return \
+                      visit##OPCODE(static_cast<CLASS&>(I));
+#include "llvm/IR/Instruction.def"
+        }
     }
 
     Value *accept(Value &V) {
-        if (auto I = dyn_cast<Instruction>(&V)) return this->visit(I);
+        if (auto I = dyn_cast<Instruction>(&V)) return this->visit(*I);
         // todo: if argument, if global variable, etc
         return this->visitValue(V);
     }
@@ -82,6 +93,14 @@ struct Visitor : public InstVisitor<Visitor, Value *> {
 
     }
 
+    Value *visitInstruction(Instruction &I) {
+        return nullptr;
+    }
+
+    Value *visitValue(Value &V) {
+        return nullptr;
+    }
+
     Value *visitBranchInst(BranchInst &I) {
 //        I.getCondition();
         llvm::errs() << "BranchInst: " << I << "\n";
@@ -94,6 +113,8 @@ struct Visitor : public InstVisitor<Visitor, Value *> {
     }
 
     Value *visitLoadInst(LoadInst &I) {
+        x86::Gp vReg = cc.newGpd();
+        accept(*I.getPointerOperand());
         llvm::errs() << "LoadInst: " << I << "\n";
         return nullptr;
     }
@@ -118,5 +139,7 @@ struct Visitor : public InstVisitor<Visitor, Value *> {
         return nullptr;
     }
 private:
-
+    JitRuntime rt;
+    CodeHolder code;
+    x86::Compiler *cc;
 };
