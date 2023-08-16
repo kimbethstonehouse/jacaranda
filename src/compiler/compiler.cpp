@@ -17,7 +17,8 @@ void Compiler::compile(const CompilationRequest *request, NativeBinary *native) 
     std::shared_ptr<llvm::Module> module = body.parse_body();
 //    module->dump();
 
-    Visitor V;
+    BaseCompiler cc;
+    Visitor V(cc);
     V.accept(*module.get());
 //    module->dump();
 

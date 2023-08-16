@@ -22,124 +22,110 @@ private:
 //    std::map<std::string, llvm::Module *> module_architecture_pairs_;
 };
 
-struct Visitor : public InstVisitor<Visitor, Value *> {
-    Visitor() {
-        code.init(rt.environment(), rt.cpuFeatures());
-    }
+nullptr_t null;
+
+struct Visitor : public InstVisitor<Visitor, BaseReg> {
+    Visitor(BaseCompiler &cc) : cc(cc), reg_idx(0) { }
 
     template<class Iterator>
-    Value *accept(Iterator Start, Iterator End) {
+    BaseReg accept(Iterator Start, Iterator End) {
         while (Start != End)
             this->accept(*Start++);
-        return nullptr;
+        return none;
     }
 
-    Value *accept(Module &M, x86::Compiler cc) {
+    BaseReg accept(Module &M) {
         this->visitModule(M);
         accept(M.begin(), M.end());
-        return nullptr;
+        return none;
     }
 
-    Value *accept(Function &F) {
+    BaseReg accept(Function &F) {
         this->visitFunction(F);
         accept(F.begin(), F.end());
-        return nullptr;
+        return none;
     }
-    Value *accept(BasicBlock &BB) {
+    BaseReg accept(BasicBlock &BB) {
         this->visitBasicBlock(BB);
         accept(BB.begin(), BB.end());
-        return nullptr;
+        return none;
     }
 
-    // visit - Finally, code to visit an instruction...
-    //
-    Value *visit(Instruction &I) {
-//        static_assert(std::is_base_of<InstVisitor, SubClass>::value,
-//                      "Must pass the derived type to this template!");
-
-        switch (I.getOpcode()) {
-            default: llvm_unreachable("Unknown instruction type encountered!");
-                // Build the switch statement using the Instruction.def file...
-#define HANDLE_INST(NUM, OPCODE, CLASS) \
-    case Instruction::OPCODE: return \
-                      visit##OPCODE(static_cast<CLASS&>(I));
-#include "llvm/IR/Instruction.def"
-        }
-    }
-
-    Value *accept(Value &V) {
+    BaseReg accept(Value &V) {
         if (auto I = dyn_cast<Instruction>(&V)) return this->visit(*I);
         // todo: if argument, if global variable, etc
         return this->visitValue(V);
     }
 
-    Value *visitModule(Module &M) {
+    BaseReg visitModule(Module &M) {
         llvm::errs() << "Visiting module!" << "\n";
-        return nullptr;
+        return none;
     }
 
-    Value *visitFunction(Function &F) {
+    BaseReg visitFunction(Function &F) {
         llvm::errs() << "\t.type\t" << F.getName() << ",@function" << "\n";
         llvm::errs() << F.getName() << ":" << "\n";
         llvm::errs() << "pushq\t%rbp" << "\n";
         llvm::errs() << "movq\t%rsp, %rbp" << "\n";
-        return nullptr;
+        return none;
         //        llvm::errs() << "Function: " << F.getName() << "\n";
     }
 
-    Value *visitBasicBlock(BasicBlock &B) {
+    BaseReg visitBasicBlock(BasicBlock &B) {
 //        llvm::errs() << "BasicBlock: " << B.getName() << "\n";
-        return nullptr;
+        return none;
 
     }
 
-    Value *visitInstruction(Instruction &I) {
-        return nullptr;
+    BaseReg visitInstruction(Instruction &I) {
+        return none;
     }
 
-    Value *visitValue(Value &V) {
-        return nullptr;
+    BaseReg visitValue(Value &V) {
+        return none;
     }
 
-    Value *visitBranchInst(BranchInst &I) {
+    BaseReg visitBranchInst(BranchInst &I) {
 //        I.getCondition();
         llvm::errs() << "BranchInst: " << I << "\n";
-        return nullptr;
+        return none;
     }
 
-    Value *visitAllocaInst(AllocaInst &I) {
+    BaseReg visitAllocaInst(AllocaInst &I) {
         llvm::errs() << "AllocaInst: " << I << "\n";
-        return nullptr;
+        BaseReg *out;
+        cc._newReg(out, TypeId::kUInt32); // todo: HACK, get type from Alloca
+        return *out;
     }
 
-    Value *visitLoadInst(LoadInst &I) {
-        x86::Gp vReg = cc.newGpd();
-        accept(*I.getPointerOperand());
+    BaseReg visitLoadInst(LoadInst &I) {
+        BaseReg reg = accept(*I.getPointerOperand());
         llvm::errs() << "LoadInst: " << I << "\n";
-        return nullptr;
+        return none;
     }
 
-    Value *visitStoreInst(StoreInst &I) {
+    BaseReg visitStoreInst(StoreInst &I) {
         llvm::errs() << "StoreInst: " << I << "\n";
-        return nullptr;
+        return none;
     }
 
-    Value *visitICmpInst(ICmpInst &I) {
+    BaseReg visitICmpInst(ICmpInst &I) {
         llvm::errs() << "ICmpInst: " << I << "\n";
-        return nullptr;
+        return none;
     }
 
-    Value *visitBinaryOperator(BinaryOperator &I) {
+    BaseReg visitBinaryOperator(BinaryOperator &I) {
         llvm::errs() << "BinaryOperator: " << I << "\n";
-        return nullptr;
+        return none;
     }
 
-    Value *visitReturnInst(ReturnInst &I) {
+    BaseReg visitReturnInst(ReturnInst &I) {
         llvm::errs() << "ReturnInst: " << I << "\n";
-        return nullptr;
+        return none;
     }
 private:
-    JitRuntime rt;
-    CodeHolder code;
-    x86::Compiler *cc;
+    BaseCompiler &cc;
+    BaseReg none;
+    BaseReg **base_regs;
+    int reg_idx;
 };
