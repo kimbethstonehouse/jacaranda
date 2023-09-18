@@ -1,9 +1,16 @@
 #include <section.h>
+#include <llvm/IR/Module.h>
 
 void Wasm::CustomSection::parse_section() {
     name_ = get_data().read_name(VARUINT32);
 }
 
+/* The func_type is the description of a function signature.
+ * form varint7: the value for the func type constructor (-0x20, i.e. 0x60)
+ * param_count varuint32: the number of parameters to the function
+ * param_types value_type*: the parameter types of the function
+ * return_count varuint1: the number of results from the function
+ * return_type value_type?: the result type of the function (if return_count is 1) */
 void Wasm::TypeSection::parse_section() {
     Payload payload = get_data();
     count_ = payload.read_uleb128(VARUINT32);
@@ -15,22 +22,22 @@ void Wasm::TypeSection::parse_section() {
                                   ", should be " + std::to_string(LanguageTypes::FUNC));
         }
 
+        std::shared_ptr<WasmFunctionType> function_type = std::make_shared<WasmFunctionType>();
+
         // Parse the function type
-        unsigned int param_count = payload.read_uleb128(VARUINT32);
-        std::vector<ValueType> param_types;
-
-        for (int j = 0; j < param_count; j++) {
-            param_types.push_back(ValueType(payload.read_uleb128(VARUINT7)));
+        function_type->set_param_count(payload.read_uleb128(VARUINT32));
+        for (int j = 0; j < function_type->param_count(); j++) {
+            unsigned char param_type = payload.read_uleb128(VARUINT7);
+            Wasm::validate_type(param_type);
+            function_type->add_param_types(param_type);
         }
 
-        unsigned char return_count = payload.read_uleb128(VARUINT1);
-        std::optional<ValueType> return_type;
-
-        if (return_count == 1) {
-            return_type = ValueType(payload.read_uleb128(VARUINT7));
+        function_type->set_return_count(payload.read_uleb128(VARUINT1));
+        if (function_type->return_count() == 1) {
+            function_type->set_return_type(payload.read_uleb128(VARUINT7));
         }
 
-        types_.insert({i, std::make_shared<FunctionType>(FunctionType(param_count, param_types, return_count, return_type))});
+        types_.insert({i, function_type});
     }
 }
 
@@ -71,14 +78,14 @@ void Wasm::FunctionSection::parse_section() {
 
     for (int i = 0; i < count_; i++) {
         unsigned int type_index = payload.read_uleb128(VARUINT32);
-        functions_.insert({i, FunctionEntry(type_index)});
+        functions_.insert({i, type_index});
     }
 }
 
 void Wasm::GlobalSection::parse_section() {
     Payload payload = get_data();
     count_ = payload.read_uleb128(VARUINT32);
-    // TODO: Parse global entries.
+    // TODO: Parse global entries. May be mutable or immutable, and must contain constant initialiser expression.
 }
 
 void Wasm::CodeSection::parse_section() {
@@ -96,83 +103,23 @@ void Wasm::ExportSection::parse_section() {
     Payload payload = get_data();
     count_ = payload.read_uleb128(VARUINT32);
 
+    bool found_main = false;
     for (int i = 0; i < count_; i++) {
         std::string name = payload.read_name(VARUINT32);
         unsigned char type = payload.read_uleb128(VARUINT7);
         unsigned int index = payload.read_uleb128(VARUINT32);
 
+        // The main function may be called something else, but let's ignore that for now
+        // Either way, the first function to be executed MUST be imported as per the specification
+        if (name == "__main_argc_argv" && type == ExternalKind::FUNCTION) {
+            found_main = true;
+            main_idx_ = index;
+        }
         exports_.insert({i, ExportEntry(name, type, index)});
     }
-}
 
-void Wasm::FunctionBody::parse_body() {
-    local_count_ = payload_.read_uleb128(VARUINT32);
-
-    for (int i = 0; i < local_count_; i++) {
-        local_variables_.push_back(LocalEntry(payload_.read_uleb128(VARUINT32),
-                                              ValueType(payload_.read_uleb128(VARUINT7))));
-    }
-
-    while(payload_.at() != payload_.data_end()) {
-        // TODO: account for the prefix bytes
-        char opcode = payload_.read_u8();
-
-        switch(opcode) {
-            case CALL_OPCODE:
-                instructions_.push_back(std::make_shared<Instruction>(CallInstruction(
-                        payload_.read_uleb128(VARUINT32))));
-                break;
-            case BLOCK_OPCODE:
-                instructions_.push_back(std::make_shared<Instruction>(BlockInstruction(
-                        // uint7 is not a mistake as we look for 0x40 rather than -0x40
-                        payload_.read_uleb128(VARUINT7))));
-                break;
-            case END_OPCODE:
-                instructions_.push_back(std::make_shared<Instruction>(EndInstruction()));
-                break;
-            case BR_IF_OPCODE:
-                instructions_.push_back(std::make_shared<Instruction>(BrIfInstruction(
-                        payload_.read_uleb128(VARUINT32))));
-                break;
-            case RETURN_OPCODE:
-                instructions_.push_back(std::make_shared<Instruction>(ReturnInstruction()));
-                break;
-            case GET_LOCAL_OPCODE:
-                instructions_.push_back(std::make_shared<Instruction>(GetLocalInstruction(
-                        payload_.read_uleb128(VARUINT32))));
-                break;
-            case SET_LOCAL_OPCODE:
-                instructions_.push_back(std::make_shared<Instruction>(SetLocalInstruction(
-                        payload_.read_uleb128(VARUINT32))));
-                break;
-//            case (0x28): //todo: what?
-//                instructions_.push_back(std::make_shared<Instruction>(I32Load8_sInstruction(
-//                        payload_.read_uleb128(VARUINT32), payload_.read_uleb128(VARUINT32))));
-//                break;
-//            case I32_LOAD8_S_OPCODE:
-//                instructions_.push_back(std::make_shared<Instruction>(I32Load8_sInstruction(
-//                        payload_.read_uleb128(VARUINT32), payload_.read_uleb128(VARUINT32))));
-//                break;
-            case I32_CONST_OPCODE:
-                instructions_.push_back(std::make_shared<Instruction>(I32ConstInstruction(
-                        payload_.read_leb128(VARINT32))));
-                break;
-            case I32_EQZ_OPCODE:
-                instructions_.push_back(std::make_shared<Instruction>(I32EqzInstruction()));
-                break;
-            case I32_ADD_OPCODE:
-                instructions_.push_back(std::make_shared<Instruction>(I32AddInstruction()));
-                break;
-            case I32_SUB_OPCODE:
-                instructions_.push_back(std::make_shared<Instruction>(I32SubInstruction()));
-                break;
-            default:
-                throw new decode_exception("unsupported instruction with opcode " + std::to_string(opcode) + " encountered");
-        }
-    }
-
-    // Sanity check
-    if (*(payload_.at()-1) != END_OPCODE) {
-        throw decode_exception("error during function body decoding, expected end byte to be 0x0b, but was " + std::to_string(*payload_.at()));
+    // A WebAssembly module must export a start function
+    if (!found_main) {
+        throw repository_exception("module did not export _start function");
     }
 }

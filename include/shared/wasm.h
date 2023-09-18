@@ -2,6 +2,8 @@
 
 #include <llvm/IR/Type.h>
 
+#define IMPLICIT_PARAM_COUNT 3
+
 #define CUSTOM_SECTION_ID 0
 #define TYPE_SECTION_ID 1
 #define IMPORT_SECTION_ID 2
@@ -29,6 +31,7 @@
 #define SET_LOCAL_OPCODE 0x21
 
 // MEMORY ACCESS
+#define I32_LOAD_OPCODE 0x28
 #define I32_LOAD8_S_OPCODE 0x2c
 
 // CONSTANTS
@@ -41,9 +44,11 @@
 #define I32_ADD_OPCODE 0x6a
 #define I32_SUB_OPCODE 0x6b
 
+// Technically negative, but we use the
+// positive representation for simplicity
 namespace LanguageTypes {
-    // Technically negative, but we use the
-    // positive representation for simplicity
+    // The value types I32 and I64 are not inherently signed or unsigned
+    // They can be interpreted either way by an operator
     unsigned char const I32 = 0x7f;
     unsigned char const I64 = 0x7e;
     unsigned char const F32 = 0x7d;

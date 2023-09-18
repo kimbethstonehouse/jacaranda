@@ -10,6 +10,7 @@ set(SOURCES
         ${COMPILER_DIR}/compiler.cpp
         ${COMPILER_DIR}/decoder.cpp
         ${COMPILER_DIR}/stubs.S
+        ${SHARED_DIR}/function.cpp
         ${SHARED_DIR}/section.cpp)
 add_executable(compiler ${SOURCES})
 
