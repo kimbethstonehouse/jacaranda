@@ -70,6 +70,7 @@ void *Runtime::request_compilation(int function_index) {
     return runtime_state_.jump_table[function_index];
 }
 
+// todo: fix return type
 extern "C" void invoke_function(void *state, int fn_idx, void *args, int nr_args);
 
 void Runtime::run(const std::string &filename, int argc, char **argv) {
