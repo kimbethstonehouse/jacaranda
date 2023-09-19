@@ -17,9 +17,9 @@ void Compiler::compile(const CompilationRequest *request, NativeBinary *native) 
     std::shared_ptr<llvm::Module> module = body.parse_body();
 //    module->dump();
 
-    BaseCompiler cc;
-    Visitor V(cc);
-    V.accept(*module.get());
+//    BaseCompiler cc;
+//    Visitor V(cc);
+//    V.accept(*module.get());
 
     if (request->func_idx() == 1) {
         native->set_data_bytes(&__stub_main, __stub_main_size);

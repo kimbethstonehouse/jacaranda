@@ -22,8 +22,6 @@ private:
 //    std::map<std::string, llvm::Module *> module_architecture_pairs_;
 };
 
-nullptr_t null;
-
 struct Visitor : public InstVisitor<Visitor, BaseReg> {
     Visitor(BaseCompiler &cc) : cc(cc), reg_idx(0) { }
 
