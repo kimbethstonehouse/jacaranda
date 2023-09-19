@@ -20,7 +20,6 @@ void Compiler::compile(const CompilationRequest *request, NativeBinary *native) 
     BaseCompiler cc;
     Visitor V(cc);
     V.accept(*module.get());
-//    module->dump();
 
     if (request->func_idx() == 1) {
         native->set_data_bytes(&__stub_main, __stub_main_size);

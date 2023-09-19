@@ -123,6 +123,7 @@ struct Visitor : public InstVisitor<Visitor, BaseReg> {
         llvm::errs() << "ReturnInst: " << I << "\n";
         return none;
     }
+
 private:
     BaseCompiler &cc;
     BaseReg none;
